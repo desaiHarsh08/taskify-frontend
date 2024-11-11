@@ -1,0 +1,7 @@
+.assign-user-card {
+    cursor: pointer;
+}
+
+.assign-user-card:hover {
+    background-color: aliceblue;
+}

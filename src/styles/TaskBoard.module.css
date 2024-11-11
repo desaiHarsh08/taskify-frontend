@@ -1,0 +1,26 @@
+#taskboard-part1 {
+    width: 80%;
+}
+
+#taskboard-part2 {
+    width: 20%;
+}
+
+#taskboard-area {
+    display: flex;
+    flex-direction: row;
+}
+
+@media (max-width: 767px) {
+    #taskboard-area {
+        flex-direction: column !important;
+        height: 100%;
+        overflow: auto !important;
+    }
+
+    #taskboard-part1,
+    #taskboard-part2 {
+        width: 100%;
+        height: auto !important;
+    }
+}

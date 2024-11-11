@@ -1,0 +1,7 @@
+.parent-row-card {
+    cursor: pointer;
+}
+
+.parent-row-card:hover {
+    background-color: aliceblue;
+}

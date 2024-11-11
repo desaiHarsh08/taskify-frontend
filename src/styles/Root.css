@@ -1,0 +1,22 @@
+#login-container {
+    width: 25% !important;
+}
+
+@media (max-width: 991px) {
+    #login-container {
+        width: 50% !important;
+    }
+
+}
+
+@media (max-width: 640px) {
+    #login-container {
+        width: 75% !important;
+    }
+}
+
+@media (max-width: 540px) {
+    #login-container {
+        width: 95% !important;
+    }
+}

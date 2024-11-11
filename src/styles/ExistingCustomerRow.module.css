@@ -1,0 +1,7 @@
+.existing-customer-row {
+    cursor: pointer;
+}
+
+.existing-customer-row:hover {
+    background-color: aliceblue;
+}

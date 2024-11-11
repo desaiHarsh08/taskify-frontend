@@ -1,0 +1,23 @@
+#overall-tasks-stats {
+    display: flex;
+    /* flex-direction: row !important; */
+    justify-content: space-between;
+    height: 30%;
+    gap: 12px;
+}
+
+.stats-card {
+    width: 25%;
+}
+
+@media (max-width: 767px) {
+    #overall-tasks-stats {
+        flex-direction: column !important;
+        gap: 12px;
+        /* height: ; */
+    }
+
+    .stats-card {
+        width: 100%;
+    }
+}

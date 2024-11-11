@@ -1,0 +1,9 @@
+#todays-activity {
+    height: 70% !important;
+}
+
+@media (max-width: 767px) {
+    #todays-activity {
+        height: auto !important;
+    }
+}

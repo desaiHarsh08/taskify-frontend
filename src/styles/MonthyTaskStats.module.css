@@ -1,0 +1,9 @@
+#monthly-tasks-stats {
+    /* height: ; */
+}
+
+@media (max-width: 767px) {
+    #monthly-tasks-stats {
+        height: auto !important;
+    }
+}

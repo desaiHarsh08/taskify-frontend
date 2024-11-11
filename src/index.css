@@ -1,0 +1,125 @@
+html {
+    overflow: hidden;
+    font-size: 14px;
+    height: 100vh !important;
+}
+
+p {
+    margin: 0px;
+}
+
+.stat-card {
+    width: 20% !important;
+}
+
+#overall-task-stats {
+    display: flex !important;
+    gap: 2rem;
+}
+
+#taskboard-area {
+    display: flex;
+    flex-direction: column;
+}
+
+#taskboard-a1 {
+    width: 100%;
+}
+
+#taskboard-a2 {
+    width: 100%;
+}
+
+#todays-activity {
+    height: calc(100% - 158.75px);
+}
+
+#task-table {
+    width: 1464px !important;
+    /* border: 2px solid red */
+}
+
+#all-tasks-action {
+    flex-direction: row;
+}
+
+#task-container {
+    flex-direction: row;
+    /* border: 2px solid red; */
+}
+
+#customer-rows {
+    width: 1464px;
+}
+
+#task-comp {
+    display: flex !important;
+}
+
+#task-comp #t1 {
+    width: 65% !important;
+}
+
+#task-comp #t2 {
+    width: 35% !important;
+}
+
+#function-field-row {
+    height: calc(100% - 253px) !important;
+    overflow: auto !important;
+    background-color: red !important;
+}
+
+@media (max-width: 1024px) {
+    #task-comp {
+        flex-direction: column-reverse;
+    }
+
+    #task-comp #t1 #t2 {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 767px) {
+    #taskboard-area {
+        /* flex-direction: column; */
+        overflow: auto;
+    }
+
+    #taskboard-a1,
+    #taskboard-a2 {
+        width: 100% !important;
+    }
+
+    #taskboard-a2 {
+        min-height: 500px !important;
+    }
+
+    #todays-activity {
+        height: 500px !important;
+    }
+
+    #all-tasks-action {
+        flex-direction: column-reverse;
+        align-items: start !important;
+        gap: 2px !important;
+    }
+
+    #task-container {
+        flex-direction: column;
+    }
+
+    #task-details {
+        height: 500px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    #overall-task-stats {
+        flex-direction: column;
+    }
+
+    .stat-card {
+        width: 100% !important;
+    }
+}

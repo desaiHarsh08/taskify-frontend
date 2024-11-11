@@ -1,0 +1,44 @@
+
+
+
+
+#function-container {
+    height: calc(100% - 46.4px);
+}
+
+.border-transparent {
+    border-color: transparent !important;
+}
+
+.border-bottom-transparent {
+    border-bottom-color: transparent !important;
+}
+
+
+
+#customer-container {
+    height: calc(100% - 157px);
+}
+
+#customer-rows {
+    height: calc(100% - 32px);
+}
+
+#todays-activity-container {
+    height: calc(100% - 70px);
+}
+
+#activity-rows {
+    height: calc(100% - 54.59px);
+}
+
+#customer-area {
+    height: calc(100% - 100px);
+}
+
+@media (max-width: 570px) {
+    #function-container {
+        height: 50% !important;
+        border: 1px solid red;
+    }
+}

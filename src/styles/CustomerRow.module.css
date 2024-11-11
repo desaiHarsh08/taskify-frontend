@@ -1,0 +1,7 @@
+.customer-row-card {
+    cursor: pointer;
+}
+
+.customer-row-card:hover {
+    background-color: aliceblue;
+}

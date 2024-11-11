@@ -1,0 +1,4 @@
+.customer-area {
+    height: calc(100% - 42.38px);
+    overflow-y: auto;
+}
