@@ -2,7 +2,9 @@ import { FunctionInstance } from "@/lib/task";
 import { API } from "@/utils/api";
 
 export const createFunction = async (newFunction: FunctionInstance, assignedToUserId: number): Promise<FunctionInstance> => {
-    const {multipartFiles, ...tmpFn } = newFunction;
+    console.log("in api, creating fn:", newFunction);
+    const { multipartFiles, ...tmpFn } = newFunction;
+    console.log("in api, creating fn:", tmpFn);
     const response = await API.post(`/api/function-instances?assignedToUserId=${assignedToUserId}`, tmpFn);
 
     return response.data;
@@ -10,6 +12,12 @@ export const createFunction = async (newFunction: FunctionInstance, assignedToUs
 
 export const fetchFunctionById = async (functionId: number): Promise<FunctionInstance> => {
     const response = await API.get(`/api/function-instances/${functionId}`);
+    console.log(response);
+    return response.data;
+}
+
+export const fetchFunctionByTaskInstanceId = async (taskInstanceId: number): Promise<FunctionInstance[]> => {
+    const response = await API.get(`/api/function-instances/task-instance/${taskInstanceId}`);
     console.log(response);
     return response.data;
 }
@@ -33,7 +41,7 @@ export const updateFunction = async (fn: FunctionInstance, userId: number): Prom
 }
 
 export const uploadFiles = async (fn: FunctionInstance, files: File[]): Promise<boolean> => {
-    console.log("uploading fn files")
+    console.log("uploading fn files:", files)
     if (!files) {
         throw Error("Unable to upload file(s)");
     }

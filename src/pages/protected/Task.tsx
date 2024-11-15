@@ -3,7 +3,12 @@ import { selectRefetch } from "@/app/slices/refetchSlice";
 import AddFunction from "@/components/task/AddFunction";
 import FunctionsList from "@/components/task/FunctionsList";
 import TaskDetails from "@/components/task/TaskDetails";
+import TaskInstance from "@/lib/task";
 import TaskLib from "@/lib/task";
+import {
+  fetchFunctionById,
+  fetchFunctionByTaskInstanceId,
+} from "@/services/function-apis";
 import { fetchTaskById } from "@/services/task-apis";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +38,15 @@ export default function Task() {
       const response = await fetchTaskById(Number(taskId));
       console.log("task: ", response);
       setTask(response);
+      try {
+        const resFn = await fetchFunctionByTaskInstanceId(Number(taskId));
+        console.log("resFn:", resFn);
+        setTask(
+          (prev) => ({ ...prev, functionInstances: resFn }) as TaskInstance
+        );
+      } catch (error) {
+        console.log("Unable to fetch the fn!", error);
+      }
     } catch (error) {
       console.log(error);
     } finally {

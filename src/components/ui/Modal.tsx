@@ -22,7 +22,7 @@ const Modal = ({
   heading = "Modal heading",
   centered = false,
   backdrop = false,
-  size = "sm",
+  size = "lg",
 }: ModalProps) => {
   return (
     <RBS_Modal

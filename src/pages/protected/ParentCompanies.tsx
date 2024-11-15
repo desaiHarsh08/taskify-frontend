@@ -89,6 +89,7 @@ export default function ParentCompanies() {
     e.preventDefault();
     dispatch(toggleLoading());
     try {
+        console.log(newParentCompany)
       const response = await createParentCompany(newParentCompany);
       console.log(response);
       dispatch(toggleRefetch());

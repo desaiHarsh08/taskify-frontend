@@ -5,6 +5,7 @@ import {
 } from "@/lib/task-template";
 import { fetchColumnTemplateById } from "@/services/column-template-apis";
 import { useEffect, useState } from "react";
+import RTE from "../global/RTE";
 
 type ColFieldProps = {
   newFunction: FunctionInstance;
@@ -35,46 +36,75 @@ export default function ColField({
     if (columnTemplate) {
       const tmpNewFn = { ...newFunction };
       for (let i = 0; i < tmpNewFn.fieldInstances.length; i++) {
-        for (let j = 0; j < tmpNewFn.fieldInstances[i].columnInstances.length; j++) {
-
-            if (columnTemplate.columnVariantTemplates) {
-              if (tmpNewFn.fieldInstances[i].columnInstances[j].columnVariantInstances) {
-                
-                for (let k = 0; k < columnTemplate.columnVariantTemplates?.length; k++) {
-                    const {nextFollowUpColumnTemplates} = columnTemplate.columnVariantTemplates[k];
-                    console.log("columnTemplate:", columnTemplate);
-                    console.log("tmpNewFn.fieldInstances[i].columnInstances[j]:", tmpNewFn.fieldInstances[i].columnInstances[j]);
-                    if (nextFollowUpColumnTemplates) {
-                        for (let m = 0; m < nextFollowUpColumnTemplates?.length; m++) {
-                            console.log("before if of next cols", nextFollowUpColumnTemplates[m].nextFollowUpColumnTemplateId)
-                            console.log("before if of coltemplate cols", columnTemplate.id)
-                            if (nextFollowUpColumnTemplates[m].nextFollowUpColumnTemplateId === columnTemplate.id) {
-                                const rowTableInstance: RowTableInstance = {
-                                    columnInstanceId: tmpNewFn.fieldInstances[i].columnInstances[
-                                        j
-                                    ].id as number,
-                                    colTableInstances: [],
-                                    };
-                                console.log("adding cols")
-                                // const { name, targetedValue, valueType, id } = columnTemplate.columnVariantTemplates[k];
-                                for(let n = 0; n < columnTemplate.columnVariantTemplates.length; n++) {
-                                    rowTableInstance.colTableInstances?.push({
-                                      booleanValue: false,
-                                      dateValue: new Date(),
-                                      textValue: "",
-                                      columnInstanceId: tmpNewFn.fieldInstances[i]
-                                        .columnInstances[j].id as number,
-                                    });
-                                    tmpNewFn.fieldInstances[i].columnInstances[j].rowTableInstances.push();
-                                }
-
-                            }
-                        }
+        for (
+          let j = 0;
+          j < tmpNewFn.fieldInstances[i].columnInstances.length;
+          j++
+        ) {
+          if (columnTemplate.columnVariantTemplates) {
+            if (
+              tmpNewFn.fieldInstances[i].columnInstances[j]
+                .columnVariantInstances
+            ) {
+              for (
+                let k = 0;
+                k < columnTemplate.columnVariantTemplates?.length;
+                k++
+              ) {
+                const { nextFollowUpColumnTemplates } =
+                  columnTemplate.columnVariantTemplates[k];
+                console.log("columnTemplate:", columnTemplate);
+                console.log(
+                  "tmpNewFn.fieldInstances[i].columnInstances[j]:",
+                  tmpNewFn.fieldInstances[i].columnInstances[j]
+                );
+                if (nextFollowUpColumnTemplates) {
+                  for (
+                    let m = 0;
+                    m < nextFollowUpColumnTemplates?.length;
+                    m++
+                  ) {
+                    console.log(
+                      "before if of next cols",
+                      nextFollowUpColumnTemplates[m]
+                        .nextFollowUpColumnTemplateId
+                    );
+                    console.log(
+                      "before if of coltemplate cols",
+                      columnTemplate.id
+                    );
+                    if (
+                      nextFollowUpColumnTemplates[m]
+                        .nextFollowUpColumnTemplateId === columnTemplate.id
+                    ) {
+                      const rowTableInstance: RowTableInstance = {
+                        columnInstanceId: tmpNewFn.fieldInstances[i]
+                          .columnInstances[j].id as number,
+                        colTableInstances: [],
+                      };
+                      console.log("adding cols");
+                      // const { name, targetedValue, valueType, id } = columnTemplate.columnVariantTemplates[k];
+                      for (
+                        let n = 0;
+                        n < columnTemplate.columnVariantTemplates.length;
+                        n++
+                      ) {
+                        rowTableInstance.colTableInstances?.push({
+                          booleanValue: false,
+                          dateValue: new Date(),
+                          textValue: "",
+                          columnInstanceId: tmpNewFn.fieldInstances[i]
+                            .columnInstances[j].id as number,
+                        });
+                        tmpNewFn.fieldInstances[i].columnInstances[
+                          j
+                        ].rowTableInstances.push();
+                      }
                     }
+                  }
                 }
-
-                
               }
+            }
             // }
           }
         }
@@ -280,47 +310,10 @@ export default function ColField({
 
       {columnTemplate?.columnMetadataTemplate.type === "TABLE" && (
         <div className="mb-3">
-          <table className="table table-bordered border table-striped">
-            <thead>
-              {columnTemplate.columnVariantTemplates?.map(
-                (colVariantTemplate, index) => (
-                  <th className="border">{colVariantTemplate.name}</th>
-                )
-              )}
-            </thead>
-            <tbody>
-              {newFunction.fieldInstances[
-                fieldTemplateIndex
-              ].columnInstances.map((colInstance, colInstanceIndex) => {
-                if (colInstance.columnTemplateId === columnTemplate.id) {
-                  console.log('here in map')
-                  return colInstance.rowTableInstances.map((rowTableInstance, rowTableIndex) => (
-                    <div key={`row-${rowTableIndex}`} >
-                      {rowTableInstance.colTableInstances?.map((colTableInstance, colTableIndex) => (
-                        <div>
-                            <input
-                                type="text"
-                                className="form-control"
-                                //   value={
-                                //     // newFunction.fieldInstances[fieldTemplateIndex].columnInstances[
-                                //     //   columnTemplateIndex
-                                //     // ]?.numberValue as number
-                                //   }
-                                value={getValue() as number}
-                                onChange={(e) => handleChange(e.target.value, columnTemplate)}
-                            />
-                        </div>
-
-                      ))}
-                    </div>
-                  ))
-                } else {
-                  // Return null if the condition is not met (i.e., skip rendering)
-                  return null;
-                }
-              })}
-            </tbody>
-          </table>
+          <RTE
+            defaultValue={getValue() as string}
+            onChange={(newContent) => handleChange(newContent, columnTemplate)}
+          />
         </div>
       )}
     </div>

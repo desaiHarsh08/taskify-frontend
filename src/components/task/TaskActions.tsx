@@ -5,18 +5,18 @@ import Task from "@/lib/task";
 import EditTaskForm from "./EditTaskForm";
 import DeleteTaskForm from "./DeleteTaskForm";
 import CloseTask from "./CloseTask";
-import TaskPrototype from "@/lib/task-template";
+import TaskTemplate from "@/lib/task-template";
 
 type TaskActionsProps = {
   task: Task;
   setTask: React.Dispatch<React.SetStateAction<Task>>;
-  taskPrototype: TaskPrototype;
+  taskTemplate: TaskTemplate;
 };
 
 export default function TaskActions({
   task,
   setTask,
-  taskPrototype,
+  taskTemplate,
 }: TaskActionsProps) {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -24,7 +24,7 @@ export default function TaskActions({
   const [isFnRemaining, setIsFnRemaining] = useState(false);
 
   useEffect(() => {
-    setIsFnRemaining(task.functions?.some((fn) => !fn.isClosed) as boolean);
+    setIsFnRemaining(task.functionInstances?.some((fn) => !fn.closedAt) as boolean);
   }, [task]);
 
   return (
@@ -39,7 +39,7 @@ export default function TaskActions({
       <Modal
         open={openEditModal}
         onHide={() => setOpenEditModal(false)}
-        heading={`Edit: Task (#${task.taskAbbreviation})`}
+        heading={`Edit: Task (#${task.abbreviation})`}
         backdrop
         centered
         size="lg"
@@ -47,7 +47,7 @@ export default function TaskActions({
         <EditTaskForm
           task={task}
           setTask={setTask}
-          taskPrototype={taskPrototype}
+          taskTemplate={taskTemplate}
         />
       </Modal>
       {/* <Button
@@ -63,7 +63,7 @@ export default function TaskActions({
         backdrop
         centered
         size="lg"
-        heading={`Delete: Task (#${task.taskAbbreviation})`}
+        heading={`Delete: Task (#${task.abbreviation})`}
       >
         <DeleteTaskForm task={task} />
       </Modal>
@@ -81,7 +81,7 @@ export default function TaskActions({
         backdrop
         centered
         size="lg"
-        heading={`Done: Task (#${task.taskAbbreviation})`}
+        heading={`Done: Task (#${task.abbreviation})`}
       >
         <CloseTask task={task} setTask={setTask} />
       </Modal>

@@ -78,15 +78,15 @@ export default function AddCustomer() {
         <div className="w-75 d-flex justify-content-center overflow-y-auto h-100">
           <div className="w-100">
             <div className="mb-3 w-100">
-              <label htmlFor="customerName" className="form-label">
+              <label htmlFor="name" className="form-label">
                 Customer Name
                 <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="customerName"
-                name="customerName"
+                id="name"
+                name="name"
                 onChange={handleChange}
                 value={customerDetails.name}
                 required

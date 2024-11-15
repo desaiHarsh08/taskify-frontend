@@ -33,26 +33,25 @@ export default function EditColumn({
         const newCol = { ...col };
         if (columnTemplate.columnMetadataTemplate.type === "BOOLEAN") {
           newCol.booleanValue = value as boolean;
-        } 
-        else if (columnTemplate.columnMetadataTemplate.type === "DATE") {
+        } else if (columnTemplate.columnMetadataTemplate.type === "DATE") {
           console.log("to set date:", value);
           newCol.dateValue = dateFormat(value as string);
-        } 
-        else if (columnTemplate.columnMetadataTemplate.type === "TEXT" || 
-            columnTemplate.columnMetadataTemplate.type === "LARGE_TEXT" || 
-            columnTemplate.columnMetadataTemplate.type === "PHONE" || 
-            columnTemplate.columnMetadataTemplate.type === "EMAIL"
+        } else if (
+          columnTemplate.columnMetadataTemplate.type === "TEXT" ||
+          columnTemplate.columnMetadataTemplate.type === "LARGE_TEXT" ||
+          columnTemplate.columnMetadataTemplate.type === "PHONE" ||
+          columnTemplate.columnMetadataTemplate.type === "EMAIL" ||
+          columnTemplate.columnMetadataTemplate.type === "TABLE"
         ) {
           newCol.textValue = value as string;
-        } 
-        else if (columnTemplate.columnMetadataTemplate.type === "FILE") {
+        } else if (columnTemplate.columnMetadataTemplate.type === "FILE") {
           newCol.multipartFiles = value as File[];
-        } 
-        else if (columnTemplate.columnMetadataTemplate.type === "DROPDOWN") {
+        } else if (columnTemplate.columnMetadataTemplate.type === "DROPDOWN") {
           console.log("in dropdown:", value);
-          newCol.dropdownTemplateId = value as number;
-        } 
-        else {
+          console.log("columnTemplate:", columnTemplate);
+          newCol.dropdownTemplateId = Number(value);
+          console.log("newCol.dropdownTemplateId:", newCol.dropdownTemplateId);
+        } else {
           newCol.numberValue = value as number;
         }
 
@@ -87,7 +86,8 @@ export default function EditColumn({
       try {
         const response = await updateColumn(tmpField.columnInstances[i]);
         console.log(response);
-        if (tmpField.columnInstances[i].multipartFiles) {
+        const { multipartFiles } = tmpField.columnInstances[i];
+        if (multipartFiles && multipartFiles.length > 0) {
           const resUpload = await uploadFiles(
             response,
             tmpField.columnInstances[i].multipartFiles as File[]
@@ -106,13 +106,15 @@ export default function EditColumn({
   return (
     <div className="d-flex justify-content-between flex-column">
       <div style={{ height: "400px", overflowY: "auto" }}>
-        {tmpField && tmpField.columnInstances && tmpField.columnInstances.map((column, columnIndex) => (
-          <ColumnCard
-            key={`column-${columnIndex}`}
-            column={column}
-            onColumnChange={handleChangeColumn}
-          />
-        ))}
+        {tmpField &&
+          tmpField.columnInstances &&
+          tmpField.columnInstances.map((column, columnIndex) => (
+            <ColumnCard
+              key={`column-${columnIndex}`}
+              column={column}
+              onColumnChange={handleChangeColumn}
+            />
+          ))}
       </div>
       <div className="d-flex justify-content-end mt-4 border-top pt-2">
         <Button

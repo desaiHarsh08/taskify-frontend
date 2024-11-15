@@ -36,7 +36,6 @@ const columns = [
 
 export default function TFunction() {
   const { user } = useAuth();
-  console.log(user);
   const dispatch = useDispatch();
   const { functionId } = useParams();
 
@@ -50,6 +49,7 @@ export default function TFunction() {
   const [showToast, setShowToast] = useState(false);
   const [openDoneFn, setOpenDoneFn] = useState(false);
   const [showMessage] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
     console.log("refetchFlag:", refetchFlag);
@@ -107,16 +107,24 @@ export default function TFunction() {
     }
     dispatch(toggleLoading());
     try {
-      const resUpdateFn = await updateFunction(fn as FunctionInstance, user.id as number);
-      console.log("updated fn fields");
+      const { multipartFiles, ...tmpFn } = fn as FunctionInstance;
+      console.log(fn);
+      console.log(multipartFiles);
+      console.log("updating fn:", tmpFn);
+      const resUpdateFn = await updateFunction(
+        fn as FunctionInstance,
+        user.id as number
+      );
+      console.log("updated fn fields, resUpdateFn:", resUpdateFn);
       try {
-        await uploadFiles(resUpdateFn, fn?.multipartFiles as File[]);
+        console.log("files:", files);
+        await uploadFiles(resUpdateFn, files as File[]);
         console.log("uploaded files");
       } catch (error) {
-        console.log("unable to upload files");
+        console.log("unable to upload files", error);
       }
     } catch (error) {
-      console.log("unable to update fields");
+      console.log("unable to update fn", error);
     } finally {
       dispatch(toggleRefetch());
       dispatch(toggleLoading());
@@ -127,7 +135,11 @@ export default function TFunction() {
     console.log(user);
     dispatch(toggleLoading());
     try {
-      await doCloseFunction(fn as FunctionInstance, fn?.id as number, user?.id as number);
+      await doCloseFunction(
+        fn as FunctionInstance,
+        fn?.id as number,
+        user?.id as number
+      );
     } catch (error) {
       console.log(error);
     } finally {
@@ -422,7 +434,8 @@ export default function TFunction() {
               value={fn?.remarks}
               onChange={(e) =>
                 setFn(
-                  (prev) => ({ ...prev, remarks: e.target.value }) as FunctionInstance
+                  (prev) =>
+                    ({ ...prev, remarks: e.target.value }) as FunctionInstance
                 )
               }
             ></textarea>
@@ -434,14 +447,19 @@ export default function TFunction() {
             <input
               type="file"
               name="multipartFiles"
-              id="multipartFiles"
               className="form-control"
-              onChange={(e) =>
-                setFn(
-                  (prev) =>
-                    ({ ...prev, multipartFiles: e.target.files }) as FunctionInstance
-                )
-              }
+              onChange={(e) => {
+                const files = e.target.files ? Array.from(e.target.files) : []; // Convert FileList to File[]
+                // setFn(
+                //   (prev) =>
+                //     ({
+                //       ...prev,
+                //       multipartFiles: files,
+                //     }) as FunctionInstance
+                // );
+                setFiles(files);
+                console.log(fn?.multipartFiles, files);
+              }}
             />
           </div>
           <Button variant="danger" type="button" onClick={updateFn}>

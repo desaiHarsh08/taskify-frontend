@@ -17,6 +17,8 @@ export default function EditCustomerForm({
 }: EditCustomerFormProps) {
   const dispatch = useDispatch();
 
+  console.log("customer:", customer);
+
   const [tmpCustomer, setTmpCustomer] = useState({ ...customer });
 
   const handleCustomerChange = (
@@ -40,14 +42,14 @@ export default function EditCustomerForm({
   const handleEditCustomer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const customerEdt = { ...tmpCustomer };
-    if (!customerEdt.birthDate?.toString().includes("T00:00:00")) {
-      customerEdt.birthDate = customerEdt.birthDate + "T00:00:00";
-    }
+    // Format birthDate and anniversaryDate as 'yyyy-MM-ddTHH:mm:ss'
+    customerEdt.birthDate = customerEdt.birthDate 
+        ? new Date(customerEdt.birthDate).toISOString().split('.')[0]
+        : undefined;
 
-    if (!customerEdt.anniversaryDate?.toString().includes("T00:00:00")) {
-      customerEdt.anniversaryDate = customerEdt.anniversaryDate + "T00:00:00";
-    }
-
+    customerEdt.anniversaryDate = customerEdt.anniversaryDate 
+        ? new Date(customerEdt.anniversaryDate).toISOString().split('.')[0]
+        : undefined;
 
     dispatch(toggleLoading());
     try {
@@ -66,19 +68,19 @@ export default function EditCustomerForm({
     <form onSubmit={handleEditCustomer}>
       <div style={{ height: "400px", overflow: "auto" }}>
         <div className="mb-3">
-          <label htmlFor="customerName" className="form-label">
+          <label htmlFor="name" className="form-label">
             Customer Name
           </label>
           <input
             type="text"
             className="form-control"
-            name="customerName"
+            name="name"
             value={tmpCustomer.name}
             onChange={handleCustomerChange}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="customerName" className="form-label">
+          <label htmlFor="email" className="form-label">
             Email
           </label>
           <input
@@ -174,13 +176,13 @@ export default function EditCustomerForm({
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="anniversary" className="form-label">
+          <label htmlFor="anniversaryDate" className="form-label">
             Anniversary
           </label>
           <input
             type="date"
             className="form-control"
-            name="anniversary"
+            name="anniversaryDate"
             value={dateFormat(tmpCustomer.anniversaryDate as string)}
             onChange={handleCustomerChange}
           />

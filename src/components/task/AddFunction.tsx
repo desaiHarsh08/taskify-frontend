@@ -15,8 +15,12 @@ import InputFunctionDetails from "./InputFunctionDetails";
 import { fetchTaskTemplateById } from "@/services/task-template-apis";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchTaskById, updateTask } from "@/services/task-apis";
-import { createFunction, doCloseFunction } from "@/services/function-apis";
-import { useDispatch } from "react-redux";
+import {
+  createFunction,
+  doCloseFunction,
+  fetchFunctionByTaskInstanceId,
+} from "@/services/function-apis";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 
 import { uploadFiles } from "@/services/column-apis";
@@ -25,6 +29,7 @@ import { toggleRefetch } from "@/app/slices/refetchSlice";
 import DepartmentType from "@/lib/department-type";
 import SelectDepartment from "../taskboard/SelectDepartment";
 import { closeField } from "@/services/field-apis";
+import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 
 type AddFunctionProps = {
   task: Task;
@@ -36,6 +41,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
   const { user } = useAuth();
 
   const dispatch = useDispatch();
+  const taskTemplates = useSelector(selectTaskTemplates);
 
   const [selectDepartment, setselectDepartment] =
     useState<DepartmentType>("QUOTATION");
@@ -56,19 +62,24 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
   });
 
   useEffect(() => {
-    (async () => {
-      const response = await fetchTaskTemplateById(Number(task.taskTemplateId));
+    // (async () => {
+    //   const response = await fetchTaskTemplateById(Number(task.taskTemplateId));
 
-      console.log("response for task-prototype:", response);
+    //   console.log("response for task-prototype:", response);
 
+    const tmpTaskTemplate = taskTemplates.find(
+      (t) => t.id == task.taskTemplateId
+    );
+    if (tmpTaskTemplate) {
       // Set the task_prototype
-      setTaskTemplate(response);
+      setTaskTemplate(tmpTaskTemplate);
 
-      handleFunctionDefaultSet(response.functionTemplates[0]);
+      handleFunctionDefaultSet(tmpTaskTemplate.functionTemplates[0]);
 
-      setSelectedFunctionTemplate(response.functionTemplates[0]);
-    })();
-  }, [task.id, user?.id]);
+      setSelectedFunctionTemplate(tmpTaskTemplate.functionTemplates[0]);
+    }
+    // })();
+  }, [task.id, user?.id, taskTemplates]);
 
   const handleFunctionDefaultSet = (fnTemplate: FunctionTemplate) => {
     console.log("fnTemplate: ", fnTemplate);
@@ -259,6 +270,12 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     } catch (error) {
       console.log(error);
     }
+
+    try {
+      const resFn = await fetchFunctionByTaskInstanceId(task.id as number);
+      console.log("resFn:", resFn);
+      setTask((prev) => ({ ...prev, functionInstances: resFn }));
+    } catch (error) {}
   };
 
   const handleAddAndCloseFunction = async () => {
@@ -267,8 +284,10 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     }
     console.log("newFunction: ", newFunction);
     // Destructure all keys except 'multipartFiles'
-  const { multipartFiles, ...tmpNewFn }: FunctionInstance = { ...newFunction }
-    
+    const { multipartFiles, ...tmpNewFn }: FunctionInstance = {
+      ...newFunction,
+    };
+
     console.log("tmpNewFn:", tmpNewFn);
     const tmpDueDate = new Date(tmpNewFn.dueDate);
     const formattedDueDate = `${tmpDueDate.getFullYear()}-${(tmpDueDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDueDate.getDate().toString().padStart(2, "0")}`;
@@ -494,7 +513,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
               </span>
             </p>
           }
-          size="lg"
+          size="xl"
         >
           <InputFunctionDetails
             selectedFunctionTemplate={selectedFunctionTemplate}

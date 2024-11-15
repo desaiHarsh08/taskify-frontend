@@ -22,6 +22,7 @@ export default function CustomerInfo({ task }: CustomerInfoProps) {
     (async () => {
       try {
         const response = await fetchCustomerById(task.customerId);
+        console.log("fethed customer: ", response);
         if (response.birthDate == null) {
           response.birthDate = dateFormat(null);
         }

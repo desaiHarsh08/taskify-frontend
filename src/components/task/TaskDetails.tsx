@@ -4,7 +4,7 @@ import CustomerInfo from "./CustomerInfo";
 import TaskActions from "./TaskActions";
 import Task from "@/lib/task";
 import { useEffect, useState } from "react";
-import TaskPrototype from "@/lib/task-template";
+import TaskTemplate from "@/lib/task-template";
 import { fetchTaskTemplateById } from "@/services/task-template-apis";
 import { fetchUserById } from "@/services/auth-apis";
 import User from "@/lib/user";
@@ -19,7 +19,7 @@ type TaskDetailsProps = {
 export default function TaskDetails({ task, setTask }: TaskDetailsProps) {
   const refetchFlag = useSelector(selectRefetch);
 
-  const [taskPrototype, setTaskPrototype] = useState<TaskPrototype | null>(
+  const [taskTemplate, settaskTemplate] = useState<TaskTemplate | null>(
     null
   );
   const [createdByUser, setCreatedByUser] = useState<User | null>(null);
@@ -32,7 +32,7 @@ export default function TaskDetails({ task, setTask }: TaskDetailsProps) {
           task.taskTemplateId as number
         );
         console.log(response);
-        setTaskPrototype(response);
+        settaskTemplate(response);
       } catch (error) {
         console.log(error);
       }
@@ -67,7 +67,7 @@ export default function TaskDetails({ task, setTask }: TaskDetailsProps) {
         >
           <li className="d-flex gap-2">
             <p style={{ width: "149px" }}>Type:</p>
-            <p>{taskPrototype?.title}</p>
+            <p>{taskTemplate?.title}</p>
           </li>
           <li className="d-flex gap-2">
             <p style={{ width: "149px" }}>Priority:</p>
@@ -111,7 +111,7 @@ export default function TaskDetails({ task, setTask }: TaskDetailsProps) {
             <p style={{ width: "149px" }}>Pump Type:</p>
             <p>{task.pumpType}</p>
           </li>
-          {taskPrototype?.title !== "SERVICE_TASK" ? (
+          {taskTemplate?.title !== "SERVICE_TASK" ? (
             <>
               <li className="d-flex gap-2">
                 <p style={{ width: "149px" }}>Pump Manufacturer:</p>
@@ -137,11 +137,11 @@ export default function TaskDetails({ task, setTask }: TaskDetailsProps) {
           className="mb-3"
         >
           <Tab eventKey="actions" title="Actions">
-            {taskPrototype && !task.closedAt && (
+            {taskTemplate && !task.closedAt && (
               <TaskActions
                 task={task}
                 setTask={setTask as React.Dispatch<React.SetStateAction<Task>>}
-                taskPrototype={taskPrototype}
+                taskTemplate={taskTemplate}
               />
             )}
           </Tab>

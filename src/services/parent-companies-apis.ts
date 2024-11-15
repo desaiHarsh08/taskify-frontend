@@ -8,8 +8,8 @@ export const fetchParentCompanies = async (page: number): Promise<PageResponse<P
     return response.data;
 }
 
-export const fetchParentCompaniesList = async (): Promise<ParentCompany[]> => {
-    const response = await API.get(`/api/parent-companies/list`);
+export const fetchParentCompaniesList = async (): Promise<PageResponse<ParentCompany>> => {
+    const response = await API.get(`/api/parent-companies`);
     console.log(response)
     return response.data;
 }

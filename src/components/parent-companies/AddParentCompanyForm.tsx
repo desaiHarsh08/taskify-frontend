@@ -19,13 +19,13 @@ export default function AddParentCompanyForm({
     <form onSubmit={onSubmit}>
       <div style={{ height: "400px" }} className="d-flex, overflow-y-auto">
         <div className="mb-3">
-          <label htmlFor="companyName" className="form-label">
+          <label htmlFor="name" className="form-label">
             Company Name
           </label>
           <input
             type="text"
             className="form-control"
-            name="companyName"
+            name="name"
             onChange={onNewParentCompanyChange}
             value={newParentCompany.name}
           />

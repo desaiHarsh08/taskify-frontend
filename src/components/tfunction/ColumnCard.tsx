@@ -3,6 +3,7 @@ import { ColumnTemplate } from "@/lib/task-template";
 import { fetchColumnTemplateById } from "@/services/column-template-apis";
 import { useEffect, useState } from "react";
 import { fetchFile } from "@/services/column-apis";
+import RTE from "../global/RTE";
 
 type ColumnCardProps = {
   column: ColumnInstance;
@@ -146,6 +147,23 @@ export default function ColumnCard({
               value={column.textValue as string}
               onChange={(e) => onColumnChange(columnTemplate, e.target.value)}
             ></textarea>
+
+            // <RTE
+            //       defaultValue={column.textValue as string}
+            //       onChange={(newContent) => {
+            //         console.log("newContent:", newContent);
+            //         onColumnChange(columnTemplate, newContent);
+            //       }}
+            //       />
+          )}
+          {columnTemplate.columnMetadataTemplate.type === "TABLE" && (
+            <RTE
+              defaultValue={column.textValue as string}
+              onChange={(newContent) => {
+                console.log("newContent:", newContent);
+                onColumnChange(columnTemplate, newContent);
+              }}
+            />
           )}
 
           {(columnTemplate.columnMetadataTemplate.type === "TEXT" ||
@@ -173,16 +191,12 @@ export default function ColumnCard({
           {columnTemplate.columnMetadataTemplate.type === "DROPDOWN" && (
             <select
               className="form-select"
-              value={
-                columnTemplate.dropdownTemplates?.find(
-                  (c) => c.id == column.dropdownTemplateId
-                )?.value
-              }
+              value={column.dropdownTemplateId as number}
               onChange={(e) => onColumnChange(columnTemplate, e.target.value)}
             >
               {columnTemplate.dropdownTemplates &&
                 columnTemplate.dropdownTemplates.map((dropdownTemplate) => (
-                  <option value={dropdownTemplate.value}>
+                  <option value={dropdownTemplate.id as number}>
                     {dropdownTemplate.value}
                   </option>
                 ))}

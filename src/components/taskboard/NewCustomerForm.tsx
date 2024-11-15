@@ -32,8 +32,8 @@ export default function NewCustomerForm({
     (async () => {
       try {
         const response = await fetchParentCompaniesList();
-        console.log(response);
-        setParentCompanies(response);
+        console.log(response.content);
+        setParentCompanies(response.content);
       } catch (error) {
         console.log(error);
       }
@@ -188,14 +188,14 @@ export default function NewCustomerForm({
                     e.target.value === "NONE" ? null : Number(e.target.value),
                 }))
               }
-              value={customerDetails.parentCompanyId === null ? "NONE" : customerDetails.parentCompanyId}
+              value={customerDetails.parentCompanyId as number}
               className="form-select"
               aria-label="Default select example"
             >
               {parentCompanies?.map((pc) => (
                 <option value={pc.id}>{pc.name}</option>
               ))}
-              <option value={"NONE"}>NONE</option>
+              {/* <option value={"NONE"}>NONE</option> */}
             </select>
           </div>
         </div>

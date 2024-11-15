@@ -58,7 +58,7 @@ export default function FunctionCard({ fn, fnIndex }: FunctionCardProps) {
         {getFormattedDate(fn.dueDate as Date)}
       </p>
       <p className="border-end py-2 px-1" style={{ width: "15.5%" }}>
-        {lastEdited && getFormattedDate(lastEdited)}
+        {getFormattedDate(fn.updatedAt as Date)}
       </p>
       <p className="py-2 px-1" style={{ width: "15.5%" }}>
         {fn.closedAt && fn.closedAt ? getFormattedDate(fn.closedAt) : "-"}

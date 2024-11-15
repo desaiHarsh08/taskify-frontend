@@ -7,6 +7,7 @@ import {
 } from "@/lib/task-template";
 import { useSelector } from "react-redux";
 import ColField from "./ColField";
+import RTE from "../global/RTE";
 
 type FieldCardProps = {
   setNewFunction: React.Dispatch<React.SetStateAction<FunctionInstance | null>>;
@@ -137,6 +138,31 @@ export default function FieldCard({
                     onFieldChange(fieldTemplate, columnTemplate, e.target.value)
                   }
                 ></textarea>
+                // <RTE
+                //   defaultValue={
+                //     (newFunction.fieldInstances[fieldTemplateIndex]
+                //       .columnInstances[columnTemplateIndex]
+                //       ?.textValue as string) || ""
+                //   }
+                //   onChange={(newContent) => {
+                //     console.log("newContent:", newContent);
+                //     onFieldChange(fieldTemplate, columnTemplate, newContent);
+                //   }}
+                // />
+              )}
+
+{columnTemplate.columnMetadataTemplate.type === "TABLE" && (
+                <RTE
+                  defaultValue={
+                    (newFunction.fieldInstances[fieldTemplateIndex]
+                      .columnInstances[columnTemplateIndex]
+                      ?.textValue as string) || ""
+                  }
+                  onChange={(newContent) => {
+                    console.log("newContent:", newContent);
+                    onFieldChange(fieldTemplate, columnTemplate, newContent);
+                  }}
+                />
               )}
 
               {columnTemplate.columnMetadataTemplate.type === "DROPDOWN" &&

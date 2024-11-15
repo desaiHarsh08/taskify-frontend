@@ -75,7 +75,7 @@ export interface FunctionInstance {
     fieldInstances: FieldInstance[];
     remarks?: string;
     filePaths?: string[];
-    multipartFiles?: File[] | null,
+    multipartFiles?: File[],
 }
 
 

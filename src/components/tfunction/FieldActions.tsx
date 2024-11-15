@@ -75,7 +75,7 @@ export default function FieldActions({
         onHide={() => setOpenEditModal(false)}
         backdrop
         centered
-        size="lg"
+        size="xl"
         heading={
           <div className="d-flex align-items-center gap-2">
             <p>Edit</p>

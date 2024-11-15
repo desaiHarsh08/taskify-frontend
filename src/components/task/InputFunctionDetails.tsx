@@ -64,11 +64,10 @@ export default function InputFunctionDetails({
         return {
           ...prev,
           functionTemplateId: prev?.functionTemplateId,
-          taskId: prev?.taskInstanceId ?? 0,
-          department: prev?.department ?? "ACCOUNTS",
+          taskInstanceId: prev?.taskInstanceId ?? 0,
           [e.target.name]: e.target.value,
           createdByUserId: prev?.createdByUserId ?? 0,
-          fields: [...prev.fieldInstances],
+          fieldInstances: [...prev.fieldInstances],
         };
       } else {
         return newFunction;
@@ -383,7 +382,8 @@ export default function InputFunctionDetails({
                       rowTableInstances: [],
                       columnVariantInstances: [],
                       fieldInstanceId,
-                      createdByUserId: user?.id,
+                      dropdownTemplateId:
+                        columnTemplates[l]?.dropdownTemplates?.[0]?.id ?? null,
                     };
                     if (columnTemplates[l].dropdownTemplates) {
                       const { dropdownTemplates } = columnTemplates[l];
@@ -431,9 +431,9 @@ export default function InputFunctionDetails({
   return (
     <div
       className="d-flex flex-column justify-content-between"
-      style={{ height: "400px" }}
+      style={{ height: "700px" }}
     >
-      <div className="overflow-y-auto" style={{ height: "350px" }}>
+      <div className="overflow-y-auto" style={{ height: "650px" }}>
         <div className="">
           <h5>Description</h5>
           <p>{selectedFunctionTemplate?.description}</p>
