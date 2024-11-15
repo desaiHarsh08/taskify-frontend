@@ -6,7 +6,6 @@ import TaskDetails from "@/components/task/TaskDetails";
 import TaskInstance from "@/lib/task";
 import TaskLib from "@/lib/task";
 import {
-  fetchFunctionById,
   fetchFunctionByTaskInstanceId,
 } from "@/services/function-apis";
 import { fetchTaskById } from "@/services/task-apis";

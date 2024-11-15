@@ -34,7 +34,7 @@ export default function AddCustomer() {
       try {
         const response = await fetchParentCompaniesList();
         console.log(response);
-        setParentCompanies(response);
+        setParentCompanies(response.content);
       } catch (error) {
         console.log(error);
       }

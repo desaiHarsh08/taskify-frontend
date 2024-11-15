@@ -9,10 +9,8 @@ import {
 import Button from "../ui/Button";
 import FieldCard from "./FieldCard";
 import React, { useEffect, useState } from "react";
-import { fetchColumnTemplateById } from "@/services/column-template-apis";
 import { useSelector } from "react-redux";
 import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
-import { useAuth } from "@/hooks/useAuth";
 
 type InputFunctionDetailsProps = {
   newFunction: FunctionInstance;
@@ -41,7 +39,6 @@ export default function InputFunctionDetails({
   const taskTemplates = useSelector(selectTaskTemplates);
   console.log("in InputFunctionDetails, taskTemplates:", taskTemplates);
 
-  const { user } = useAuth();
   const [selectedFieldTemplate, setSelectedFieldTemplate] =
     useState<FieldTemplate | null>(null);
 

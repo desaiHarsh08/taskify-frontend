@@ -1,4 +1,4 @@
-import DepartmentType from "./department-type";
+
 import PriorityType from "./priority-type";
 
 export interface ColTableInstance {

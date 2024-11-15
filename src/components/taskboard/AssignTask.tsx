@@ -1,4 +1,4 @@
-import User, { Role } from "@/lib/user";
+import User from "@/lib/user";
 import Button from "../ui/Button";
 import AssignUserTaskCard from "./AssignUserTaskCard";
 import React, { useEffect, useState } from "react";

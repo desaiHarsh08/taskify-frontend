@@ -12,7 +12,6 @@ import Task, {
   FunctionInstance,
 } from "@/lib/task";
 import InputFunctionDetails from "./InputFunctionDetails";
-import { fetchTaskTemplateById } from "@/services/task-template-apis";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchTaskById, updateTask } from "@/services/task-apis";
 import {

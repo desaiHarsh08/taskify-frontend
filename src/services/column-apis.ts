@@ -1,4 +1,5 @@
-import { Column } from "@/lib/task";
+
+import { ColumnInstance as Column } from "@/lib/task";
 import { API } from "@/utils/api";
 
 export const updateColumn = async (column: Column): Promise<Column> => {

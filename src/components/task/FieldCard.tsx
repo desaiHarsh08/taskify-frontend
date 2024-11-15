@@ -1,11 +1,9 @@
-import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 import { FunctionInstance } from "@/lib/task";
 import {
   ColumnTemplate,
   ColumnVariantTemplate,
   FieldTemplate,
 } from "@/lib/task-template";
-import { useSelector } from "react-redux";
 import ColField from "./ColField";
 import RTE from "../global/RTE";
 
@@ -36,8 +34,6 @@ export default function FieldCard({
   setNewFunction,
   onFieldChange,
 }: FieldCardProps) {
-  const taskTemplates = useSelector(selectTaskTemplates);
-
   const dateFormat = (date: Date | string | null) => {
     let d = new Date();
     if (date) {
@@ -47,24 +43,24 @@ export default function FieldCard({
     return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
   };
 
-  const getColumnTemplateById = (nextFollowUpColTemplateId: number) => {
-    console.log("in fn, nextFollowUpColTemplateId:", nextFollowUpColTemplateId);
-    for (let i = 0; i < taskTemplates.length; i++) {
-      const { functionTemplates } = taskTemplates[i];
-      for (let j = 0; j < functionTemplates.length; j++) {
-        const { fieldTemplates } = functionTemplates[j];
-        for (let k = 0; k < fieldTemplates.length; k++) {
-          const { columnTemplates } = fieldTemplates[k];
-          for (let l = 0; l < columnTemplates.length; l++) {
-            console.log("in loop, columnTemplateId:", columnTemplates[l].id);
-            if (columnTemplates[l].id == nextFollowUpColTemplateId) {
-              return columnTemplates[l];
-            }
-          }
-        }
-      }
-    }
-  };
+  //   const getColumnTemplateById = (nextFollowUpColTemplateId: number) => {
+  //     console.log("in fn, nextFollowUpColTemplateId:", nextFollowUpColTemplateId);
+  //     for (let i = 0; i < taskTemplates.length; i++) {
+  //       const { functionTemplates } = taskTemplates[i];
+  //       for (let j = 0; j < functionTemplates.length; j++) {
+  //         const { fieldTemplates } = functionTemplates[j];
+  //         for (let k = 0; k < fieldTemplates.length; k++) {
+  //           const { columnTemplates } = fieldTemplates[k];
+  //           for (let l = 0; l < columnTemplates.length; l++) {
+  //             console.log("in loop, columnTemplateId:", columnTemplates[l].id);
+  //             if (columnTemplates[l].id == nextFollowUpColTemplateId) {
+  //               return columnTemplates[l];
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   };
 
   return (
     <div className="card">
@@ -151,7 +147,7 @@ export default function FieldCard({
                 // />
               )}
 
-{columnTemplate.columnMetadataTemplate.type === "TABLE" && (
+              {columnTemplate.columnMetadataTemplate.type === "TABLE" && (
                 <RTE
                   defaultValue={
                     (newFunction.fieldInstances[fieldTemplateIndex]
@@ -236,7 +232,7 @@ export default function FieldCard({
 
               {columnTemplate.columnMetadataTemplate.type === "CHECKBOX" &&
                 columnTemplate.columnVariantTemplates?.map(
-                  (colVariantTemplate, colVariantTemplateIndex) =>
+                  (colVariantTemplate) =>
                     newFunction.fieldInstances[fieldTemplateIndex]
                       .columnInstances[columnTemplateIndex]
                       .columnVariantInstances && (

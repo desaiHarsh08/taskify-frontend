@@ -17,7 +17,6 @@ type ColFieldProps = {
 export default function ColField({
   setNewFunction,
   newFunction,
-  fieldTemplateIndex,
   nextFollowUpColTemplateObj,
 }: ColFieldProps) {
   const [columnTemplate, setColumnTemplate] = useState<ColumnTemplate>();
@@ -29,7 +28,7 @@ export default function ColField({
       .then((data) => {
         setColumnTemplate(data);
       })
-      .catch((err) => console.log("Unable to find the col_template"));
+      .catch((err) => console.log("Unable to find the col_template", err));
   }, []);
 
   useEffect(() => {
@@ -116,14 +115,14 @@ export default function ColField({
     }
   }, [columnTemplate]);
 
-  const dateFormat = (date: Date | string | null) => {
-    let d = new Date();
-    if (date) {
-      d = new Date(date);
-    }
+//   const dateFormat = (date: Date | string | null) => {
+//     let d = new Date();
+//     if (date) {
+//       d = new Date(date);
+//     }
 
-    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
-  };
+//     return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+//   };
 
   const getValue = () => {
     let value: unknown;

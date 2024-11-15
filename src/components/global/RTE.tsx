@@ -12,7 +12,7 @@ export default function RTE({
   name = "",
   label = "",
   defaultValue = "",
-  onChange = (content: string) => {},
+  onChange = (_content: string) => {},
 }: RTEProps) {
   const editor = useRef(null);
   const [content, setContent] = useState(defaultValue); // Initialize with defaultValue

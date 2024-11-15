@@ -14,7 +14,7 @@ export default function FunctionCard({ fn, fnIndex }: FunctionCardProps) {
   const [functionTemplate, setfunctionTemplate] =
     useState<FunctionTemplate | null>(null);
 
-  const [lastEdited, setLastEdited] = useState<Date | string | null>(null);
+  const setLastEdited = useState<Date | string | null>(null)[1];
 
   useEffect(() => {
     (async () => {

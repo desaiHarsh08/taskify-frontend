@@ -42,7 +42,6 @@ export default function AddUser() {
   };
 
   const handleAddRole = () => {
-    const newUser = { ...user };
 
     // if (!newUser.roles.find((ele) => ele.roleType === selectedRole)) {
     //   newUser.roles.push({
@@ -53,13 +52,13 @@ export default function AddUser() {
     // setUser(newUser);
   };
 
-  const handleRemoveRole = (role: RoleType) => {
-    const newUser = { ...user };
+//   const handleRemoveRole = (role: RoleType) => {
+//     // const newUser = { ...user };
 
-    // newUser.roles = newUser.roles.filter((ele) => ele.roleType !== role);
+//     // newUser.roles = newUser.roles.filter((ele) => ele.roleType !== role);
 
-    // setUser(newUser);
-  };
+//     // setUser(newUser);
+//   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

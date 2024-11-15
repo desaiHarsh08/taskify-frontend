@@ -22,7 +22,7 @@ export const fetchFunctionByTaskInstanceId = async (taskInstanceId: number): Pro
     return response.data;
 }
 
-export const doCloseFunction = async (fn: FunctionInstance, functionId: number, userId: number): Promise<FunctionInstance> => {
+export const doCloseFunction = async (_fn: FunctionInstance, functionId: number, userId: number): Promise<FunctionInstance> => {
     const response = await API.get(`/api/function-instances/close/${functionId}?userId=${userId}`);
     return response.data;
 }

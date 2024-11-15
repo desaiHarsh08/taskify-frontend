@@ -7,7 +7,7 @@ import SelectTaskPriority from "./SelectTaskPriority";
 import InputCustomer from "./InputCustomer";
 import InputTaskInfo from "./InputTaskInfo";
 import AssignTask from "./AssignTask";
-import { createTask, fetchTaskTemplates } from "@/services/task-apis";
+import { createTask } from "@/services/task-apis";
 import User from "@/lib/user";
 import { Customer } from "@/lib/customer";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,10 +18,8 @@ import { toggleLoading } from "@/app/slices/loadingSlice";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
 import DepartmentType from "@/lib/department-type";
 import SelectDepartment from "./SelectDepartment";
-import TaskTemplate from "@/lib/task-template";
 import {
   selectTaskTemplates,
-  setTaskTemplates,
 } from "@/app/slices/taskTemplatesSlice";
 
 type CreateNewTaskProps = {

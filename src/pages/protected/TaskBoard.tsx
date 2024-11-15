@@ -2,7 +2,7 @@ import { selectRefetch } from "@/app/slices/refetchSlice";
 import MonthlyTaskStats from "@/components/taskboard/MonthlyTaskStats";
 import OverallTaskStats from "@/components/taskboard/OverallTaskStats";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import TaskList from "@/components/all-tasks/TaskList";
 import Task from "@/lib/task";
 import {
@@ -12,13 +12,11 @@ import {
   fetchPendingTasks,
   fetchTaskByPriority,
   fetchTasksByAbbreviationOrDate,
-  fetchTaskTemplates,
 } from "@/services/task-apis";
 
 import Button from "@/components/ui/Button";
 import Pagination from "@/components/global/Pagination";
 import { useAuth } from "@/hooks/useAuth";
-import { setTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 
 const months = [
   "January",
@@ -36,7 +34,6 @@ const months = [
 ];
 
 export default function TaskBoard() {
-  const dispatch = useDispatch();
 
   const { accessToken, user } = useAuth();
   console.log("accessToken: ", accessToken);

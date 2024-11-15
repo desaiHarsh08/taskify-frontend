@@ -2,7 +2,6 @@
 import { Link, Outlet, useParams } from "react-router-dom";
 import Navbar from "@/components/global/Navbar";
 import NavigationLinks from "@/components/global/NavigationLinks";
-import { AuthProvider } from "@/providers/AuthProvider";
 
 import { useDispatch, useSelector } from "react-redux";
 import { selectLoading } from "@/app/slices/loadingSlice";

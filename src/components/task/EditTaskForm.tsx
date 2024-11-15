@@ -34,7 +34,7 @@ export default function EditTaskForm({
       try {
         const response = await fetchTaskTemplates(1);
         console.log(response);
-        settaskTemplates(response.content);
+        settaskTemplates(response);
       } catch (error) {
         console.log(error);
       }
