@@ -8,6 +8,7 @@ import { fetchTaskTemplateById } from "@/services/task-template-apis";
 
 import { fetchFunctionTemplateById } from "@/services/function-template-apis";
 import TaskTemplate from "@/lib/task-template";
+import { fetchFunctionsByTaskInstanceId } from "@/services/function-apis";
 
 type TaskRowProps = {
   task: Task;
@@ -40,7 +41,9 @@ export default function TaskRow({
     })();
 
     // console.log("task:", task)
-    const fnUnderProcess = task.functionInstances?.find((fn) => fn.closedAt !== null);
+    const fnUnderProcess = task.functionInstances?.find(
+      (fn) => fn.closedAt !== null
+    );
     // console.log(fnUnderProcess);
     if (fnUnderProcess) {
       getDepartment(fnUnderProcess as FunctionInstance);
@@ -48,20 +51,63 @@ export default function TaskRow({
   }, [task.taskTemplateId]);
 
   useEffect(() => {
-    if (task && task.functionInstances) {
-      let tmpDate = new Date();
-      for (let i = 0; i < task?.functionInstances?.length; i++) {
-        for (let j = 0; j < task.functionInstances[i].fieldInstances.length; j++) {
-          const fieldDate = new Date(
-            task.functionInstances[i].fieldInstances[j].updatedAt as Date
+    (async () => {
+      if (task && task.functionInstances) {
+        try {
+          const response = await fetchFunctionsByTaskInstanceId(
+            task.id as number
           );
-          if (fieldDate < tmpDate) {
-            tmpDate = fieldDate;
+          for (let i = 0; i < response?.length; i++) {
+            console.log("in loop");
+            console.log("last edited date:", response[i].closedAt);
+            if (response[i].closedAt != null) {
+              setLastEdited(response[i].closedAt as Date);
+              break;
+            }
+            // for (
+            //   let j = 0;
+            //   j < task.functionInstances[i].fieldInstances.length;
+            //   j++
+            // ) {
+            //   const fieldDate = new Date(
+            //     task.functionInstances[i].fieldInstances[j].updatedAt as Date
+            //   );
+            //   console.log("fielddate:", fieldDate);
+            //   if (fieldDate <= tmpDate) {
+            //     tmpDate = fieldDate;
+            //   }
+            // }
           }
+        } catch (error) {
+          console.log(error);
         }
       }
-      setLastEdited(tmpDate);
-    }
+    })();
+
+    // if (task && task.functionInstances) {
+    //   console.log("in if, task.functionInstances:", task.functionInstances);
+    //   for (let i = 0; i < task?.functionInstances?.length; i++) {
+    //     console.log("in loop");
+    //     console.log("last edited date:", task?.functionInstances[i].closedAt);
+    //     if (task?.functionInstances[i].closedAt != null) {
+    //       setLastEdited(task?.functionInstances[i].closedAt as Date);
+    //       break;
+    //     }
+    //     // for (
+    //     //   let j = 0;
+    //     //   j < task.functionInstances[i].fieldInstances.length;
+    //     //   j++
+    //     // ) {
+    //     //   const fieldDate = new Date(
+    //     //     task.functionInstances[i].fieldInstances[j].updatedAt as Date
+    //     //   );
+    //     //   console.log("fielddate:", fieldDate);
+    //     //   if (fieldDate <= tmpDate) {
+    //     //     tmpDate = fieldDate;
+    //     //   }
+    //     // }
+    //   }
+    // }
   }, [task]);
 
   const getDepartment = async (fn: FunctionInstance) => {

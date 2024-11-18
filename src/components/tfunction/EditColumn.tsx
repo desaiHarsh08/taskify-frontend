@@ -85,7 +85,7 @@ export default function EditColumn({
     for (let i = 0; i < tmpField.columnInstances.length; i++) {
       try {
         const response = await updateColumn(tmpField.columnInstances[i]);
-        console.log(response);
+        console.log("Saved column:", response);
         const { multipartFiles } = tmpField.columnInstances[i];
         if (multipartFiles && multipartFiles.length > 0) {
           const resUpload = await uploadFiles(

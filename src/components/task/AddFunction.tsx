@@ -17,7 +17,7 @@ import { fetchTaskById, updateTask } from "@/services/task-apis";
 import {
   createFunction,
   doCloseFunction,
-  fetchFunctionByTaskInstanceId,
+  fetchFunctionsByTaskInstanceId,
 } from "@/services/function-apis";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
@@ -187,15 +187,18 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
       return;
     }
     console.log("newFunction: ", newFunction);
-    const tmpNewFn = { ...newFunction };
+    let tmpNewFn = { ...newFunction };
     console.log("tmpNewFn:", tmpNewFn);
     const tmpDueDate = new Date(tmpNewFn.dueDate);
     const formattedDueDate = `${tmpDueDate.getFullYear()}-${(tmpDueDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDueDate.getDate().toString().padStart(2, "0")}`;
     tmpNewFn.dueDate = formattedDueDate + "T00:00:00";
+    console.log("tmpNewFn.dueDate:", tmpNewFn.dueDate);
     dispatch(toggleLoading());
     try {
+        const {multipartFiles, ...tfn} = tmpNewFn;
+      console.log("Creating tfn:", tfn);
       const response = await createFunction(
-        tmpNewFn as FunctionInstance,
+        tfn as FunctionInstance,
         assignedUser?.id as number
       );
       console.log(response);
@@ -271,7 +274,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     }
 
     try {
-      const resFn = await fetchFunctionByTaskInstanceId(task.id as number);
+      const resFn = await fetchFunctionsByTaskInstanceId(task.id as number);
       console.log("resFn:", resFn);
       setTask((prev) => ({ ...prev, functionInstances: resFn }));
     } catch (error) {}

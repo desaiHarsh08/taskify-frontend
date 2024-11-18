@@ -2,8 +2,13 @@ import { FunctionInstance } from "@/lib/task";
 import { API } from "@/utils/api";
 
 export const createFunction = async (newFunction: FunctionInstance, assignedToUserId: number): Promise<FunctionInstance> => {
-    console.log("in api, creating fn:", newFunction);
-    const { multipartFiles, ...tmpFn } = newFunction;
+    let { multipartFiles, ...tmpFn } = newFunction;
+    for (let i = 0; i < tmpFn.fieldInstances.length; i++) {
+        tmpFn.fieldInstances[i].columnInstances = tmpFn.fieldInstances[i].columnInstances.map(c => {
+            const newCol = { ...c, multipartFiles: [] }
+            return newCol;
+        })
+    }
     console.log("in api, creating fn:", tmpFn);
     const response = await API.post(`/api/function-instances?assignedToUserId=${assignedToUserId}`, tmpFn);
 
@@ -16,7 +21,7 @@ export const fetchFunctionById = async (functionId: number): Promise<FunctionIns
     return response.data;
 }
 
-export const fetchFunctionByTaskInstanceId = async (taskInstanceId: number): Promise<FunctionInstance[]> => {
+export const fetchFunctionsByTaskInstanceId = async (taskInstanceId: number): Promise<FunctionInstance[]> => {
     const response = await API.get(`/api/function-instances/task-instance/${taskInstanceId}`);
     console.log(response);
     return response.data;

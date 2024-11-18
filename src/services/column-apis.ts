@@ -3,8 +3,9 @@ import { ColumnInstance as Column } from "@/lib/task";
 import { API } from "@/utils/api";
 
 export const updateColumn = async (column: Column): Promise<Column> => {
-    console.log("Updating column to api:", column);
-    const response = await API.put(`/api/column-instances/${column.id}`, column);
+    const {multipartFiles, ...tmpColumn} = column
+    console.log("Updating column to api:", tmpColumn);
+    const response = await API.put(`/api/column-instances/${column.id}`, tmpColumn);
     return response.data;
 }
 

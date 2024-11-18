@@ -18,8 +18,6 @@ export default function ColumnCard({
     null
   );
 
-  console.log("column:", column);
-
   useEffect(() => {
     (async () => {
       try {
@@ -31,7 +29,8 @@ export default function ColumnCard({
         console.log(error);
       }
     })();
-  }, []);
+    console.log("column:", column);
+  }, [column.dropdownTemplateId]);
 
   const handleFileView = async (filePath: string) => {
     try {

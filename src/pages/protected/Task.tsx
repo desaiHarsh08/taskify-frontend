@@ -6,7 +6,7 @@ import TaskDetails from "@/components/task/TaskDetails";
 import TaskInstance from "@/lib/task";
 import TaskLib from "@/lib/task";
 import {
-  fetchFunctionByTaskInstanceId,
+  fetchFunctionsByTaskInstanceId,
 } from "@/services/function-apis";
 import { fetchTaskById } from "@/services/task-apis";
 import { useEffect, useState } from "react";
@@ -38,7 +38,7 @@ export default function Task() {
       console.log("task: ", response);
       setTask(response);
       try {
-        const resFn = await fetchFunctionByTaskInstanceId(Number(taskId));
+        const resFn = await fetchFunctionsByTaskInstanceId(Number(taskId));
         console.log("resFn:", resFn);
         setTask(
           (prev) => ({ ...prev, functionInstances: resFn }) as TaskInstance

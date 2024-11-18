@@ -11,6 +11,7 @@ import FieldCard from "./FieldCard";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
+import { File } from "buffer";
 
 type InputFunctionDetailsProps = {
   newFunction: FunctionInstance;
@@ -174,7 +175,11 @@ export default function InputFunctionDetails({
             if (columnTemplate.columnMetadataTemplate.type === "BOOLEAN") {
               newCol.booleanValue = value as boolean;
             } else if (columnTemplate.columnMetadataTemplate.type === "FILE") {
-              newCol.multipartFiles = value as File[];
+              newCol.multipartFiles = Array.from(value as FileList);
+              console.log(
+                "triggered, newCol.multipartFiles:",
+                newCol.multipartFiles
+              );
             } else if (
               ["NUMBER", "AMOUNT"].includes(
                 columnTemplate.columnMetadataTemplate.type
@@ -417,9 +422,13 @@ export default function InputFunctionDetails({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
 
-    if (files && files?.length > 0) {
+    if (files && files.length > 0) {
       const tmpFn = { ...newFunction };
+
+      // Convert FileList to an array and assign it to multipartFiles
       tmpFn.multipartFiles = Array.from(files);
+
+      console.log("Files selected:", tmpFn.multipartFiles);
 
       setNewFunction(tmpFn);
     }

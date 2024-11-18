@@ -18,9 +18,7 @@ import { toggleLoading } from "@/app/slices/loadingSlice";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
 import DepartmentType from "@/lib/department-type";
 import SelectDepartment from "./SelectDepartment";
-import {
-  selectTaskTemplates,
-} from "@/app/slices/taskTemplatesSlice";
+import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 
 type CreateNewTaskProps = {
   setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,7 +35,7 @@ export default function CreateNewTask({
   const taskTemplates = useSelector(selectTaskTemplates);
 
   const [newTask, setNewTask] = useState<Task>({
-    taskTemplateId: 3,
+    taskTemplateId: null,
     priorityType: "NORMAL",
     createdByUserId: user?.id,
     assignedToUserId: user?.id,
@@ -76,15 +74,15 @@ export default function CreateNewTask({
   });
 
   useEffect(() => {
-    setNewTask((prev) => ({
-      ...prev,
-      createdByUserId: user?.id,
-      taskTemplateId: taskTemplates.find(
-        (ele) => ele.title === "NEW_PUMP_INQUIRY"
-      )?.id,
-      assignedToUserId: user?.id,
-    }));
-  }, [user?.id]);
+    if (taskTemplates && user) {
+      setNewTask((prev) => ({
+        ...prev,
+        createdByUserId: user?.id,
+        taskTemplateId: taskTemplates[0]?.id,
+        assignedToUserId: user?.id,
+      }));
+    }
+  }, [user?.id, taskTemplates]);
 
   const handleModalNavigate = (modalKey: keyof typeof openModal) => {
     setOpenModal((prev) => {
