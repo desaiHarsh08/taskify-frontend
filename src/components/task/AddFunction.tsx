@@ -13,7 +13,7 @@ import Task, {
 } from "@/lib/task";
 import InputFunctionDetails from "./InputFunctionDetails";
 import { useAuth } from "@/hooks/useAuth";
-import { fetchTaskById, updateTask } from "@/services/task-apis";
+import { fetchTaskById } from "@/services/task-apis";
 import {
   createFunction,
   doCloseFunction,

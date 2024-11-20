@@ -60,7 +60,7 @@ export default function SelectFunction({
           className="form-select"
           aria-label="Default select example"
         >
-          {taskTemplate.functionTemplates.map((fnPrototype, index) => {
+          {taskTemplate.functionTemplates.map((fnPrototype) => {
             if (fnPrototype.department === selectedDepartment) {
               sr++;
               return (

@@ -4,7 +4,7 @@ import { fetchColumnTemplateById } from "@/services/column-template-apis";
 import { useEffect, useState } from "react";
 import { fetchFile } from "@/services/column-apis";
 import RTE from "../global/RTE";
-import ColField from "../task/ColField";
+// import ColField from "../task/ColField";
 
 type ColumnCardProps = {
   fn: FunctionInstance;
