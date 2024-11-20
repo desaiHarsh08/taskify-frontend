@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { FieldInstance } from "@/lib/task";
+import { FieldInstance, FunctionInstance } from "@/lib/task";
 import { ColumnTemplate } from "@/lib/task-template";
 import ColumnCard from "./ColumnCard";
 import { useState } from "react";
@@ -12,11 +12,15 @@ import Button from "../ui/Button";
 type EditColumnProps = {
   field: FieldInstance;
   setOpenEditModal: React.Dispatch<React.SetStateAction<boolean>>;
+  fn: FunctionInstance;
+  setFn: React.Dispatch<React.SetStateAction<FunctionInstance | null>>;
 };
 
 export default function EditColumn({
   field,
   setOpenEditModal,
+  fn,
+  setFn,
 }: EditColumnProps) {
   console.log("field:", field);
   const dispatch = useDispatch();
@@ -112,6 +116,8 @@ export default function EditColumn({
             <ColumnCard
               key={`column-${columnIndex}`}
               column={column}
+              fn={fn as FunctionInstance}
+              setFn={setFn}
               onColumnChange={handleChangeColumn}
             />
           ))}

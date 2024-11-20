@@ -28,6 +28,8 @@ export default function SelectFunction({
   selectedDepartment,
   selectedFunctionTemplate,
 }: SelectFunctionProps) {
+  let sr = 0;
+
   useEffect(() => {
     console.log(selectedDepartment);
   }, [selectedDepartment, selectedFunctionTemplate]);
@@ -58,11 +60,12 @@ export default function SelectFunction({
           className="form-select"
           aria-label="Default select example"
         >
-          {taskTemplate.functionTemplates.map((fnPrototype) => {
+          {taskTemplate.functionTemplates.map((fnPrototype, index) => {
             if (fnPrototype.department === selectedDepartment) {
+              sr++;
               return (
                 <option key={fnPrototype.title} value={fnPrototype.title}>
-                  [{fnPrototype.department.padEnd(10, " ")}]<p> - </p>
+                  {sr + 100}<p> - </p>
                   {fnPrototype.title}
                 </option>
               );

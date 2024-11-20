@@ -1,6 +1,7 @@
 import DepartmentType from "@/lib/department-type";
 import Button from "../ui/Button";
 import TaskTemplate, { FunctionTemplate } from "@/lib/task-template";
+import { useEffect } from "react";
 
 type SelectDepartmentProps = {
   selectedDepartment: DepartmentType;
@@ -12,6 +13,7 @@ type SelectDepartmentProps = {
     React.SetStateAction<FunctionTemplate | null>
   >;
   taskTemplate: TaskTemplate | null | undefined;
+  handleFunctionDefaultSet?: (fnTemplate: FunctionTemplate) => void;
 };
 
 const departments = [
@@ -20,6 +22,7 @@ const departments = [
   "DISPATCH",
   "SERVICE",
   "CUSTOMER",
+  "WORKSHOP",
   "NONE",
 ];
 
@@ -31,7 +34,10 @@ export default function SelectDepartment({
   backBtn = true,
   taskTemplate,
   setSelectedFunctionTemplate,
+  handleFunctionDefaultSet,
 }: SelectDepartmentProps) {
+  useEffect(() => {}, [selectedDepartment]);
+
   return (
     <div
       style={{ height: "300px" }}
@@ -43,11 +49,14 @@ export default function SelectDepartment({
           value={selectedDepartment}
           onChange={(e) => {
             setSelectedDepartment(e.target.value as DepartmentType);
-            const fnPrototypeByDept = taskTemplate?.functionTemplates.filter(
+            const fnTemplateByDept = taskTemplate?.functionTemplates.filter(
               (ele) => ele.department === e.target.value
             );
-            if (fnPrototypeByDept && setSelectedFunctionTemplate) {
-              setSelectedFunctionTemplate(fnPrototypeByDept[0]);
+            if (fnTemplateByDept && setSelectedFunctionTemplate) {
+              setSelectedFunctionTemplate(fnTemplateByDept[0]);
+              if (handleFunctionDefaultSet) {
+                handleFunctionDefaultSet(fnTemplateByDept[0]);
+              }
             }
           }}
           className="form-select"

@@ -1,4 +1,4 @@
-import { FieldInstance } from "@/lib/task";
+import { FieldInstance, FunctionInstance } from "@/lib/task";
 import FieldActions from "./FieldActions";
 import { useEffect, useState } from "react";
 import { FieldTemplate } from "@/lib/task-template";
@@ -6,11 +6,13 @@ import { fetchFieldTemplateById } from "@/services/field-template-apis";
 import { getFormattedDate } from "@/utils/helpers";
 
 type FieldRowProps = {
+  fn: FunctionInstance;
   field: FieldInstance;
   fieldIndex: number;
+  setFn: React.Dispatch<React.SetStateAction<FunctionInstance | null>>;
 };
 
-export default function FieldRow({ field, fieldIndex }: FieldRowProps) {
+export default function FieldRow({ field, fieldIndex, fn, setFn }: FieldRowProps) {
   const [fieldTemplate, setFieldProtoype] = useState<FieldTemplate | null>(
     null
   );
@@ -76,7 +78,7 @@ export default function FieldRow({ field, fieldIndex }: FieldRowProps) {
           className="d-flex justify-content-center align-items-center"
           style={{ width: "16%" }}
         >
-          <FieldActions field={field} fieldTemplate={fieldTemplate} />
+          <FieldActions fn={fn} setFn={setFn} field={field} fieldTemplate={fieldTemplate} />
         </p>
       </div>
     )

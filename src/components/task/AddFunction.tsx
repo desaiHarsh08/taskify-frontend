@@ -191,11 +191,11 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     console.log("tmpNewFn:", tmpNewFn);
     const tmpDueDate = new Date(tmpNewFn.dueDate);
     const formattedDueDate = `${tmpDueDate.getFullYear()}-${(tmpDueDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDueDate.getDate().toString().padStart(2, "0")}`;
-    tmpNewFn.dueDate = formattedDueDate + "T00:00:00";
+    tmpNewFn.dueDate = `${formattedDueDate}T00:00:00`;
     console.log("tmpNewFn.dueDate:", tmpNewFn.dueDate);
     dispatch(toggleLoading());
     try {
-        const {multipartFiles, ...tfn} = tmpNewFn;
+      const { multipartFiles, ...tfn } = tmpNewFn;
       console.log("Creating tfn:", tfn);
       const response = await createFunction(
         tfn as FunctionInstance,
@@ -424,6 +424,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
         >
           {taskTemplate && (
             <SelectDepartment
+              handleFunctionDefaultSet={handleFunctionDefaultSet}
               backBtn={false}
               onNavigateContinueModal={() =>
                 handleModalNavigate("selectFunction")
@@ -476,8 +477,10 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
                   assignedToUserId: assignedUser?.id,
                 }));
                 try {
-                  const response = await updateTask(task, user?.id as number);
-                  console.log(response);
+                  console.log("Assigning the task by creating new fn");
+                  //   const response = await updateTask(task, user?.id as number);
+                  handleAddFunction();
+                  //   console.log(response);
                 } catch (error) {
                   console.log(error);
                 }

@@ -415,6 +415,8 @@ export default function TFunction() {
             fnBkp.fieldInstances.map((field, fieldIndex) => (
               <FieldRow
                 key={`fieldIndex-${fieldIndex}`}
+                fn={fn as FunctionInstance}
+                setFn={setFn}
                 field={field}
                 fieldIndex={fieldIndex}
               />

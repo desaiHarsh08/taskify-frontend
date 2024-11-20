@@ -3,6 +3,7 @@ type DepartmentType = "QUOTATION"
     | "DISPATCH"
     | "SERVICE"
     | "CUSTOMER"
+    | "WORKSHOP"
     | "NONE"
 
 

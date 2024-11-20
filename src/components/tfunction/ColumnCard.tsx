@@ -1,11 +1,14 @@
-import { ColumnInstance } from "@/lib/task";
+import { ColumnInstance, FunctionInstance } from "@/lib/task";
 import { ColumnTemplate } from "@/lib/task-template";
 import { fetchColumnTemplateById } from "@/services/column-template-apis";
 import { useEffect, useState } from "react";
 import { fetchFile } from "@/services/column-apis";
 import RTE from "../global/RTE";
+import ColField from "../task/ColField";
 
 type ColumnCardProps = {
+  fn: FunctionInstance;
+  setFn: React.Dispatch<React.SetStateAction<FunctionInstance | null>>;
   column: ColumnInstance;
   onColumnChange: (columnTemplate: ColumnTemplate, value: unknown) => void;
 };
@@ -215,6 +218,75 @@ export default function ColumnCard({
               />
             </div>
           )}
+
+          {/* {columnTemplate.columnMetadataTemplate.type === "CHECKBOX" &&
+            columnTemplate.columnVariantTemplates?.map(
+              (colVariantTemplate) =>
+                fn.fieldInstances[fieldTemplateIndex].columnInstances[
+                  columnTemplateIndex
+                ].columnVariantInstances && (
+                  <>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value={""}
+                        checked={
+                          fn.fieldInstances[
+                            fieldTemplateIndex
+                          ].columnInstances[
+                            columnTemplateIndex
+                          ].columnVariantInstances.find(
+                            (ele) =>
+                              ele.columnVariantTemplateId ===
+                              colVariantTemplate.id
+                          ) != undefined
+                        }
+                        onChange={(e) =>
+                          handleCheckBox(
+                            fieldTemplate,
+                            columnTemplate,
+                            e.target.checked,
+                            colVariantTemplate
+                          )
+                        }
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckChecked"
+                      >
+                        {colVariantTemplate.name}
+                      </label>
+                    </div>
+                    <div>
+                      {fn.fieldInstances[
+                        fieldTemplateIndex
+                      ].columnInstances[
+                        columnTemplateIndex
+                      ].columnVariantInstances.find(
+                        (ele) =>
+                          ele.columnVariantTemplateId === colVariantTemplate.id
+                      ) &&
+                        colVariantTemplate.nextFollowUpColumnTemplates &&
+                        colVariantTemplate.nextFollowUpColumnTemplates.map(
+                          (nextFollowUpColTemplate) => {
+                            return (
+                              <ColField
+                                fieldTemplateIndex={fieldTemplateIndex}
+                                setfn={setfn}
+                                key={`followUp-${nextFollowUpColTemplate.id}`}
+                                nextFollowUpColTemplateObj={
+                                  nextFollowUpColTemplate
+                                }
+                                fn={fn}
+                              />
+                            );
+                          }
+                        )}
+                    </div>
+                  </>
+                )
+            )} */}
         </div>
       </div>
     )
