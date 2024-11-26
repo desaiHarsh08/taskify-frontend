@@ -163,7 +163,7 @@ export default function InputFunctionDetails({
     fieldTemplate: FieldTemplate,
     columnTemplate: ColumnTemplate,
     value: unknown,
-    givenColumnVariantTemplates: ColumnVariantTemplate[] | undefined
+    _givenColumnVariantTemplates: ColumnVariantTemplate[] | undefined
   ) => {
     const tmpNewFn = { ...newFunction };
 

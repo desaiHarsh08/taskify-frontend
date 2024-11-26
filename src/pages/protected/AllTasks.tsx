@@ -113,6 +113,7 @@ export default function AllTasks() {
       <div className="w-100 overflow-auto">
         {allTasks.length > 0 && (
           <TaskList
+            pageData={pageData}
             tasks={allTasks}
             selectedTasks={selectedTasks}
             onSelectTask={handleSelectTask}

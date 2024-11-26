@@ -261,7 +261,7 @@ export default function ColumnCard({
                               colVariantTemplate.id
                           ) != undefined
                         }
-                        onChange={(e) => {}}
+                        onChange={() => {}}
                       />
                       <label
                         className="form-check-label"

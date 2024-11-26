@@ -1,14 +1,11 @@
-import { ColumnInstance, FunctionInstance, RowTableInstance } from "@/lib/task";
+import { FunctionInstance, RowTableInstance } from "@/lib/task";
 import {
   ColumnTemplate,
-  FieldTemplate,
   NextFollowUpColumnTemplate,
 } from "@/lib/task-template";
 import { fetchColumnTemplateById } from "@/services/column-template-apis";
 import { useEffect, useState } from "react";
 import RTE from "../global/RTE";
-import { useSelector } from "react-redux";
-import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 
 type ColFieldProps = {
   newFunction: FunctionInstance;
@@ -207,93 +204,93 @@ export default function ColField({
     }
   };
 
-  const handleBoolean = (
-    fieldTemplate: FieldTemplate,
-    columnTemplate: ColumnTemplate,
-    value: boolean
-  ) => {
-    let tmpFn = { ...newFunction };
+//   const handleBoolean = (
+//     fieldTemplate: FieldTemplate,
+//     columnTemplate: ColumnTemplate,
+//     value: boolean
+//   ) => {
+//     let tmpFn = { ...newFunction };
 
-    console.log(value);
-    for (let i = 0; i < tmpFn.fieldInstances.length; i++) {
-      if (tmpFn.fieldInstances[i].fieldTemplateId === fieldTemplate.id) {
-        // Create the follow-ups new-cols
-        const newxtFollowUpCols: ColumnInstance[] = [];
-        for (
-          let j = 0;
-          j < tmpFn.fieldInstances[i].columnInstances.length;
-          j++
-        ) {
-          if (
-            tmpFn.fieldInstances[i].columnInstances[j].columnTemplateId ==
-            columnTemplate.id
-          ) {
-            // Check
-            if (value) {
-              tmpFn.fieldInstances[i].columnInstances[j] = {
-                ...tmpFn.fieldInstances[i].columnInstances[j],
-                booleanValue: true,
-              };
-              // Create the cols
-              const { nextFollowUpColumnTemplates } = columnTemplate;
-              if (nextFollowUpColumnTemplates) {
-                for (let k = 0; k < nextFollowUpColumnTemplates?.length; k++) {
-                  const obj = {
-                    booleanValue: false,
-                    columnTemplateId: nextFollowUpColumnTemplates[k].id,
-                    dateValue: new Date().toString(),
-                    numberValue: 0,
-                    textValue: "",
-                    rowTableInstances: [],
-                    columnVariantInstances: [],
-                    fieldInstanceId: tmpFn.fieldInstances[i].id,
-                    dropdownTemplateId:
-                      columnTemplate?.dropdownTemplates?.[0]?.id ?? null,
-                  };
-                  newxtFollowUpCols.push(obj);
-                }
-                tmpFn.fieldInstances[i].columnInstances = [
-                  ...tmpFn.fieldInstances[i].columnInstances,
-                  ...newxtFollowUpCols,
-                ];
-              }
-            } else {
-              console.log("in boolean for remove");
-              // Uncheck
-              tmpFn.fieldInstances[i].columnInstances[j] = {
-                ...tmpFn.fieldInstances[i].columnInstances[j],
-                booleanValue: false,
-              };
-              // Remove
-              for (
-                let j = 0;
-                j < tmpFn.fieldInstances[i].columnInstances.length;
-                j++
-              ) {
-                if (
-                  tmpFn.fieldInstances[i].columnInstances[j].columnTemplateId ==
-                  columnTemplate.id
-                ) {
-                  const { nextFollowUpColumnTemplates } = columnTemplate;
-                  if (nextFollowUpColumnTemplates) {
-                    tmpFn.fieldInstances[i].columnInstances =
-                      tmpFn.fieldInstances[i].columnInstances.filter(
-                        (ele) =>
-                          !nextFollowUpColumnTemplates.find(
-                            (nxtColTmp) => nxtColTmp.id == ele.columnTemplateId
-                          )
-                      );
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+//     console.log(value);
+//     for (let i = 0; i < tmpFn.fieldInstances.length; i++) {
+//       if (tmpFn.fieldInstances[i].fieldTemplateId === fieldTemplate.id) {
+//         // Create the follow-ups new-cols
+//         const newxtFollowUpCols: ColumnInstance[] = [];
+//         for (
+//           let j = 0;
+//           j < tmpFn.fieldInstances[i].columnInstances.length;
+//           j++
+//         ) {
+//           if (
+//             tmpFn.fieldInstances[i].columnInstances[j].columnTemplateId ==
+//             columnTemplate.id
+//           ) {
+//             // Check
+//             if (value) {
+//               tmpFn.fieldInstances[i].columnInstances[j] = {
+//                 ...tmpFn.fieldInstances[i].columnInstances[j],
+//                 booleanValue: true,
+//               };
+//               // Create the cols
+//               const { nextFollowUpColumnTemplates } = columnTemplate;
+//               if (nextFollowUpColumnTemplates) {
+//                 for (let k = 0; k < nextFollowUpColumnTemplates?.length; k++) {
+//                   const obj = {
+//                     booleanValue: false,
+//                     columnTemplateId: nextFollowUpColumnTemplates[k].id,
+//                     dateValue: new Date().toString(),
+//                     numberValue: 0,
+//                     textValue: "",
+//                     rowTableInstances: [],
+//                     columnVariantInstances: [],
+//                     fieldInstanceId: tmpFn.fieldInstances[i].id,
+//                     dropdownTemplateId:
+//                       columnTemplate?.dropdownTemplates?.[0]?.id ?? null,
+//                   };
+//                   newxtFollowUpCols.push(obj);
+//                 }
+//                 tmpFn.fieldInstances[i].columnInstances = [
+//                   ...tmpFn.fieldInstances[i].columnInstances,
+//                   ...newxtFollowUpCols,
+//                 ];
+//               }
+//             } else {
+//               console.log("in boolean for remove");
+//               // Uncheck
+//               tmpFn.fieldInstances[i].columnInstances[j] = {
+//                 ...tmpFn.fieldInstances[i].columnInstances[j],
+//                 booleanValue: false,
+//               };
+//               // Remove
+//               for (
+//                 let j = 0;
+//                 j < tmpFn.fieldInstances[i].columnInstances.length;
+//                 j++
+//               ) {
+//                 if (
+//                   tmpFn.fieldInstances[i].columnInstances[j].columnTemplateId ==
+//                   columnTemplate.id
+//                 ) {
+//                   const { nextFollowUpColumnTemplates } = columnTemplate;
+//                   if (nextFollowUpColumnTemplates) {
+//                     tmpFn.fieldInstances[i].columnInstances =
+//                       tmpFn.fieldInstances[i].columnInstances.filter(
+//                         (ele) =>
+//                           !nextFollowUpColumnTemplates.find(
+//                             (nxtColTmp) => nxtColTmp.id == ele.columnTemplateId
+//                           )
+//                       );
+//                   }
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
 
-    setNewFunction(tmpFn);
-  };
+//     setNewFunction(tmpFn);
+//   };
 
   return (
     <div className="mx-4">

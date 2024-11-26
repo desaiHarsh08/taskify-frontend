@@ -6,7 +6,7 @@ import TaskDetails from "@/components/task/TaskDetails";
 import TaskInstance from "@/lib/task";
 import TaskLib from "@/lib/task";
 import { fetchFunctionsByTaskInstanceId } from "@/services/function-apis";
-import { fetchTaskByAbbreviation, fetchTaskById } from "@/services/task-apis";
+import { fetchTaskByAbbreviation } from "@/services/task-apis";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
