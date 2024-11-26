@@ -24,7 +24,9 @@ export default function TaskActions({
   const [isFnRemaining, setIsFnRemaining] = useState(false);
 
   useEffect(() => {
-    setIsFnRemaining(task.functionInstances?.some((fn) => !fn.closedAt) as boolean);
+    setIsFnRemaining(
+      task.functionInstances?.some((fn) => !fn.closedAt) as boolean
+    );
   }, [task]);
 
   return (
@@ -50,13 +52,6 @@ export default function TaskActions({
           taskTemplate={taskTemplate}
         />
       </Modal>
-      {/* <Button
-        type="button"
-        variant="danger"
-        onClick={() => setOpenDeleteModal(true)}
-      >
-        Delete
-      </Button> */}
       <Modal
         open={openDeleteModal}
         onHide={() => setOpenDeleteModal(false)}

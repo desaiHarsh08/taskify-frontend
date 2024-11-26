@@ -78,7 +78,7 @@ export default function HomeLayout() {
               </li>
               {taskId && (
                 <li className="breadcrumb-item">
-                  <Link to={`/home/tasks/${taskId}`}>Task-{taskId}</Link>
+                  <Link to={`/home/tasks/${taskId}`}>{taskId}</Link>
                 </li>
               )}
               {functionId && (

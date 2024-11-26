@@ -25,8 +25,8 @@ export default function InputCustomer({
   setCustomerDetails,
 }: InputCustomerProps) {
   const [tabs, setTabs] = useState([
-    { label: "NEW", isSelected: true },
-    { label: "EXISTING", isSelected: false },
+    { label: "NEW", isSelected: false },
+    { label: "EXISTING", isSelected: true },
   ]);
 
   const handleTabClick = (index: number) => {
@@ -60,7 +60,7 @@ export default function InputCustomer({
               outline={!tab.isSelected}
               onClick={() => handleTabClick(index)}
               size="sm"
-            //   disabled={index === 1}
+              //   disabled={index === 1}
             >
               {tab.label.toUpperCase()}
             </Button>

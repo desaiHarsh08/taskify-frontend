@@ -20,6 +20,16 @@ type SelectFunctionProps = {
   onFunctionDefaultSet: (fnPrototype: FunctionTemplate) => void;
 };
 
+const departments = [
+  "QUOTATION",
+  "SERVICE",
+  "WORKSHOP",
+  "ACCOUNTS",
+  "DISPATCH",
+  "CUSTOMER",
+  "NONE",
+];
+
 export default function SelectFunction({
   taskTemplate,
   setSelectedFunctionTemplate,
@@ -37,8 +47,10 @@ export default function SelectFunction({
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedTitle = event.target.value;
     const selectedFunction = taskTemplate.functionTemplates.find(
-      (fn) => fn.title === selectedTitle
+      (fn) => fn.title === selectedTitle && fn.department === selectedDepartment
     );
+
+    console.log("selectedFunction:", selectedFunction);
 
     onFunctionDefaultSet(selectedFunction as FunctionTemplate);
 
@@ -61,11 +73,13 @@ export default function SelectFunction({
           aria-label="Default select example"
         >
           {taskTemplate.functionTemplates.map((fnPrototype) => {
-            if (fnPrototype.department === selectedDepartment) {
+            if (fnPrototype.department == selectedDepartment) {
               sr++;
               return (
                 <option key={fnPrototype.title} value={fnPrototype.title}>
-                  {sr + 100}<p> - </p>
+                  {/* {sr + 100} */}
+                  {(departments.indexOf(fnPrototype.department) + 1) * 100 + sr}
+                  <p> - </p>
                   {fnPrototype.title}
                 </option>
               );

@@ -5,10 +5,8 @@ import FunctionsList from "@/components/task/FunctionsList";
 import TaskDetails from "@/components/task/TaskDetails";
 import TaskInstance from "@/lib/task";
 import TaskLib from "@/lib/task";
-import {
-  fetchFunctionsByTaskInstanceId,
-} from "@/services/function-apis";
-import { fetchTaskById } from "@/services/task-apis";
+import { fetchFunctionsByTaskInstanceId } from "@/services/function-apis";
+import { fetchTaskByAbbreviation, fetchTaskById } from "@/services/task-apis";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -34,11 +32,11 @@ export default function Task() {
   const getTask = async () => {
     dispatch(toggleLoading());
     try {
-      const response = await fetchTaskById(Number(taskId));
+      const response = await fetchTaskByAbbreviation(taskId as string);
       console.log("task: ", response);
       setTask(response);
       try {
-        const resFn = await fetchFunctionsByTaskInstanceId(Number(taskId));
+        const resFn = await fetchFunctionsByTaskInstanceId(Number(response.id));
         console.log("resFn:", resFn);
         setTask(
           (prev) => ({ ...prev, functionInstances: resFn }) as TaskInstance

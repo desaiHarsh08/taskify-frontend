@@ -22,7 +22,12 @@ type FieldCardProps = {
     fieldTemplate: FieldTemplate,
     columnTemplate: ColumnTemplate,
     value: unknown,
-    givenColumnVariantTemplate?: ColumnVariantTemplate | null
+    givenColumnVariantTemplates?: ColumnVariantTemplate[]
+  ) => void;
+  handleBoolean: (
+    fieldTemplate: FieldTemplate,
+    columnTemplate: ColumnTemplate,
+    value: boolean
   ) => void;
 };
 
@@ -33,6 +38,7 @@ export default function FieldCard({
   newFunction,
   setNewFunction,
   onFieldChange,
+  handleBoolean,
 }: FieldCardProps) {
   const dateFormat = (date: Date | string | null) => {
     let d = new Date();
@@ -208,27 +214,6 @@ export default function FieldCard({
                   }
                 />
               )}
-              {columnTemplate.columnMetadataTemplate.type === "BOOLEAN" && (
-                <div className="form-check form-switch">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    checked={
-                      newFunction.fieldInstances[fieldTemplateIndex]
-                        .columnInstances[columnTemplateIndex]
-                        ?.booleanValue as boolean
-                    }
-                    onChange={(e) =>
-                      onFieldChange(
-                        fieldTemplate,
-                        columnTemplate,
-                        e.target.checked
-                      )
-                    }
-                  />
-                </div>
-              )}
 
               {columnTemplate.columnMetadataTemplate.type === "CHECKBOX" &&
                 columnTemplate.columnVariantTemplates?.map(
@@ -299,6 +284,47 @@ export default function FieldCard({
                       </>
                     )
                 )}
+
+              {columnTemplate.columnMetadataTemplate.type === "BOOLEAN" && (
+                <>
+                  <div className="form-check form-switch">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      checked={
+                        newFunction.fieldInstances[fieldTemplateIndex]
+                          .columnInstances[columnTemplateIndex]
+                          ?.booleanValue as boolean
+                      }
+                      onChange={(e) =>
+                        handleBoolean(
+                          fieldTemplate,
+                          columnTemplate,
+                          Boolean(e.target.checked)
+                        )
+                      }
+                    />
+                  </div>
+                  {(newFunction.fieldInstances[fieldTemplateIndex]
+                    .columnInstances[columnTemplateIndex]
+                    ?.booleanValue as boolean) &&
+                    columnTemplate.nextFollowUpColumnTemplates?.map(
+                      (
+                        nextFollowUpColTemplate,
+                        nextFollowUpColTemplateIndex
+                      ) => (
+                        <ColField
+                          key={`nextFollowUpColTemplate-${nextFollowUpColTemplateIndex}`}
+                          fieldTemplateIndex={fieldTemplateIndex}
+                          newFunction={newFunction}
+                          nextFollowUpColTemplateObj={nextFollowUpColTemplate}
+                          setNewFunction={setNewFunction}
+                        />
+                      )
+                    )}
+                </>
+              )}
             </div>
           )
         )}

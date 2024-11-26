@@ -40,6 +40,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
   const { user } = useAuth();
 
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const taskTemplates = useSelector(selectTaskTemplates);
 
   const [selectDepartment, setselectDepartment] =
@@ -96,6 +97,10 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           ? (fnTemplate.dropdownTemplates[0].id as number)
           : null,
     };
+    console.log(
+      "default set, function.dropdownTemplates:",
+      fnTemplate?.dropdownTemplates
+    );
 
     // Set the fields
     const tmpFields: FieldInstance[] = [];
@@ -131,21 +136,6 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           columnTemplate.columnVariantTemplates &&
           columnTemplate.columnVariantTemplates?.length > 0
         ) {
-          //   for (
-          //     let k = 0;
-          //     k < columnTemplate.columnVariantTemplates.length;
-          //     k++
-          //   ) {
-          //     newColInstance.columnVariantInstances.push({
-          //       booleanValue: false,
-          //       columnVariantTemplateId: columnTemplate.columnVariantTemplates[k]
-          //         .id as number,
-          //       dateValue: new Date(),
-          //       numberValue: 0,
-          //       textValue: "",
-          //     });
-          //   }
-
           newColInstance.columnVariantInstances.push({
             booleanValue: false,
             columnVariantTemplateId: columnTemplate.columnVariantTemplates[0]
@@ -186,13 +176,39 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     if (!newFunction) {
       return;
     }
+    setLoading(true);
     console.log("newFunction: ", newFunction);
     let tmpNewFn = { ...newFunction };
     console.log("tmpNewFn:", tmpNewFn);
     const tmpDueDate = new Date(tmpNewFn.dueDate);
     const formattedDueDate = `${tmpDueDate.getFullYear()}-${(tmpDueDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDueDate.getDate().toString().padStart(2, "0")}`;
-    tmpNewFn.dueDate = `${formattedDueDate}T00:00:00`;
     console.log("tmpNewFn.dueDate:", tmpNewFn.dueDate);
+    tmpNewFn.dueDate = `${formattedDueDate}T00:00:00`;
+    for (let i = 0; i < tmpNewFn.fieldInstances.length; i++) {
+      for (
+        let j = 0;
+        j < tmpNewFn.fieldInstances[i].columnInstances.length;
+        j++
+      ) {
+        let tmpDate = null;
+        let formattedDate = null;
+        if (tmpNewFn.fieldInstances[i].columnInstances[j].dateValue) {
+          tmpDate = new Date(
+            tmpNewFn.fieldInstances[i].columnInstances[j].dateValue as string
+          );
+          formattedDate = `${tmpDate.getFullYear()}-${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDate.getDate().toString().padStart(2, "0")}`;
+          formattedDate = `${formattedDate}T00:00:00`;
+        }
+        tmpNewFn.fieldInstances[i].columnInstances[j] = {
+          ...tmpNewFn.fieldInstances[i].columnInstances[j],
+          dateValue:
+            tmpNewFn.fieldInstances[i].columnInstances[j].dateValue == null
+              ? null
+              : formattedDate,
+        };
+      }
+    }
+
     dispatch(toggleLoading());
     try {
       const { multipartFiles, ...tfn } = tmpNewFn;
@@ -278,6 +294,8 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
       console.log("resFn:", resFn);
       setTask((prev) => ({ ...prev, functionInstances: resFn }));
     } catch (error) {}
+
+    setLoading(false);
   };
 
   const handleAddAndCloseFunction = async () => {
@@ -533,6 +551,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
             handleModalNavigate={handleModalNavigate}
             onAddFunction={handleAddFunction}
             onAddAndCloseFunction={handleAddAndCloseFunction}
+            loading={loading}
           />
         </Modal>
       </div>

@@ -1,22 +1,40 @@
 import { ColumnInstance, FunctionInstance } from "@/lib/task";
-import { ColumnTemplate } from "@/lib/task-template";
+import { ColumnTemplate, FieldTemplate } from "@/lib/task-template";
 import { fetchColumnTemplateById } from "@/services/column-template-apis";
 import { useEffect, useState } from "react";
 import { fetchFile } from "@/services/column-apis";
 import RTE from "../global/RTE";
+import ColField from "../task/ColField";
+import { useSelector } from "react-redux";
+import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 // import ColField from "../task/ColField";
 
 type ColumnCardProps = {
   fn: FunctionInstance;
+  fieldTemplate: FieldTemplate;
   setFn: React.Dispatch<React.SetStateAction<FunctionInstance | null>>;
   column: ColumnInstance;
   onColumnChange: (columnTemplate: ColumnTemplate, value: unknown) => void;
+  handleBoolean: (
+    fieldTemplate: FieldTemplate,
+    columnTemplate: ColumnTemplate,
+    value: boolean
+  ) => void;
+  columnIndex: number;
 };
 
 export default function ColumnCard({
+  fn,
+  setFn,
   column,
   onColumnChange,
+  columnIndex,
+  handleBoolean,
+  fieldTemplate,
 }: ColumnCardProps) {
+  const taskTemplates = useSelector(selectTaskTemplates);
+
+  const [fieldTemplateIndex, setFieldTemplateIndex] = useState<number | null>();
   const [columnTemplate, setColumnTemplate] = useState<ColumnTemplate | null>(
     null
   );
@@ -27,6 +45,22 @@ export default function ColumnCard({
         const response = await fetchColumnTemplateById(
           column.columnTemplateId as number
         );
+        for (let i = 0; i < taskTemplates.length; i++) {
+          for (let j = 0; j < taskTemplates[i].functionTemplates.length; j++) {
+            for (
+              let k = 0;
+              k < taskTemplates[i].functionTemplates[j].fieldTemplates.length;
+              k++
+            ) {
+              if (
+                fieldTemplate.id ==
+                taskTemplates[i].functionTemplates[j].fieldTemplates[k].id
+              ) {
+                setFieldTemplateIndex(k);
+              }
+            }
+          }
+        }
         setColumnTemplate(response);
       } catch (error) {
         console.log(error);
@@ -205,25 +239,12 @@ export default function ColumnCard({
             </select>
           )}
 
-          {columnTemplate.columnMetadataTemplate.type === "BOOLEAN" && (
-            <div className="form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                role="switch"
-                checked={column.booleanValue as boolean}
-                onChange={(e) =>
-                  onColumnChange(columnTemplate, e.target.checked)
-                }
-              />
-            </div>
-          )}
-
-          {/* {columnTemplate.columnMetadataTemplate.type === "CHECKBOX" &&
+          {fieldTemplateIndex &&
+            columnTemplate.columnMetadataTemplate.type === "CHECKBOX" &&
             columnTemplate.columnVariantTemplates?.map(
               (colVariantTemplate) =>
                 fn.fieldInstances[fieldTemplateIndex].columnInstances[
-                  columnTemplateIndex
+                  columnIndex
                 ].columnVariantInstances && (
                   <>
                     <div className="form-check">
@@ -232,24 +253,15 @@ export default function ColumnCard({
                         type="checkbox"
                         value={""}
                         checked={
-                          fn.fieldInstances[
-                            fieldTemplateIndex
-                          ].columnInstances[
-                            columnTemplateIndex
+                          fn.fieldInstances[fieldTemplateIndex].columnInstances[
+                            columnIndex
                           ].columnVariantInstances.find(
                             (ele) =>
                               ele.columnVariantTemplateId ===
                               colVariantTemplate.id
                           ) != undefined
                         }
-                        onChange={(e) =>
-                          handleCheckBox(
-                            fieldTemplate,
-                            columnTemplate,
-                            e.target.checked,
-                            colVariantTemplate
-                          )
-                        }
+                        onChange={(e) => {}}
                       />
                       <label
                         className="form-check-label"
@@ -262,7 +274,7 @@ export default function ColumnCard({
                       {fn.fieldInstances[
                         fieldTemplateIndex
                       ].columnInstances[
-                        columnTemplateIndex
+                        columnIndex
                       ].columnVariantInstances.find(
                         (ele) =>
                           ele.columnVariantTemplateId === colVariantTemplate.id
@@ -273,12 +285,12 @@ export default function ColumnCard({
                             return (
                               <ColField
                                 fieldTemplateIndex={fieldTemplateIndex}
-                                setfn={setfn}
+                                setNewFunction={setFn}
                                 key={`followUp-${nextFollowUpColTemplate.id}`}
                                 nextFollowUpColTemplateObj={
                                   nextFollowUpColTemplate
                                 }
-                                fn={fn}
+                                newFunction={fn}
                               />
                             );
                           }
@@ -286,7 +298,42 @@ export default function ColumnCard({
                     </div>
                   </>
                 )
-            )} */}
+            )}
+
+          {columnTemplate.columnMetadataTemplate.type === "BOOLEAN" && (
+            <>
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  checked={column.booleanValue as boolean}
+                  onChange={(e) =>
+                    //   onColumnChange(columnTemplate, e.target.checked)
+                    handleBoolean(
+                      fieldTemplate,
+                      columnTemplate,
+                      Boolean(e.target.value)
+                    )
+                  }
+                />
+              </div>
+
+              {column.booleanValue &&
+                fieldTemplateIndex &&
+                columnTemplate.nextFollowUpColumnTemplates?.map(
+                  (nextFollowUpColTemplate, nextFollowUpColTemplateIndex) => (
+                    <ColField
+                      key={`nextFollowUpColTemplate-${nextFollowUpColTemplateIndex}`}
+                      fieldTemplateIndex={fieldTemplateIndex}
+                      newFunction={fn}
+                      nextFollowUpColTemplateObj={nextFollowUpColTemplate}
+                      setNewFunction={setFn}
+                    />
+                  )
+                )}
+            </>
+          )}
         </div>
       </div>
     )

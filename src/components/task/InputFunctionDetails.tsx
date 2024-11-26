@@ -26,6 +26,7 @@ type InputFunctionDetailsProps = {
     React.SetStateAction<FunctionTemplate | null>
   >;
   handleFunctionDefaultSet: (fnTemplate: FunctionTemplate) => void;
+  loading?: boolean;
 };
 
 export default function InputFunctionDetails({
@@ -36,6 +37,7 @@ export default function InputFunctionDetails({
   onAddFunction,
   handleFunctionDefaultSet,
   onAddAndCloseFunction,
+  loading,
 }: InputFunctionDetailsProps) {
   const taskTemplates = useSelector(selectTaskTemplates);
   console.log("in InputFunctionDetails, taskTemplates:", taskTemplates);
@@ -160,7 +162,8 @@ export default function InputFunctionDetails({
   const handleFieldChange = (
     fieldTemplate: FieldTemplate,
     columnTemplate: ColumnTemplate,
-    value: unknown
+    value: unknown,
+    givenColumnVariantTemplates: ColumnVariantTemplate[] | undefined
   ) => {
     const tmpNewFn = { ...newFunction };
 
@@ -207,6 +210,98 @@ export default function InputFunctionDetails({
     });
 
     setNewFunction(tmpNewFn);
+  };
+
+  const handleBoolean = (
+    fieldTemplate: FieldTemplate,
+    columnTemplate: ColumnTemplate,
+    value: boolean
+  ) => {
+    let tmpFn = { ...newFunction };
+
+    console.log(value);
+    for (let i = 0; i < tmpFn.fieldInstances.length; i++) {
+      if (tmpFn.fieldInstances[i].fieldTemplateId === fieldTemplate.id) {
+        // Create the follow-ups new-cols
+        const newxtFollowUpCols: ColumnInstance[] = [];
+        for (
+          let j = 0;
+          j < tmpFn.fieldInstances[i].columnInstances.length;
+          j++
+        ) {
+          if (
+            tmpFn.fieldInstances[i].columnInstances[j].columnTemplateId ==
+            columnTemplate.id
+          ) {
+            // Check
+            if (value) {
+              tmpFn.fieldInstances[i].columnInstances[j] = {
+                ...tmpFn.fieldInstances[i].columnInstances[j],
+                booleanValue: true,
+              };
+              // Create the cols
+              const { nextFollowUpColumnTemplates } = columnTemplate;
+              if (nextFollowUpColumnTemplates) {
+                console.log(
+                  "nextFollowUpColumnTemplates:",
+                  nextFollowUpColumnTemplates
+                );
+                for (let k = 0; k < nextFollowUpColumnTemplates?.length; k++) {
+                  const obj = {
+                    booleanValue: false,
+                    columnTemplateId: nextFollowUpColumnTemplates[k].nextFollowUpColumnTemplateId,
+                    dateValue: new Date().toString(),
+                    numberValue: 0,
+                    textValue: "",
+                    rowTableInstances: [],
+                    columnVariantInstances: [],
+                    fieldInstanceId: tmpFn.fieldInstances[i].id,
+                    dropdownTemplateId:
+                      columnTemplate?.dropdownTemplates?.[0]?.id ?? null,
+                  };
+                  newxtFollowUpCols.push(obj);
+                }
+                tmpFn.fieldInstances[i].columnInstances = [
+                  ...tmpFn.fieldInstances[i].columnInstances,
+                  ...newxtFollowUpCols,
+                ];
+              }
+            } else {
+              console.log("in boolean for remove");
+              // Uncheck
+              tmpFn.fieldInstances[i].columnInstances[j] = {
+                ...tmpFn.fieldInstances[i].columnInstances[j],
+                booleanValue: false,
+              };
+              // Remove
+              for (
+                let j = 0;
+                j < tmpFn.fieldInstances[i].columnInstances.length;
+                j++
+              ) {
+                if (
+                  tmpFn.fieldInstances[i].columnInstances[j].columnTemplateId ==
+                  columnTemplate.id
+                ) {
+                  const { nextFollowUpColumnTemplates } = columnTemplate;
+                  if (nextFollowUpColumnTemplates) {
+                    tmpFn.fieldInstances[i].columnInstances =
+                      tmpFn.fieldInstances[i].columnInstances.filter(
+                        (ele) =>
+                          !nextFollowUpColumnTemplates.find(
+                            (nxtColTmp) => nxtColTmp.id == ele.columnTemplateId
+                          )
+                      );
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    setNewFunction(tmpFn);
   };
 
   const handleCheckBox = (
@@ -538,6 +633,7 @@ export default function InputFunctionDetails({
                 fieldTemplateIndex={0}
                 newFunction={newFunction}
                 onFieldChange={handleFieldChange}
+                handleBoolean={handleBoolean}
               />
             )}
             {!selectedFunctionTemplate?.choice &&
@@ -551,6 +647,7 @@ export default function InputFunctionDetails({
                     fieldTemplateIndex={fieldTemplateIndex}
                     newFunction={newFunction}
                     onFieldChange={handleFieldChange}
+                    handleBoolean={handleBoolean}
                   />
                 )
               )}
@@ -585,6 +682,7 @@ export default function InputFunctionDetails({
       </div>
       <div className="border-top align-items-center d-flex justify-content-end gap-2 p-2">
         <Button
+          disabled={loading}
           outline
           variant="secondary"
           onClick={() => handleModalNavigate("assignTask")}
@@ -592,14 +690,19 @@ export default function InputFunctionDetails({
           Back
         </Button>
         <Button
+          disabled={loading}
           onClick={() => {
             onAddFunction();
           }}
         >
-          Add
+          {loading ? "Adding..." : "Add"}
         </Button>
-        <Button variant="secondary" onClick={onAddAndCloseFunction}>
-          Add & Close
+        <Button
+          variant="secondary"
+          onClick={onAddAndCloseFunction}
+          disabled={loading}
+        >
+          {loading ? "Please Wait..." : "Completed"}
         </Button>
       </div>
     </div>

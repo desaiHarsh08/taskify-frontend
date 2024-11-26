@@ -23,7 +23,10 @@ export default function CloseTask({ task, setTask }: CloseTaskProps) {
 
     dispatch(toggleLoading());
     try {
-      const response = await doCloseTask(newTask);
+      const response = await doCloseTask(
+        newTask.id as number,
+        user?.id as number
+      );
       console.log(response);
       setTask(response);
     } catch (error) {
@@ -35,7 +38,9 @@ export default function CloseTask({ task, setTask }: CloseTaskProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <p className="fs-5">Are you sure that you want to mark this task as done?</p>
+      <p className="fs-5">
+        Are you sure that you want to mark this task as done?
+      </p>
       <p>This process cannot be undone.</p>
       <div className="d-flex justify-content-end mt-4">
         <Button variant={"secondary"}>Done</Button>

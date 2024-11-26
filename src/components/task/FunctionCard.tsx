@@ -8,9 +8,10 @@ import { Link } from "react-router-dom";
 type FunctionCardProps = {
   fn: FunctionInstance;
   fnIndex: number;
+  srno: number;
 };
 
-export default function FunctionCard({ fn, fnIndex }: FunctionCardProps) {
+export default function FunctionCard({ fn, fnIndex, srno }: FunctionCardProps) {
   const [functionTemplate, setfunctionTemplate] =
     useState<FunctionTemplate | null>(null);
 
@@ -28,7 +29,9 @@ export default function FunctionCard({ fn, fnIndex }: FunctionCardProps) {
       }
     })();
 
-    const lastEditedField = fn.fieldInstances.find((field) => !field.closedAt == null);
+    const lastEditedField = fn.fieldInstances.find(
+      (field) => !field.closedAt == null
+    );
     setLastEdited(lastEditedField?.updatedAt as Date);
   }, [fn.fieldInstances, fn.functionTemplateId]);
 
@@ -43,7 +46,7 @@ export default function FunctionCard({ fn, fnIndex }: FunctionCardProps) {
       }}
     >
       <p className="border-end py-2 px-1" style={{ width: "7%" }}>
-        {fnIndex + 1}
+        {srno}
       </p>
       <p className="border-end py-2 px-1" style={{ width: "15.5%" }}>
         {functionTemplate?.title}

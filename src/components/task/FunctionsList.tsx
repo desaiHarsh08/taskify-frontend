@@ -45,7 +45,12 @@ export default function FunctionsList({ task }: FunctionsListProps) {
       </div>
       <div className="w-100 border" style={{ minWidth: "948px" }}>
         {task.functionInstances?.map((fn, fnIndex) => (
-          <FunctionCard key={`fn-${fnIndex}`} fn={fn} fnIndex={fnIndex} />
+          <FunctionCard
+            key={`fn-${fnIndex}`}
+            srno={(task.functionInstances?.length as number) - fnIndex}
+            fn={fn}
+            fnIndex={fnIndex}
+          />
         ))}
       </div>
     </div>

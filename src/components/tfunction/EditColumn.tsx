@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { FieldInstance, FunctionInstance } from "@/lib/task";
-import { ColumnTemplate } from "@/lib/task-template";
+import { ColumnInstance, FieldInstance, FunctionInstance } from "@/lib/task";
+import { ColumnTemplate, FieldTemplate } from "@/lib/task-template";
 import ColumnCard from "./ColumnCard";
 import { useState } from "react";
 import { updateColumn, uploadFiles } from "@/services/column-apis";
@@ -11,6 +11,7 @@ import Button from "../ui/Button";
 
 type EditColumnProps = {
   field: FieldInstance;
+  fieldTemplate: FieldTemplate;
   setOpenEditModal: React.Dispatch<React.SetStateAction<boolean>>;
   fn: FunctionInstance;
   setFn: React.Dispatch<React.SetStateAction<FunctionInstance | null>>;
@@ -21,6 +22,7 @@ export default function EditColumn({
   setOpenEditModal,
   fn,
   setFn,
+  fieldTemplate,
 }: EditColumnProps) {
   console.log("field:", field);
   const dispatch = useDispatch();
@@ -70,6 +72,94 @@ export default function EditColumn({
     setTmpField(newTmpField);
   };
 
+  const handleBoolean = (
+    fieldTemplate: FieldTemplate,
+    columnTemplate: ColumnTemplate,
+    value: boolean
+  ) => {
+    let tmpFn = { ...fn };
+
+    console.log(value);
+    for (let i = 0; i < tmpFn.fieldInstances.length; i++) {
+      if (tmpFn.fieldInstances[i].fieldTemplateId === fieldTemplate.id) {
+        // Create the follow-ups new-cols
+        const newxtFollowUpCols: ColumnInstance[] = [];
+        for (
+          let j = 0;
+          j < tmpFn.fieldInstances[i].columnInstances.length;
+          j++
+        ) {
+          if (
+            tmpFn.fieldInstances[i].columnInstances[j].columnTemplateId ==
+            columnTemplate.id
+          ) {
+            // Check
+            if (value) {
+              tmpFn.fieldInstances[i].columnInstances[j] = {
+                ...tmpFn.fieldInstances[i].columnInstances[j],
+                booleanValue: true,
+              };
+              // Create the cols
+              const { nextFollowUpColumnTemplates } = columnTemplate;
+              if (nextFollowUpColumnTemplates) {
+                for (let k = 0; k < nextFollowUpColumnTemplates?.length; k++) {
+                  const obj = {
+                    booleanValue: false,
+                    columnTemplateId: nextFollowUpColumnTemplates[k].nextFollowUpColumnTemplateId,
+                    dateValue: new Date().toString(),
+                    numberValue: 0,
+                    textValue: "",
+                    rowTableInstances: [],
+                    columnVariantInstances: [],
+                    fieldInstanceId: tmpFn.fieldInstances[i].id,
+                    dropdownTemplateId:
+                      columnTemplate?.dropdownTemplates?.[0]?.id ?? null,
+                  };
+                  newxtFollowUpCols.push(obj);
+                }
+                tmpFn.fieldInstances[i].columnInstances = [
+                  ...tmpFn.fieldInstances[i].columnInstances,
+                  ...newxtFollowUpCols,
+                ];
+              }
+            } else {
+              console.log("in boolean for remove");
+              // Uncheck
+              tmpFn.fieldInstances[i].columnInstances[j] = {
+                ...tmpFn.fieldInstances[i].columnInstances[j],
+                booleanValue: false,
+              };
+              // Remove
+              for (
+                let j = 0;
+                j < tmpFn.fieldInstances[i].columnInstances.length;
+                j++
+              ) {
+                if (
+                  tmpFn.fieldInstances[i].columnInstances[j].columnTemplateId ==
+                  columnTemplate.id
+                ) {
+                  const { nextFollowUpColumnTemplates } = columnTemplate;
+                  if (nextFollowUpColumnTemplates) {
+                    tmpFn.fieldInstances[i].columnInstances =
+                      tmpFn.fieldInstances[i].columnInstances.filter(
+                        (ele) =>
+                          !nextFollowUpColumnTemplates.find(
+                            (nxtColTmp) => nxtColTmp.nextFollowUpColumnTemplateId == ele.columnTemplateId
+                          )
+                      );
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    setFn(tmpFn);
+  };
+
   const dateFormat = (date: string | Date | null) => {
     console.log(date);
     let tmpDate = new Date();
@@ -115,10 +205,13 @@ export default function EditColumn({
           tmpField.columnInstances.map((column, columnIndex) => (
             <ColumnCard
               key={`column-${columnIndex}`}
+              columnIndex={columnIndex}
               column={column}
               fn={fn as FunctionInstance}
               setFn={setFn}
               onColumnChange={handleChangeColumn}
+              handleBoolean={handleBoolean}
+              fieldTemplate={fieldTemplate}
             />
           ))}
       </div>

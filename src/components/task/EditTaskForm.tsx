@@ -25,9 +25,7 @@ export default function EditTaskForm({
 
   const { user } = useAuth();
 
-  const [taskTemplates, settaskTemplates] = useState<taskTemplate[] | []>(
-    []
-  );
+  const [taskTemplates, settaskTemplates] = useState<taskTemplate[] | []>([]);
 
   useEffect(() => {
     (async () => {
@@ -71,7 +69,7 @@ export default function EditTaskForm({
       <div style={{ height: "400px", overflowY: "auto" }}>
         <div className="mb-3">
           <label htmlFor="taskTemplateId" className="form-label">
-            Priority
+            Type
           </label>
           <select
             value={task.taskTemplateId as number}

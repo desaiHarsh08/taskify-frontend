@@ -296,7 +296,7 @@ export default function FieldActions({
           </div>
         }
       >
-        <EditColumn field={field} fn={fn} setFn={setFn} setOpenEditModal={setOpenEditModal} />
+        <EditColumn field={field} fieldTemplate={fieldTemplate} fn={fn} setFn={setFn} setOpenEditModal={setOpenEditModal} />
       </Modal>
       {/* <Button
         type="button"

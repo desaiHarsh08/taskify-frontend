@@ -34,7 +34,6 @@ const months = [
 ];
 
 export default function TaskBoard() {
-
   const { accessToken, user } = useAuth();
   console.log("accessToken: ", accessToken);
   console.log("user: ", user);
@@ -52,16 +51,14 @@ export default function TaskBoard() {
   );
   const [allTasks, setAllTasks] = useState<Task[]>([]);
   const [tabs, setTabs] = useState([
-    { tabLabel: "All Tasks", isSelected: false },
-    { tabLabel: "Overdue Tasks", isSelected: true },
+    { tabLabel: "All Tasks", isSelected: true },
+    { tabLabel: "Overdue Tasks", isSelected: false },
     { tabLabel: "HIGH", isSelected: false },
     { tabLabel: "MEDIUM", isSelected: false },
     { tabLabel: "NORMAL", isSelected: false },
     { tabLabel: "Pending", isSelected: false },
     { tabLabel: "Closed", isSelected: false },
   ]);
-
- 
 
   useEffect(() => {
     const selectedTab = tabs.find((tab) => tab.isSelected);
@@ -314,6 +311,7 @@ export default function TaskBoard() {
                 tasks={allTasks}
                 onSelectTask={() => {}}
                 selectedTasks={[]}
+                pageData={pageData}
               />
             </div>
             <Pagination

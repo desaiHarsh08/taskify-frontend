@@ -78,7 +78,7 @@ export default function FieldRow({ field, fieldIndex, fn, setFn }: FieldRowProps
           className="d-flex justify-content-center align-items-center"
           style={{ width: "16%" }}
         >
-          <FieldActions fn={fn} setFn={setFn} field={field} fieldTemplate={fieldTemplate} />
+          <FieldActions fn={fn} setFn={setFn} field={field} fieldTemplate={fieldTemplate}  />
         </p>
       </div>
     )
