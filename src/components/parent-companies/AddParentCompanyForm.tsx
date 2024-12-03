@@ -31,19 +31,6 @@ export default function AddParentCompanyForm({
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="address" className="form-label">
-            Address
-          </label>
-          <textarea
-            className="form-control"
-            id="address"
-            rows={3}
-            name="address"
-            value={newParentCompany.headOfficeAddress}
-            onChange={onNewParentCompanyChange}
-          ></textarea>
-        </div>
-        <div className="mb-3">
           <label htmlFor="state" className="form-label">
             State
           </label>

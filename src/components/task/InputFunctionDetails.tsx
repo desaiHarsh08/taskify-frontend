@@ -249,7 +249,9 @@ export default function InputFunctionDetails({
                 for (let k = 0; k < nextFollowUpColumnTemplates?.length; k++) {
                   const obj = {
                     booleanValue: false,
-                    columnTemplateId: nextFollowUpColumnTemplates[k].nextFollowUpColumnTemplateId,
+                    columnTemplateId:
+                      nextFollowUpColumnTemplates[k]
+                        .nextFollowUpColumnTemplateId,
                     dateValue: new Date().toString(),
                     numberValue: 0,
                     textValue: "",
@@ -304,20 +306,103 @@ export default function InputFunctionDetails({
     setNewFunction(tmpFn);
   };
 
+  //   const handleCheckBox = (
+  //     fieldTemplate: FieldTemplate,
+  //     columnTemplate: ColumnTemplate,
+  //     value: boolean,
+  //     givenColumnVariantTemplate: ColumnVariantTemplate
+  //   ) => {
+  //     console.log("in checkbox, value:", value);
+  //     let tmpFn = { ...newFunction };
+  //     for (let i = 0; i < tmpFn.fieldInstances.length; i++) {
+  //       if (tmpFn.fieldInstances[i].fieldTemplateId === fieldTemplate.id) {
+  //         if (value) {
+  //           // Check
+  //           console.log("in check for add");
+
+  //           tmpFn.fieldInstances[i] = handleChecked(
+  //             true,
+  //             tmpFn.fieldInstances[i],
+  //             columnTemplate,
+  //             givenColumnVariantTemplate
+  //           );
+
+  //           // Add follow-ups new-cols
+  //           const newxtFollowUps = handleGetNextFollowUpColumns(
+  //             givenColumnVariantTemplate,
+  //             tmpFn.fieldInstances[i].id as number
+  //           );
+  //           tmpFn.fieldInstances[i].columnInstances.push(...newxtFollowUps);
+  //         } else {
+  //           console.log("in check for remove");
+  //           // Uncheck
+  //           tmpFn.fieldInstances[i] = handleChecked(
+  //             false,
+  //             tmpFn.fieldInstances[i],
+  //             columnTemplate,
+  //             givenColumnVariantTemplate
+  //           );
+  //           //   for (
+  //           //     let j = 0;
+  //           //     j < tmpFn.fieldInstances[i].columnInstances.length;
+  //           //     j++
+  //           //   ) {
+  //           //     tmpFn.fieldInstances[i].columnInstances = tmpFn.fieldInstances[
+  //           //       i
+  //           //     ].columnInstances.map((colInstance) => {
+  //           //       if (colInstance.columnTemplateId === columnTemplate.id) {
+  //           //         const newColInstance = { ...colInstance };
+  //           //         newColInstance.columnVariantInstances =
+  //           //           newColInstance.columnVariantInstances?.map(
+  //           //             (colVariantInstance) => {
+  //           //               if (
+  //           //                 colVariantInstance.columnVariantTemplateId ===
+  //           //                 givenColumnVariantTemplate.id
+  //           //               ) {
+  //           //                 return {
+  //           //                   ...colVariantInstance,
+  //           //                   columnVariantTemplateId: null,
+  //           //                 };
+  //           //               }
+
+  //           //               return colVariantInstance;
+  //           //             }
+  //           //           );
+  //           //       }
+  //           //       return colInstance;
+  //           //     });
+  //           //   }
+
+  //           // Remove follow-ups cols
+  //           const { nextFollowUpColumnTemplates } = givenColumnVariantTemplate;
+  //           if (nextFollowUpColumnTemplates) {
+  //             tmpFn.fieldInstances[i].columnInstances =
+  //               handleRemoveNextFollowUpColumns(
+  //                 tmpFn.fieldInstances[i].columnInstances,
+  //                 nextFollowUpColumnTemplates
+  //               );
+  //           }
+  //         }
+  //       }
+  //     }
+
+  //     setNewFunction(tmpFn);
+  //   };
+
   const handleCheckBox = (
     fieldTemplate: FieldTemplate,
     columnTemplate: ColumnTemplate,
     value: boolean,
     givenColumnVariantTemplate: ColumnVariantTemplate
   ) => {
-    console.log("in checkbox, value:", value);
     let tmpFn = { ...newFunction };
+
     for (let i = 0; i < tmpFn.fieldInstances.length; i++) {
       if (tmpFn.fieldInstances[i].fieldTemplateId === fieldTemplate.id) {
         if (value) {
-          // Check
-          console.log("in check for add");
+          console.log("Adding follow-up columns");
 
+          // Add the selected column variant
           tmpFn.fieldInstances[i] = handleChecked(
             true,
             tmpFn.fieldInstances[i],
@@ -325,53 +410,38 @@ export default function InputFunctionDetails({
             givenColumnVariantTemplate
           );
 
-          // Add follow-ups new-cols
-          const newxtFollowUps = handleGetNextFollowUpColumns(
+          // Fetch and add next follow-up columns
+          const newFollowUpColumns = handleGetNextFollowUpColumns(
             givenColumnVariantTemplate,
             tmpFn.fieldInstances[i].id as number
           );
-          tmpFn.fieldInstances[i].columnInstances.push(...newxtFollowUps);
+
+          // Avoid duplicates before adding follow-up columns
+          const existingColumnIds = new Set(
+            tmpFn.fieldInstances[i].columnInstances.map(
+              (col) => col.columnTemplateId
+            )
+          );
+
+          const filteredFollowUpColumns = newFollowUpColumns.filter(
+            (col) => !existingColumnIds.has(col.columnTemplateId)
+          );
+
+          tmpFn.fieldInstances[i].columnInstances.push(
+            ...filteredFollowUpColumns
+          );
         } else {
-          console.log("in check for remove");
-          // Uncheck
+          console.log("Removing follow-up columns");
+
+          // Remove the selected column variant
           tmpFn.fieldInstances[i] = handleChecked(
             false,
             tmpFn.fieldInstances[i],
             columnTemplate,
             givenColumnVariantTemplate
           );
-          //   for (
-          //     let j = 0;
-          //     j < tmpFn.fieldInstances[i].columnInstances.length;
-          //     j++
-          //   ) {
-          //     tmpFn.fieldInstances[i].columnInstances = tmpFn.fieldInstances[
-          //       i
-          //     ].columnInstances.map((colInstance) => {
-          //       if (colInstance.columnTemplateId === columnTemplate.id) {
-          //         const newColInstance = { ...colInstance };
-          //         newColInstance.columnVariantInstances =
-          //           newColInstance.columnVariantInstances?.map(
-          //             (colVariantInstance) => {
-          //               if (
-          //                 colVariantInstance.columnVariantTemplateId ===
-          //                 givenColumnVariantTemplate.id
-          //               ) {
-          //                 return {
-          //                   ...colVariantInstance,
-          //                   columnVariantTemplateId: null,
-          //                 };
-          //               }
 
-          //               return colVariantInstance;
-          //             }
-          //           );
-          //       }
-          //       return colInstance;
-          //     });
-          //   }
-
-          // Remove follow-ups cols
+          // Remove follow-up columns related to this variant
           const { nextFollowUpColumnTemplates } = givenColumnVariantTemplate;
           if (nextFollowUpColumnTemplates) {
             tmpFn.fieldInstances[i].columnInstances =
@@ -550,18 +620,24 @@ export default function InputFunctionDetails({
                 className="form-select"
                 value={
                   selectedFunctionTemplate.dropdownTemplates.find(
-                    (ele) => ele.id === newFunction.dropdownTemplateId
+                    (ele) => ele.id == newFunction.dropdownTemplateId
                   )?.value
                 }
-                onChange={(e) =>
+                onChange={(e) => {
+                  const selectedDropdownTemplate =
+                    selectedFunctionTemplate.dropdownTemplates?.find(
+                      (d) => d.value == e.target.value
+                    );
                   setNewFunction(
                     (prev) =>
                       ({
                         ...prev,
-                        dropdownTemplateId: Number(e.target.value),
+                        dropdownTemplateId: Number(
+                          selectedDropdownTemplate?.id
+                        ),
                       }) as FunctionInstance
-                  )
-                }
+                  );
+                }}
               >
                 {selectedFunctionTemplate?.dropdownTemplates.map(
                   (dropdownTemplate) => {

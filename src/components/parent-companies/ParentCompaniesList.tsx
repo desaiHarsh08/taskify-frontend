@@ -8,7 +8,6 @@ const columns = [
   "Name",
   "Person Of Contact",
   "Phone",
-  "Addres",
   "City",
   "Pincode",
   "Actions",
@@ -30,11 +29,8 @@ export default function ParentCompaniesList({
         {columns.map((column, columnIndex) => {
           const columnWidth = { width: "12%" };
           if (columnIndex === 0) {
-            columnWidth.width = "3%";
-          } else if (columnIndex < 3) {
-            columnWidth.width = "6.5%";
+            columnWidth.width = "4%";
           }
-
           return (
             <p
               className="border-end py-1 text-center fw-bold"

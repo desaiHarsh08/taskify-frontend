@@ -23,10 +23,14 @@ import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 type CreateNewTaskProps = {
   setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
   setShowMessage: React.Dispatch<React.SetStateAction<string>>;
+  setCustomerDetails: React.Dispatch<React.SetStateAction<Customer>>;
+  customerDetails: Customer;
 };
 export default function CreateNewTask({
   setShowMessage,
   setShowToast,
+  customerDetails,
+  setCustomerDetails,
 }: CreateNewTaskProps) {
   const dispatch = useDispatch();
 
@@ -49,18 +53,18 @@ export default function CreateNewTask({
   const [assignedUser, setAssignedUser] = useState<User | null>(user);
   const [selectedDepartment, setSelectedDepartment] =
     useState<DepartmentType>("QUOTATION");
-  const [customerDetails, setCustomerDetails] = useState<Customer>({
-    name: "",
-    email: "",
-    personOfContact: "",
-    phone: "",
-    state: "",
-    address: "",
-    residenceAddress: "",
-    city: "",
-    pincode: "",
-    parentCompanyId: null,
-  });
+  //   const [customerDetails, setCustomerDetails] = useState<Customer>({
+  //     name: "",
+  //     email: "",
+  //     personOfContact: "",
+  //     phone: "",
+  //     state: "",
+  //     address: "",
+  //     residenceAddress: "",
+  //     city: "",
+  //     pincode: "",
+  //     parentCompanyId: null,
+  //   });
   //   const [taskTemplates, setTaskTemplates] = useState<TaskTemplate[]>([]);
   const [openModal, setOpenModal] = useState({
     taskType: false,
@@ -108,6 +112,18 @@ export default function CreateNewTask({
 
     console.log("Creating customer...", customerDetails);
     // Create the customer
+
+    // Allow only numbers and max 6 characters for pincode
+    if (!/^\d*$/.test(customerDetails.pincode)) {
+      alert("Please provide the valid input");
+      return; // Ignore invalid input
+    }
+
+    if (customerDetails.pincode.length != 6) {
+      alert("Provide the valid pincode");
+      return; // Limit length to 6 characters
+    }
+
     const customerResponse = await createCustomer(customerDetails);
     console.log(customerResponse);
 

@@ -86,6 +86,7 @@ export default function FieldCard({
               {columnTemplate.columnMetadataTemplate.type === "FILE" && (
                 <input
                   type="file"
+                  accept=".pdf, .doc, .docx, .xls, .xlsx, image/jpeg, image/png"
                   multiple={
                     columnTemplate.columnMetadataTemplate.acceptMultipleFiles
                   }

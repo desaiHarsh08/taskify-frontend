@@ -378,6 +378,7 @@ export default function ColField({
           onChange={(e) => handleChange(e.target.value, columnTemplate)}
         />
       )}
+      
       {columnTemplate?.columnMetadataTemplate.type === "BOOLEAN" && (
         <div className="form-check form-switch">
           <input

@@ -22,7 +22,6 @@ export default function CustomerInfo({ task }: CustomerInfoProps) {
     (async () => {
       try {
         const response = await fetchCustomerById(task.customerId);
-        console.log("fethed customer: ", response);
         if (response.birthDate == null) {
           response.birthDate = dateFormat(null);
         }
@@ -30,7 +29,6 @@ export default function CustomerInfo({ task }: CustomerInfoProps) {
           response.anniversaryDate = dateFormat(null);
         }
 
-        console.log("Fetched and auto date:", response)
         setCustomer(response);
       } catch (error) {
         console.log(error);

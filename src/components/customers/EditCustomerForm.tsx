@@ -1,10 +1,12 @@
 import { Customer } from "@/lib/customer";
 import Button from "../ui/Button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { editCustomer } from "@/services/customer-apis";
 import { useDispatch } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
+import { fetchParentCompanies } from "@/services/parent-companies-apis";
+import { ParentCompany } from "@/lib/parent-company";
 
 type EditCustomerFormProps = {
   customer: Customer;
@@ -17,9 +19,17 @@ export default function EditCustomerForm({
 }: EditCustomerFormProps) {
   const dispatch = useDispatch();
 
+  const [parentCompanies, setParentCompanies] = useState<ParentCompany[]>([]);
+
   console.log("customer:", customer);
 
   const [tmpCustomer, setTmpCustomer] = useState({ ...customer });
+
+  useEffect(() => {
+    fetchParentCompanies(1)
+      .then((data) => setParentCompanies(data.content))
+      .catch((err) => console.log(err));
+  }, []);
 
   const handleCustomerChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -43,13 +53,13 @@ export default function EditCustomerForm({
     e.preventDefault();
     const customerEdt = { ...tmpCustomer };
     // Format birthDate and anniversaryDate as 'yyyy-MM-ddTHH:mm:ss'
-    customerEdt.birthDate = customerEdt.birthDate 
-        ? new Date(customerEdt.birthDate).toISOString().split('.')[0]
-        : undefined;
+    customerEdt.birthDate = customerEdt.birthDate
+      ? new Date(customerEdt.birthDate).toISOString().split(".")[0]
+      : undefined;
 
-    customerEdt.anniversaryDate = customerEdt.anniversaryDate 
-        ? new Date(customerEdt.anniversaryDate).toISOString().split('.')[0]
-        : undefined;
+    customerEdt.anniversaryDate = customerEdt.anniversaryDate
+      ? new Date(customerEdt.anniversaryDate).toISOString().split(".")[0]
+      : undefined;
 
     dispatch(toggleLoading());
     try {
@@ -69,7 +79,7 @@ export default function EditCustomerForm({
       <div style={{ height: "400px", overflow: "auto" }}>
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
-            Customer Name
+            Party Name
           </label>
           <input
             type="text"
@@ -198,6 +208,33 @@ export default function EditCustomerForm({
             onChange={handleCustomerChange}
             name="residenceAddress"
           ></textarea>
+        </div>
+        <div className="mb-3">
+          <select
+            value={
+              tmpCustomer.parentCompanyId ? tmpCustomer.parentCompanyId : "NONE"
+            }
+            onChange={(e) => {
+              if (e.target.value == "NONE") {
+                setTmpCustomer((prev) => ({ ...prev, parentCompanyId: null }));
+              } else {
+                const parentCompany = parentCompanies.find(
+                  (p) => p.id == Number(e.target.value)
+                );
+                setTmpCustomer((prev) => ({
+                  ...prev,
+                  parentCompanyId: parentCompany?.id as number,
+                }));
+              }
+            }}
+            className="form-select"
+            aria-label="Default select example"
+          >
+            {parentCompanies.map((parentCompany) => (
+              <option value={parentCompany.id}>{parentCompany.name}</option>
+            ))}
+            <option value={"NONE"}>NONE</option>
+          </select>
         </div>
       </div>
       <div className="my-3 mt-4 d-flex justify-content-end">

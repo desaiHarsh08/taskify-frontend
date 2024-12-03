@@ -9,11 +9,25 @@ import { TaskStats } from "@/lib/task-stats";
 import { fetchStats } from "@/services/task-apis";
 import MyToast from "../ui/MyToast";
 import { RiAlarmWarningFill } from "react-icons/ri";
+import { Customer } from "@/lib/customer";
 
 export default function OverallTaskStats() {
   const [stats, setStats] = useState<TaskStats | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
+  const [customerDetails, setCustomerDetails] = useState<Customer>({
+    name: "",
+    email: "",
+    personOfContact: "",
+    phone: "",
+    state: "",
+    address: "",
+    residenceAddress: "",
+    city: "",
+    pincode: "",
+    parentCompanyId: null,
+    gst: "",
+  });
 
   useEffect(() => {
     getTaskStats();
@@ -22,12 +36,10 @@ export default function OverallTaskStats() {
   const getTaskStats = async () => {
     try {
       const response = await fetchStats();
-      console.log(response);
       setStats(response);
     } catch (error) {
       console.log(error);
     }
-
   };
 
   return (
@@ -45,6 +57,8 @@ export default function OverallTaskStats() {
           <CreateNewTask
             setShowMessage={setMessage}
             setShowToast={setShowToast}
+            customerDetails={customerDetails}
+            setCustomerDetails={setCustomerDetails}
           />
         </div>
       </div>

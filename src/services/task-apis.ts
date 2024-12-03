@@ -51,7 +51,7 @@ export const fetchTaskByPriority = async (page: number, priority: string): Promi
 
 export const fetchOverdueTasks = async (page: number): Promise<PageResponse<Task>> => {
     // /api/task-instances/overdue?page=1
-    const response = await API.get(`/api/task-instances/overdue?page=${page}&pageSize=10`);
+    const response = await API.get(`/api/task-instances/overdue?page=${page}&pageSize=1000`);
     console.log(response);
     return response.data;
 }

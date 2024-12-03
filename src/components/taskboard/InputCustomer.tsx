@@ -29,6 +29,8 @@ export default function InputCustomer({
     { label: "EXISTING", isSelected: true },
   ]);
 
+  const [newCustomer, setNewCustomer] = useState<Customer>(customerDetails);
+
   const handleTabClick = (index: number) => {
     const newtTabs = tabs.map((tab, idx) => {
       if (index === idx) {
@@ -41,6 +43,21 @@ export default function InputCustomer({
     });
 
     setTabs(newtTabs);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setNewCustomer((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setCustomerDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -72,8 +89,9 @@ export default function InputCustomer({
           if (tab.label === "NEW" && tab.isSelected) {
             return (
               <NewCustomerForm
-                customerDetails={customerDetails}
-                setCustomerDetails={setCustomerDetails}
+                customerDetails={newCustomer}
+                onCustomerChange={handleChange}
+                setCustomerDetails={setNewCustomer}
                 onNavigateModal={onNavigateModal}
               />
             );

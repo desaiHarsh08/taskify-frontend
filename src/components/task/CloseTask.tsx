@@ -27,7 +27,6 @@ export default function CloseTask({ task, setTask }: CloseTaskProps) {
         newTask.id as number,
         user?.id as number
       );
-      console.log(response);
       setTask(response);
     } catch (error) {
       console.log(error);

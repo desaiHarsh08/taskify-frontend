@@ -111,11 +111,14 @@ export default function ColumnCard({
     column && (
       <div>
         <div className="mb-3 d-flex flex-column gap-2">
-          <p className="mt-3 my-2">{columnTemplate.name}</p>
+          <p className="mt-3 my-2">
+            {columnTemplate.name} | {columnTemplate.id}
+          </p>
           {columnTemplate.columnMetadataTemplate.type === "FILE" && (
             <>
               <input
                 type="file"
+                accept=".pdf, .doc, .docx, .xls, .xlsx, image/jpeg, image/png"
                 multiple={
                   columnTemplate.columnMetadataTemplate.acceptMultipleFiles
                 }
@@ -161,12 +164,7 @@ export default function ColumnCard({
                 </div>
               );
             })}
-          {/* {console.log(
-            column.columnTemplateId,
-            columnTemplate.id,
-            columnTemplate.name,
-            columnTemplate.columnType
-          )} */}
+
           {columnTemplate.columnMetadataTemplate.type === "DATE" && (
             <input
               type="date"
@@ -183,15 +181,8 @@ export default function ColumnCard({
               value={column.textValue as string}
               onChange={(e) => onColumnChange(columnTemplate, e.target.value)}
             ></textarea>
-
-            // <RTE
-            //       defaultValue={column.textValue as string}
-            //       onChange={(newContent) => {
-            //         console.log("newContent:", newContent);
-            //         onColumnChange(columnTemplate, newContent);
-            //       }}
-            //       />
           )}
+
           {columnTemplate.columnMetadataTemplate.type === "TABLE" && (
             <RTE
               defaultValue={column.textValue as string}
@@ -203,7 +194,6 @@ export default function ColumnCard({
           )}
 
           {(columnTemplate.columnMetadataTemplate.type === "TEXT" ||
-            columnTemplate.columnMetadataTemplate.type === "LARGE_TEXT" ||
             columnTemplate.columnMetadataTemplate.type === "PHONE" ||
             columnTemplate.columnMetadataTemplate.type === "EMAIL") && (
             <input
@@ -239,8 +229,10 @@ export default function ColumnCard({
             </select>
           )}
 
-          {fieldTemplateIndex &&
-            columnTemplate.columnMetadataTemplate.type === "CHECKBOX" &&
+          {columnTemplate.columnMetadataTemplate.type === "CHECKBOX" &&
+            fieldTemplateIndex &&
+            columnTemplate.columnVariantTemplates &&
+            columnTemplate.columnVariantTemplates?.length > 0 &&
             columnTemplate.columnVariantTemplates?.map(
               (colVariantTemplate) =>
                 fn.fieldInstances[fieldTemplateIndex].columnInstances[
@@ -271,9 +263,7 @@ export default function ColumnCard({
                       </label>
                     </div>
                     <div>
-                      {fn.fieldInstances[
-                        fieldTemplateIndex
-                      ].columnInstances[
+                      {fn.fieldInstances[fieldTemplateIndex].columnInstances[
                         columnIndex
                       ].columnVariantInstances.find(
                         (ele) =>

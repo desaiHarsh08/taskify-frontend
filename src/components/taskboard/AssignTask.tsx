@@ -45,7 +45,6 @@ export default function AssignTask({
   useEffect(() => {
     fetchAllUsers(1)
       .then((data) => {
-        console.log("all users: ", );
         setUsers(data.content);
         setFilteredUsers(data.content);
       })

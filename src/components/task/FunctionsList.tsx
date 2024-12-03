@@ -12,7 +12,6 @@ export default function FunctionsList({ task }: FunctionsListProps) {
   const refetchFlag = useSelector(selectRefetch);
 
   useEffect(() => {
-    console.log("task.functions: ", task.functionInstances?.length);
   }, [refetchFlag, task, task.functionInstances]);
 
   return (

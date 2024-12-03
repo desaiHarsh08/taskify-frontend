@@ -19,8 +19,7 @@ export default function DeleteTaskForm({ task }: DeleteTaskFormProps) {
     e.preventDefault();
     dispatch(toggleLoading());
     try {
-      const response = await deleteTask(task.id as number);
-      console.log(response);
+      await deleteTask(task.id as number);
       navigate("/home/tasks", { replace: true });
     } catch (error) {
       console.log(error);

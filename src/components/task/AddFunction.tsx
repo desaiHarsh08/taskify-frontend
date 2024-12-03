@@ -82,7 +82,6 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
   }, [task.id, user?.id, taskTemplates]);
 
   const handleFunctionDefaultSet = (fnTemplate: FunctionTemplate) => {
-    console.log("fnTemplate: ", fnTemplate);
     const tmpNewFn: FunctionInstance = {
       functionTemplateId: fnTemplate.id,
       taskInstanceId: task.id,
@@ -97,10 +96,6 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           ? (fnTemplate.dropdownTemplates[0].id as number)
           : null,
     };
-    console.log(
-      "default set, function.dropdownTemplates:",
-      fnTemplate?.dropdownTemplates
-    );
 
     // Set the fields
     const tmpFields: FieldInstance[] = [];
@@ -127,11 +122,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
               ? (columnTemplate.dropdownTemplates[0].id as number)
               : null,
         };
-        console.log("in default fn setup, columnTemplate:", columnTemplate);
-        console.log(
-          "in default fn setup, columnVariants:",
-          columnTemplate.columnVariantTemplates
-        );
+
         if (
           columnTemplate.columnVariantTemplates &&
           columnTemplate.columnVariantTemplates?.length > 0
@@ -151,7 +142,6 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     }
     tmpNewFn.fieldInstances = [...tmpFields];
 
-    console.log("Default set newFn:", tmpNewFn);
     setNewFunction(tmpNewFn);
   };
 
@@ -177,12 +167,9 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
       return;
     }
     setLoading(true);
-    console.log("newFunction: ", newFunction);
     let tmpNewFn = { ...newFunction };
-    console.log("tmpNewFn:", tmpNewFn);
     const tmpDueDate = new Date(tmpNewFn.dueDate);
     const formattedDueDate = `${tmpDueDate.getFullYear()}-${(tmpDueDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDueDate.getDate().toString().padStart(2, "0")}`;
-    console.log("tmpNewFn.dueDate:", tmpNewFn.dueDate);
     tmpNewFn.dueDate = `${formattedDueDate}T00:00:00`;
     for (let i = 0; i < tmpNewFn.fieldInstances.length; i++) {
       for (
@@ -226,20 +213,30 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           j++
         ) {
           const col = tmpNewFn.fieldInstances[i].columnInstances[j];
+          console.log("col:", col);
           if (col.multipartFiles && col.multipartFiles?.length > 0) {
+            console.log("in if block, 217");
             const fieldInstances = response.fieldInstances.filter(
               (ele) =>
-                ele.fieldTemplateId ===
+                ele.fieldTemplateId ==
                 tmpNewFn.fieldInstances[i].fieldTemplateId
             );
             for (let k = 0; k < fieldInstances.length; k++) {
+              console.log("in if fieldInstance loop, 224");
               const clm = fieldInstances[k].columnInstances.find(
-                (ele) => ele.columnTemplateId === col.columnTemplateId
+                (ele) => ele.columnTemplateId == col.columnTemplateId
               );
+              console.log("clm:", clm);
               if (clm) {
                 try {
+                  console.log("uploading column, files: -");
                   const resCol = await uploadFiles(clm, col.multipartFiles);
-                  console.log(resCol);
+                  console.log(
+                    "uploaded file for column:",
+                    clm,
+                    ", resCol:",
+                    resCol
+                  );
                 } catch (error) {
                   console.log(error);
                 }
@@ -277,13 +274,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     }
 
     try {
-      console.log("before task.fn.length: ", task.functionInstances?.length);
       const response = await fetchTaskById(Number(task.id));
-      console.log(
-        "after adding fn task: ",
-        response,
-        response.functionInstances?.length
-      );
       setTask(response);
     } catch (error) {
       console.log(error);
@@ -291,7 +282,6 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
 
     try {
       const resFn = await fetchFunctionsByTaskInstanceId(task.id as number);
-      console.log("resFn:", resFn);
       setTask((prev) => ({ ...prev, functionInstances: resFn }));
     } catch (error) {}
 
@@ -302,7 +292,6 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     if (!newFunction) {
       return;
     }
-    console.log("newFunction: ", newFunction);
     // Destructure all keys except 'multipartFiles'
     const { multipartFiles, ...tmpNewFn }: FunctionInstance = {
       ...newFunction,

@@ -31,7 +31,6 @@ export default function TaskDetails({ task, setTask }: TaskDetailsProps) {
         const response = await fetchTaskTemplateById(
           task.taskTemplateId as number
         );
-        console.log(response);
         settaskTemplate(response);
       } catch (error) {
         console.log(error);

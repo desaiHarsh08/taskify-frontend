@@ -449,6 +449,7 @@ export default function TFunction() {
             <input
               type="file"
               name="multipartFiles"
+              accept=".pdf, .doc, .docx, .xls, .xlsx, image/jpeg, image/png"
               className="form-control"
               onChange={(e) => {
                 const files = e.target.files ? Array.from(e.target.files) : []; // Convert FileList to File[]

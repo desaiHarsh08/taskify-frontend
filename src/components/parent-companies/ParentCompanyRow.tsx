@@ -46,6 +46,7 @@ export default function ParentCompanyRow({
       console.log(error);
     } finally {
       dispatch(toggleLoading());
+      setOpenEditModal(false);
     }
   };
 
@@ -53,7 +54,7 @@ export default function ParentCompanyRow({
     <div className={`${styles["parent-row-card"]} d-flex border-bottom w-100`}>
       <p
         className="form-check border-end d-flex justify-content-center align-items-center px-0 py-3"
-        style={{ width: "3%" }}
+        style={{ width: "4%" }}
       >
         <input
           className="form-check-input m-0 "
@@ -64,13 +65,13 @@ export default function ParentCompanyRow({
       </p>
       <p
         className="border-end text-center d-flex justify-content-center align-items-center py-3"
-        style={{ width: "6.5%" }}
+        style={{ width: "12%" }}
       >
         {parentIndex + 1}
       </p>
       <p
         className="border-end text-cente d-flex justify-content-center align-items-center py-3"
-        style={{ width: "6.5%" }}
+        style={{ width: "12%" }}
       >
         C{((parentCompany?.id as number) + 1).toString().padStart(4, "0")}
       </p>
@@ -91,12 +92,6 @@ export default function ParentCompanyRow({
         style={{ width: "12%" }}
       >
         {parentCompany.phone}
-      </p>
-      <p
-        className="border-end text-center d-flex justify-content-center align-items-center py-3"
-        style={{ width: "12%" }}
-      >
-        {parentCompany.address}
       </p>
       <p
         className="border-end text-center d-flex justify-content-center align-items-center py-3"

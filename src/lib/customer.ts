@@ -12,5 +12,5 @@ export interface Customer {
     city: string;
     pincode: string;
     parentCompanyId: number | null;
-
+    gst?: string;
 }

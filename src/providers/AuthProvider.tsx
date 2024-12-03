@@ -56,11 +56,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         {},
         { withCredentials: true } // Include cookies in the request
       );
-      //   const { accessToken, user } = response.data;
       setAccessToken(response.data.accessToken);
       setUser(response.data.user);
-      console.log(response.data.accessToken, response.data.user);
-      //   login(accessToken, user);
 
       return response.data.accessToken;
     } catch (error) {
@@ -80,10 +77,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const requestInterceptor = API.interceptors.request.use(
       (config) => {
         if (accessToken) {
-          console.log("adding token: - ");
           config.headers["Authorization"] = `Bearer ${accessToken}`;
         }
-        console.log("here in itepr config:", config);
         return config;
       },
       (error) => Promise.reject(error)
@@ -95,9 +90,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const originalRequest = error.config;
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
-          console.log("retrying...");
           const newAccessToken = await generateNewToken();
-          console.log("new-accesstoken: ", newAccessToken);
           if (newAccessToken) {
             originalRequest.headers["Authorization"] =
               `Bearer ${newAccessToken}`;

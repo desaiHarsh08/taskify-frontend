@@ -5,12 +5,14 @@ import { Link, useNavigate } from "react-router-dom";
 import "@/styles/Root.css";
 import Modal from "@/components/ui/Modal";
 import { doLogin } from "@/services/auth-apis";
+import { FaEye, FaRegEyeSlash } from "react-icons/fa";
 
 const Root = () => {
   const navigate = useNavigate();
 
   const [showInvalidModal, setShowInvalidModal] = useState(false);
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [inputType, setInputType] = useState("password");
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -64,16 +66,39 @@ const Root = () => {
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                onChange={(e) =>
-                  setCredentials((prev) => ({
-                    ...prev,
-                    password: e.target.value,
-                  }))
-                }
-              />
+              <div className="d-flex align-items-center border">
+                <Form.Control
+                  type={inputType}
+                  placeholder="Password"
+                  onChange={(e) =>
+                    setCredentials((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
+                />
+                <Button
+                  type="button"
+                  className="px-1"
+                  onClick={() => {
+                    if (inputType == "password") {
+                      setInputType("text");
+                    } else {
+                      setInputType("password");
+                    }
+                  }}
+                  style={{
+                    backgroundColor: inputType == "text" ? "aliceblue" : "",
+                  }}
+                >
+                  <FaRegEyeSlash
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    className=" fs-5"
+                  />
+                </Button>
+              </div>
             </Form.Group>
             <div className="d-flex justify-content-end">
               <Link to={"/"}>Forget Password</Link>

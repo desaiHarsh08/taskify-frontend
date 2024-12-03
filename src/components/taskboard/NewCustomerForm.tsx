@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { fetchParentCompaniesList } from "@/services/parent-companies-apis";
 
 type NewCustomerFormProps = {
+  onCustomerChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   customerDetails: Customer;
   setCustomerDetails: React.Dispatch<React.SetStateAction<Customer>>;
   onNavigateModal: (
@@ -23,8 +26,9 @@ export default function NewCustomerForm({
   customerDetails,
   setCustomerDetails,
   onNavigateModal,
+  onCustomerChange,
 }: NewCustomerFormProps) {
-    const [parentCompanies, setParentCompanies] = useState<
+  const [parentCompanies, setParentCompanies] = useState<
     ParentCompany[] | null
   >();
 
@@ -40,17 +44,6 @@ export default function NewCustomerForm({
     })();
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-
-    setCustomerDetails((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   return (
     <div className="d-flex flex-column justify-content-betwen h-100 ">
       <div
@@ -60,7 +53,7 @@ export default function NewCustomerForm({
         <div className="w-75">
           <div className="mb-3">
             <label htmlFor="name" className="form-label">
-              Customer Name
+              Party Name
               <span className="text-danger">*</span>
             </label>
             <input
@@ -68,22 +61,9 @@ export default function NewCustomerForm({
               className="form-control"
               id="name"
               name="name"
-              onChange={handleChange}
+              onChange={onCustomerChange}
               value={customerDetails.name}
               required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              name="email"
-              onChange={handleChange}
-              value={customerDetails.email as string}
             />
           </div>
           <div className="mb-3">
@@ -96,56 +76,42 @@ export default function NewCustomerForm({
               className="form-control"
               id="personOfContact"
               name="personOfContact"
-              onChange={handleChange}
+              onChange={onCustomerChange}
               value={customerDetails.personOfContact}
               required
             />
           </div>
-          <div className="mb-3">
-            <label htmlFor="phone" className="form-label">
-              Phone
-              <span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="phone"
-              name="phone"
-              onChange={handleChange}
-              value={customerDetails.phone}
-              required
-            />
+          <div className="d-flex gap-4">
+            <div className="mb-3 w-50">
+              <label htmlFor="phone" className="form-label">
+                Phone
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="phone"
+                name="phone"
+                onChange={onCustomerChange}
+                value={customerDetails.phone}
+                required
+              />
+            </div>
+            <div className="mb-3 w-50">
+              <label htmlFor="email" className="form-label">
+                Email
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                name="email"
+                onChange={onCustomerChange}
+                value={customerDetails.email as string}
+              />
+            </div>
           </div>
-          <div className="mb-3">
-            <label htmlFor="state" className="form-label">
-              State
-              <span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="state"
-              name="state"
-              onChange={handleChange}
-              value={customerDetails.state}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="city" className="form-label">
-              City
-              <span className="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="city"
-              name="city"
-              onChange={handleChange}
-              value={customerDetails.city}
-              required
-            />
-          </div>
+
           <div className="mb-3">
             <label htmlFor="address" className="form-label">
               Address
@@ -155,23 +121,70 @@ export default function NewCustomerForm({
               className="form-control"
               id="address"
               name="address"
-              onChange={handleChange}
+              onChange={onCustomerChange}
               value={customerDetails.address}
               rows={3}
             ></textarea>
           </div>
+          <div className="d-flex gap-4">
+            <div className="mb-3" style={{ width: "33%" }}>
+              <label htmlFor="state" className="form-label">
+                State
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="state"
+                name="state"
+                onChange={onCustomerChange}
+                value={customerDetails.state}
+                required
+              />
+            </div>
+            <div className="mb-3" style={{ width: "33%" }}>
+              <label htmlFor="city" className="form-label">
+                City
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="city"
+                name="city"
+                onChange={onCustomerChange}
+                value={customerDetails.city}
+                required
+              />
+            </div>
+            <div className="mb-3" style={{ width: "33%" }}>
+              <label htmlFor="pincode" className="form-label">
+                Pincode
+                <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="pincode"
+                name="pincode"
+                onChange={onCustomerChange}
+                value={customerDetails.pincode}
+                required
+              />
+            </div>
+          </div>
           <div className="mb-3">
-            <label htmlFor="pincode" className="form-label">
-              Pincode
+            <label htmlFor="gst" className="form-label">
+              GST
               <span className="text-danger">*</span>
             </label>
             <input
               type="text"
               className="form-control"
-              id="pincode"
-              name="pincode"
-              onChange={handleChange}
-              value={customerDetails.pincode}
+              id="gst"
+              name="gst"
+              onChange={onCustomerChange}
+              value={customerDetails.gst}
               required
             />
           </div>
@@ -185,17 +198,17 @@ export default function NewCustomerForm({
                 setCustomerDetails((prev) => ({
                   ...prev,
                   parentCompanyId:
-                    e.target.value === "NONE" ? null : Number(e.target.value),
+                    e.target.value == "NONE" ? null : Number(e.target.value),
                 }))
               }
-              value={customerDetails.parentCompanyId as number}
+              value={customerDetails.parentCompanyId ? customerDetails.parentCompanyId as number : "NONE"}
               className="form-select"
               aria-label="Default select example"
             >
               {parentCompanies?.map((pc) => (
                 <option value={pc.id}>{pc.name}</option>
               ))}
-              {/* <option value={"NONE"}>NONE</option> */}
+              <option value={"NONE"}>NONE</option>
             </select>
           </div>
         </div>

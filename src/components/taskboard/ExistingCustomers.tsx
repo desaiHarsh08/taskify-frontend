@@ -10,7 +10,7 @@ const columns = [
   "",
   "Sr. No.",
   "#",
-  "Name",
+  "Party Name",
   "Person Of Contact",
   "Phone",
   "Addres",
@@ -70,14 +70,23 @@ export default function ExistingCustomers({
   }, [setCustomerDetails]);
 
   useEffect(() => {
-    // Fetch the customers
-    fetchCustomers(1)
+    getCustomers();
+  }, [pageData.pageNumber]);
+
+  const getCustomers = async () => {
+    fetchCustomers(pageData.pageNumber)
       .then((data) => {
         console.log(data);
         setCustomers(data.content);
+        setPageData({
+          pageNumber: data.pageNumber,
+          pageSize: data.pageSize,
+          totalPages: data.totalPages,
+          totalRecords: data.totatRecords,
+        });
       })
       .catch((error) => console.log(error));
-  }, [pageData.pageNumber]);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

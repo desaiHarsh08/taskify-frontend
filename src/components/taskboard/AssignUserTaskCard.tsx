@@ -20,7 +20,7 @@ export default function AssignUserTaskCard({
     setTask((prev) => ({ ...prev, assignedToUserId: user.id }));
     setAssignedUser(givenUser);
 
-    console.log("assigning to user: ", givenUser);
+
   };
 
   return (
