@@ -1,10 +1,25 @@
 import CreateNewTask from "@/components/taskboard/CreateNewTask";
 import MyToast from "@/components/ui/MyToast";
+import { Customer } from "@/lib/customer";
 import { useState } from "react";
 
 export default function AddTask() {
   const [showToast, setShowToast] = useState(false);
   const [showMessage, setShowMessage] = useState("");
+  const [customerDetails, setCustomerDetails] = useState<Customer>({
+    name: "",
+    email: "",
+    personOfContact: "",
+    phone: "",
+    state: "",
+    address: "",
+    residenceAddress: "",
+    city: "",
+    pincode: "",
+    parentCompanyId: null,
+    gst: "",
+  });
+
   return (
     <div className="p-3">
       <h2>Add Task</h2>
@@ -14,6 +29,8 @@ export default function AddTask() {
         representing a specific objective or goal.
       </p>
       <CreateNewTask
+        customerDetails={customerDetails}
+        setCustomerDetails={setCustomerDetails}
         setShowToast={setShowToast}
         setShowMessage={setShowMessage}
       />

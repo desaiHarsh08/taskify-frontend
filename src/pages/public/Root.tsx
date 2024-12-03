@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "@/styles/Root.css";
 import Modal from "@/components/ui/Modal";
 import { doLogin } from "@/services/auth-apis";
-import { FaEye, FaRegEyeSlash } from "react-icons/fa";
+import { FaRegEyeSlash } from "react-icons/fa";
 
 const Root = () => {
   const navigate = useNavigate();
