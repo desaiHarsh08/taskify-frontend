@@ -112,7 +112,7 @@ export default function ColumnCard({
       <div>
         <div className="mb-3 d-flex flex-column gap-2">
           <p className="mt-3 my-2">
-            {columnTemplate.name} | {columnTemplate.id}
+            {columnTemplate.name}
           </p>
           {columnTemplate.columnMetadataTemplate.type === "FILE" && (
             <>
