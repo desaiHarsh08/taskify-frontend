@@ -1,6 +1,6 @@
-import Task, { FunctionInstance } from "@/lib/task";
+import { FunctionInstance } from "@/lib/task";
 import { getFormattedDate } from "@/utils/helpers";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import styles from "@/styles/TaskRow.module.css";
 import { useEffect, useState } from "react";
@@ -31,8 +31,8 @@ type TaskRowProps = {
 export default function TaskRow({
   task,
   taskIndex,
-  onSelectTask,
-  selectedTasks,
+  //   onSelectTask,
+  //   selectedTasks,
   pageData,
 }: TaskRowProps) {
   console.log("task:", task);

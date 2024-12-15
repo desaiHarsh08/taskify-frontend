@@ -4,20 +4,18 @@ import OverallTaskStats from "@/components/taskboard/OverallTaskStats";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import TaskList from "@/components/all-tasks/TaskList";
-import Task from "@/lib/task";
 import {
   fetchAllTasks,
   fetchClosedTasks,
   fetchOverdueTasks,
   fetchPendingTasks,
   fetchTaskByPriority,
-  fetchTasksByAbbreviationOrDate,
   getSearchTask,
 } from "@/services/task-apis";
 
 import Button from "@/components/ui/Button";
 import Pagination from "@/components/global/Pagination";
-import { useAuth } from "@/hooks/useAuth";
+
 import TaskSummary from "@/lib/task-summary";
 
 const months = [
@@ -45,9 +43,9 @@ export default function TaskBoard() {
     totalRecords: 0,
   });
   const [searchText, setSearchText] = useState("");
-  const [createdDate, setCreatedDate] = useState(
-    `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date().getDate().toString().padStart(2, "0")}`
-  );
+//   const [createdDate, setCreatedDate] = useState(
+//     `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date().getDate().toString().padStart(2, "0")}`
+//   );
   const [allTasks, setAllTasks] = useState<TaskSummary[]>([]);
   const [tabs, setTabs] = useState([
     { tabLabel: "All Tasks", isSelected: true },
@@ -95,7 +93,7 @@ export default function TaskBoard() {
     }
   };
 
-  const handleOrderoByEdited = (tasks: TaskSummary[]) => {
+  const handleOrderoByEdited = (_tasks: TaskSummary[]) => {
     // let tmpTasks: TaskSummary[] = [...tasks];
     // let tmpDate = new Date();
     // for (let t = 0; t < tasks.length; t++) {

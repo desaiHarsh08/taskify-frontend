@@ -2,8 +2,8 @@ import { toggleLoading } from "@/app/slices/loadingSlice";
 import TaskList from "@/components/all-tasks/TaskList";
 import Pagination from "@/components/global/Pagination";
 import Button from "@/components/ui/Button";
-import Task from "@/lib/task";
-import { fetchAllTasks, fetchTaskByAbbreviation } from "@/services/task-apis";
+import TaskSummary from "@/lib/task-summary";
+import { fetchAllTasks, getSearchTask } from "@/services/task-apis";
 import { useEffect, useState } from "react";
 import { MdDeleteSweep } from "react-icons/md";
 import { useDispatch } from "react-redux";
@@ -11,15 +11,15 @@ import { useDispatch } from "react-redux";
 export default function AllTasks() {
   const dispatch = useDispatch();
 
-  const [taskAbbreviation, setTaskAbbreviation] = useState("");
-  const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
+  const [searchText, setSearchText] = useState("");
+  const [selectedTasks] = useState<TaskSummary[]>([]);
   const [pageData, setPageData] = useState({
     pageNumber: 1,
     pageSize: 0,
     totalPages: 0,
     totalRecords: 0,
   });
-  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [allTasks, setAllTasks] = useState<TaskSummary[]>([]);
 
   useEffect(() => {
     getTasks(pageData.pageNumber);
@@ -43,18 +43,17 @@ export default function AllTasks() {
     }
   };
 
-  const handleSelectTask = (task: Task) => {
-    let newSelectedTask = [];
-    if (selectedTasks.some((t) => t.id === task.id)) {
-      // Remove the task
-      newSelectedTask = selectedTasks.filter((t) => t.id !== task.id);
-    } else {
-      // Add the task
-      newSelectedTask = [...selectedTasks];
-      newSelectedTask.push(task);
-    }
-
-    setSelectedTasks(newSelectedTask);
+  const handleSelectTask = (_task: TaskSummary) => {
+    // let newSelectedTask = [];
+    // if (selectedTasks.some((t) => t.id === task.id)) {
+    //   // Remove the task
+    //   newSelectedTask = selectedTasks.filter((t) => t.id !== task.id);
+    // } else {
+    //   // Add the task
+    //   newSelectedTask = [...selectedTasks];
+    //   newSelectedTask.push(task);
+    // }
+    // setSelectedTasks(newSelectedTask);
   };
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,9 +61,9 @@ export default function AllTasks() {
 
     dispatch(toggleLoading());
     try {
-      const response = await fetchTaskByAbbreviation(taskAbbreviation);
+      const response = await getSearchTask(searchText);
       console.log(response);
-      setAllTasks([response]);
+      setAllTasks([response as TaskSummary]);
     } catch (error) {
       console.log(error);
       //   if (error.response.data.statusCode === 404) {
@@ -99,8 +98,8 @@ export default function AllTasks() {
             <input
               type="text"
               className="form-control py-0"
-              value={taskAbbreviation}
-              onChange={(e) => setTaskAbbreviation(e.target.value)}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
               placeholder="type task id..."
               style={{ width: "170px" }}
             />

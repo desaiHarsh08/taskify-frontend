@@ -2,8 +2,8 @@ import { toggleLoading } from "@/app/slices/loadingSlice";
 import Button from "@/components/ui/Button";
 import Task from "@/lib/task";
 import TaskTemplate from "@/lib/task-template";
-import { fetchTaskByAbbreviation } from "@/services/task-apis";
-import { fetchTaskTemplateById } from "@/services/task-template-apis";
+// import { fetchTaskByAbbreviation } from "@/services/task-apis";
+// import { fetchTaskTemplateById } from "@/services/task-template-apis";
 import { getFormattedDate } from "@/utils/helpers";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -25,29 +25,29 @@ export default function SearchTask() {
   const dispatch = useDispatch();
 
   const [searchTxt, setSearchTxt] = useState("");
-  const [task, setTask] = useState<Task | null>(null);
-  const [taskTemplate, setTaskTemplate] = useState<TaskTemplate | null>(
+  const [task] = useState<Task | null>(null);
+  const [taskTemplate] = useState<TaskTemplate | null>(
     null
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(toggleLoading());
-    try {
-      const response = await fetchTaskByAbbreviation(searchTxt);
-      console.log(response);
-      setTask(response);
+    // try {
+    //   const response = await fetchTaskByAbbreviation(searchTxt);
+    //   console.log(response);
+    //   setTask(response);
 
-      const resProto = await fetchTaskTemplateById(
-        response.taskTemplateId as number
-      );
-      console.log(resProto);
-      setTaskTemplate(resProto);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      dispatch(toggleLoading());
-    }
+    //   const resProto = await fetchTaskTemplateById(
+    //     response.taskTemplateId as number
+    //   );
+    //   console.log(resProto);
+    //   setTaskTemplate(resProto);
+    // } catch (error) {
+    //   console.log(error);
+    // } finally {
+    //   dispatch(toggleLoading());
+    // }
   };
 
   //   const getTaskType = async () => {

@@ -89,7 +89,7 @@ export const updateTask = async (task: Task, userId: number): Promise<Task> => {
     return response.data;
 }
 
-export const fetchTaskByAbbreviation = async (taskAbbreviation: string): Promise<TaskSummary> => {
+export const fetchTaskByAbbreviation = async (taskAbbreviation: string): Promise<Task> => {
     const response = await API.get(`/api/task-instances/abbreviation/${taskAbbreviation}`);
     console.log(response);
     return response.data;
