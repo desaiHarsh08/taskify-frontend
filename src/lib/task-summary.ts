@@ -1,13 +1,12 @@
 import PriorityType from "./priority-type";
-import { Department } from "./user";
 
 export default interface TaskSummary {
-    readonly id?: number;
+    readonly id: number;
+    readonly taskTemplateId: number;
     abbreviation: string;
-    customerName: string;
-    jobNumber: string;
-    department: Department;
-    functionName: string;
+    customerId: number;
+    jobNumber: string | null;
+    functionId: number;
     priorityType: PriorityType;
-    updatedAt: Date | string | null;
+    closedAt?: Date | string | null;
 }

@@ -12,11 +12,13 @@ import {
   fetchPendingTasks,
   fetchTaskByPriority,
   fetchTasksByAbbreviationOrDate,
+  getSearchTask,
 } from "@/services/task-apis";
 
 import Button from "@/components/ui/Button";
 import Pagination from "@/components/global/Pagination";
 import { useAuth } from "@/hooks/useAuth";
+import TaskSummary from "@/lib/task-summary";
 
 const months = [
   "January",
@@ -34,9 +36,6 @@ const months = [
 ];
 
 export default function TaskBoard() {
-  const { accessToken, user } = useAuth();
-  console.log("accessToken: ", accessToken);
-  console.log("user: ", user);
   const refetchFlag = useSelector(selectRefetch);
 
   const [pageData, setPageData] = useState({
@@ -45,11 +44,11 @@ export default function TaskBoard() {
     totalPages: 1,
     totalRecords: 0,
   });
-  const [taskAbbreviation, setTaskAbbreviation] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [createdDate, setCreatedDate] = useState(
     `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date().getDate().toString().padStart(2, "0")}`
   );
-  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [allTasks, setAllTasks] = useState<TaskSummary[]>([]);
   const [tabs, setTabs] = useState([
     { tabLabel: "All Tasks", isSelected: true },
     { tabLabel: "Overdue Tasks", isSelected: false },
@@ -83,7 +82,8 @@ export default function TaskBoard() {
     try {
       const response = await fetchAllTasks(pageNumber);
       console.log(response);
-      handleOrderoByEdited(response.content);
+      setAllTasks(response.content);
+      //   handleOrderoByEdited(response.content);
       setPageData({
         pageNumber: pageNumber,
         pageSize: response.pageSize,
@@ -95,38 +95,38 @@ export default function TaskBoard() {
     }
   };
 
-  const handleOrderoByEdited = (tasks: Task[]) => {
-    let tmpTasks: Task[] = [...tasks];
-    let tmpDate = new Date();
-    for (let t = 0; t < tasks.length; t++) {
-      const task = tasks[t];
-      if (task && task.functionInstances) {
-        for (let i = 0; i < task?.functionInstances?.length; i++) {
-          for (
-            let j = 0;
-            j < task.functionInstances[i].fieldInstances.length;
-            j++
-          ) {
-            const fieldDate = new Date(
-              task.functionInstances[i].fieldInstances[j].updatedAt as Date
-            );
-            if (fieldDate > tmpDate) {
-              tmpDate = fieldDate;
-              tmpTasks = [task, ...tmpTasks];
-            }
-          }
-        }
-      }
-    }
-
-    setAllTasks(tasks);
+  const handleOrderoByEdited = (tasks: TaskSummary[]) => {
+    // let tmpTasks: TaskSummary[] = [...tasks];
+    // let tmpDate = new Date();
+    // for (let t = 0; t < tasks.length; t++) {
+    //   const task = tasks[t];
+    //   if (task && task.functionInstances) {
+    //     for (let i = 0; i < task?.functionInstances?.length; i++) {
+    //       for (
+    //         let j = 0;
+    //         j < task.functionInstances[i].fieldInstances.length;
+    //         j++
+    //       ) {
+    //         const fieldDate = new Date(
+    //           task.functionInstances[i].fieldInstances[j].updatedAt as Date
+    //         );
+    //         if (fieldDate > tmpDate) {
+    //           tmpDate = fieldDate;
+    //           tmpTasks = [task, ...tmpTasks];
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // setAllTasks(tasks);
   };
 
   const getTasksByPriority = async (priority: string, page: number) => {
     try {
       const response = await fetchTaskByPriority(page, priority);
       console.log(response);
-      handleOrderoByEdited(response.content);
+      //   handleOrderoByEdited(response.content);
+      setAllTasks(response.content);
       setPageData({
         pageNumber: page,
         pageSize: response.pageSize,
@@ -143,6 +143,7 @@ export default function TaskBoard() {
       const response = await fetchPendingTasks(page);
       console.log(response);
       handleOrderoByEdited(response.content);
+      setAllTasks(response.content);
       setPageData({
         pageNumber: page,
         pageSize: response.pageSize,
@@ -158,7 +159,8 @@ export default function TaskBoard() {
     try {
       const response = await fetchOverdueTasks(page);
       console.log("overdue task from db:", response);
-      handleOrderoByEdited(response.content);
+      //   handleOrderoByEdited(response.content);
+      setAllTasks(response.content);
       setPageData({
         pageNumber: page,
         pageSize: response.pageSize,
@@ -174,7 +176,8 @@ export default function TaskBoard() {
     try {
       const response = await fetchClosedTasks(page);
       console.log(response);
-      handleOrderoByEdited(response.content);
+      //   handleOrderoByEdited(response.content);
+      setAllTasks(response.content);
       setPageData({
         pageNumber: page,
         pageSize: response.pageSize,
@@ -199,7 +202,7 @@ export default function TaskBoard() {
   };
 
   const handleReset = () => {
-    setTaskAbbreviation("");
+    setSearchText("");
 
     const selectedTab = tabs.find((tab) => tab.isSelected);
     if (selectedTab?.tabLabel === "All Tasks") {
@@ -222,25 +225,17 @@ export default function TaskBoard() {
   const handleSearchTask = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetchTasksByAbbreviationOrDate(
-        1,
-        taskAbbreviation,
-        createdDate
-      );
-      setAllTasks(response.content);
-      setPageData({
-        pageNumber: 1,
-        pageSize: response.pageSize,
-        totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
-      });
+      const response = await getSearchTask(searchText);
+      console.log("search task response:", response);
+      setAllTasks([response as TaskSummary]);
     } catch (error) {
       console.log(error);
+      setAllTasks([]);
     }
   };
 
   return (
-    <div className="container-fluid p-3 h-100 w-100 border overflow-auto">
+    <div className="container-fluid p-3 h-100 w-100 overflow-auto">
       <div id="taskboard-area" className="gap-5 h-100">
         <div id="taskboard-a1">
           <OverallTaskStats />
@@ -285,17 +280,8 @@ export default function TaskBoard() {
                 <input
                   type="text"
                   className="form-control"
-                  value={taskAbbreviation}
-                  onChange={(e) => setTaskAbbreviation(e.target.value)}
-                  placeholder="type task_id..."
-                />
-              </div>
-              <div className="my-3">
-                <input
-                  type="date"
-                  className="form-control"
-                  value={createdDate}
-                  onChange={(e) => setCreatedDate(e.target.value)}
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
                   placeholder="type task_id..."
                 />
               </div>
@@ -306,7 +292,7 @@ export default function TaskBoard() {
                 </Button>
               </div>
             </form>
-            <div className="w-100 overflow-auto">
+            <div className="w-100">
               <TaskList
                 tasks={allTasks}
                 onSelectTask={() => {}}
@@ -322,7 +308,6 @@ export default function TaskBoard() {
               totalRecords={pageData.totalRecords}
             />
           </div>
-          {/* {window.innerWidth > 767 ? <MonthlyTaskStats /> : <AllTasks />} */}
         </div>
       </div>
     </div>

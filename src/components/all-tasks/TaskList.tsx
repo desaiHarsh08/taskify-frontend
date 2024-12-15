@@ -79,11 +79,12 @@
 
 import Task from "@/lib/task";
 import TaskRow from "./TaskRow";
+import TaskSummary from "@/lib/task-summary";
 
 type TaskListProps = {
-  tasks: Task[];
-  selectedTasks: Task[];
-  onSelectTask: (task: Task) => void;
+  tasks: TaskSummary[];
+  selectedTasks: TaskSummary[];
+  onSelectTask: (task: TaskSummary) => void;
   pageData: {
     pageNumber: number;
     pageSize: number;
@@ -93,16 +94,14 @@ type TaskListProps = {
 };
 
 const columns = [
-  "",
   "Sr. No.",
   "Task Id",
-  "Type",
+  "Customer",
+  "Job Number",
+  "Latest Department Name",
+  "Latest Function Name",
   "Priority",
-  "Department",
   "Last Edited",
-  "Status",
-  "Finished",
-  "Actions",
 ];
 
 export default function TaskList({
@@ -112,20 +111,15 @@ export default function TaskList({
   pageData,
 }: TaskListProps) {
   const tableColumns = columns.map((column, index) => {
-    let columnWidth = { width: "11.25%" };
-    if (index === 0) {
-      columnWidth = { width: "3%" };
-    } else if (index === 1) {
-      columnWidth = { width: "7%" };
+    let columnWidth = { width: "13%", backgroundColor: "aliceblue" };
+    if (index == 0) {
+      columnWidth = { ...columnWidth, width: "9%" };
     }
 
     return (
-      <p
-        className="text-center fw-medium py-1 m-0 border-end "
-        style={columnWidth}
-      >
+      <th className="text-center fw-medium border-end py-2" style={columnWidth}>
         {column}
-      </p>
+      </th>
     );
   });
 
@@ -135,27 +129,32 @@ export default function TaskList({
       className="table my-3 h-75 w-100 overflow-x-auto border"
     >
       <div
-        className="d-flex w-100 border bg-light border-bottom-0"
+        className="d-flex w-100 bg-light border-bottom-0"
         style={{
           borderBottomColor: "transparent",
           borderBottomRightRadius: "0",
           paddingRight: "14px",
         }}
       >
-        {tableColumns}
+        <table className="table ">
+          <thead>{tableColumns}</thead>
+          <tbody>
+            {tasks.length > 0 &&
+              tasks.map((task, taskIndex) => (
+                <TaskRow
+                  key={`task-${taskIndex}`}
+                  task={task}
+                  taskIndex={taskIndex}
+                  selectedTasks={selectedTasks}
+                  onSelectTask={onSelectTask}
+                  pageData={pageData}
+                />
+              ))}
+          </tbody>
+        </table>
       </div>
-      <div className="overflow-y-scroll" style={{ maxHeight: "500px" }}>
-        {tasks.map((task, taskIndex) => (
-          <TaskRow
-            key={`task-${taskIndex}`}
-            task={task}
-            taskIndex={taskIndex}
-            selectedTasks={selectedTasks}
-            onSelectTask={onSelectTask}
-            pageData={pageData}
-          />
-        ))}
-      </div>
+        {tasks.length == 0 && <p className="text-center my-5">No task found!</p>}
+      <div className="overflow-y-scroll" style={{ maxHeight: "500px" }}></div>
     </div>
   );
 }
