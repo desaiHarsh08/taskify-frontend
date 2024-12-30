@@ -38,7 +38,7 @@ export default function TFunction() {
   const { user } = useAuth();
   const dispatch = useDispatch();
   const { functionId } = useParams();
-
+  const [, setLoading] = useState(false);
   const refetchFlag = useSelector(selectRefetch);
 
   const [openAddSubFunction, setOpenAddSubFunction] = useState(false);
@@ -372,6 +372,10 @@ export default function TFunction() {
           >
             {openAddSubFunction && (
               <InputFunctionDetails
+                assignedUser={user}
+                setLoading={setLoading}
+                
+
                 selectedFunctionTemplate={fnTemplate}
                 setSelectedFunctionTemplate={setFnTemplate}
                 newFunction={fn as FunctionInstance}

@@ -30,8 +30,8 @@ import { uploadFiles } from "@/services/column-apis";
 
 type InputFunctionDetailsProps = {
   newFunction: FunctionInstance;
-  setTask: React.Dispatch<React.SetStateAction<TaskInstance>>;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setTask?: React.Dispatch<React.SetStateAction<TaskInstance>>;
+  setLoading?: React.Dispatch<React.SetStateAction<boolean>>;
   assignedUser: User | null;
   selectedFunctionTemplate: FunctionTemplate | null;
   setNewFunction: React.Dispatch<React.SetStateAction<FunctionInstance | null>>;
@@ -45,7 +45,7 @@ type InputFunctionDetailsProps = {
   >;
   handleFunctionDefaultSet: (fnTemplate: FunctionTemplate) => void;
   loading?: boolean;
-  setOpenModal: React.Dispatch<
+  setOpenModal?: React.Dispatch<
     React.SetStateAction<{
       selectFunction: boolean;
       assignTask: boolean;
@@ -57,7 +57,7 @@ type InputFunctionDetailsProps = {
       selectDepartment: boolean;
     }>
   >;
-  task: TaskInstance;
+  task?: TaskInstance;
 };
 
 export default function InputFunctionDetails({
@@ -68,7 +68,6 @@ export default function InputFunctionDetails({
   newFunction,
   setNewFunction,
   handleModalNavigate,
-  onAddFunction,
   handleFunctionDefaultSet,
   onAddAndCloseFunction,
   loading,
@@ -248,7 +247,7 @@ export default function InputFunctionDetails({
 
     console.log("changed fn:", tmpNewFn);
 
-    setNewFunction((prev) => tmpNewFn);
+    setNewFunction(() => tmpNewFn);
     console.log("newFunction:", newFunction);
   };
 
@@ -648,7 +647,9 @@ export default function InputFunctionDetails({
   const handleAddFunction = async (tmpFn: FunctionInstance) => {
     console.log("in add-fn, tmpFn:", tmpFn);
     console.log("in handleAddFunction, newFunction:", newFunction);
-    setLoading(true);
+    if (setLoading) {
+      setLoading(true);
+    }
     // const tmpNewFn = _.cloneDeep(newFunction);
     const tmpNewFn = tmpFn;
     console.log(tmpNewFn);
@@ -747,43 +748,45 @@ export default function InputFunctionDetails({
         );
         console.log(resFile);
       } catch (error) {
-        alert(
-          "Unable to upload the function files...!",
-          error.response.data.message
-        );
+        alert("Unable to upload the function files...!");
         console.log(error);
       }
     } catch (error) {
       console.log(error);
-      alert("Error in creating fn,", error.response.data.message);
+      //   alert("Error in creating fn,", error.response.data.message);
     } finally {
       dispatch(toggleLoading());
       dispatch(toggleRefetch());
-      setOpenModal({
-        selectFunction: false,
-        assignTask: false,
-        inputFunctionDetails: false,
-        taskType: false,
-        taskPriority: false,
-        customer: false,
-        taskInfo: false,
-        selectDepartment: false,
-      });
+      if (setOpenModal) {
+        setOpenModal({
+          selectFunction: false,
+          assignTask: false,
+          inputFunctionDetails: false,
+          taskType: false,
+          taskPriority: false,
+          customer: false,
+          taskInfo: false,
+          selectDepartment: false,
+        });
+      }
     }
 
-    try {
-      const response = await fetchTaskById(Number(task.id));
-      setTask(response);
-    } catch (error) {
-      console.log(error);
+    if (task && setTask) {
+      try {
+        const response = await fetchTaskById(Number(task.id));
+        setTask(response);
+      } catch (error) {
+        console.log(error);
+      }
+      try {
+        const resFn = await fetchFunctionsByTaskInstanceId(task.id as number);
+
+        setTask((prev) => ({ ...prev, functionInstances: resFn }));
+      } catch (error) {}
     }
-
-    try {
-      const resFn = await fetchFunctionsByTaskInstanceId(task.id as number);
-      setTask((prev) => ({ ...prev, functionInstances: resFn }));
-    } catch (error) {}
-
-    setLoading(false);
+    if (setLoading) {
+      setLoading(false);
+    }
   };
 
   return (

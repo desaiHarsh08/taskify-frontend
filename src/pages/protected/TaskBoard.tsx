@@ -1,7 +1,7 @@
 import { selectRefetch } from "@/app/slices/refetchSlice";
 import MonthlyTaskStats from "@/components/taskboard/MonthlyTaskStats";
 import OverallTaskStats from "@/components/taskboard/OverallTaskStats";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import TaskList from "@/components/all-tasks/TaskList";
 import {
@@ -18,7 +18,6 @@ import Button from "@/components/ui/Button";
 import Pagination from "@/components/global/Pagination";
 
 import TaskSummary from "@/lib/task-summary";
-import { AuthContext } from "@/providers/AuthProvider";
 import { useAuth } from "@/hooks/useAuth";
 
 const months = [

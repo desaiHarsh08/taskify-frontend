@@ -4,12 +4,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import SelectFunction from "./SelectFunction";
-import TaskTemplate, {
-  ColumnTemplate,
-  ColumnVariantTemplate,
-  FieldTemplate,
-  FunctionTemplate,
-} from "@/lib/task-template";
+import TaskTemplate, { FunctionTemplate } from "@/lib/task-template";
 import AssignTask from "../taskboard/AssignTask";
 import User from "@/lib/user";
 import Task, {
@@ -50,7 +45,6 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
 
   const dispatch = useDispatch();
 
-  const [fields, setFields] = useState<FieldInstance[]>([]);
   const [loading, setLoading] = useState(false);
   const taskTemplates = useSelector(selectTaskTemplates);
 
@@ -276,16 +270,13 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
         );
         console.log(resFile);
       } catch (error) {
-        const tmpErr = error as AxiosError;
-        alert(
-          "Unable to upload the function files...!",
-          tmpErr?.response?.data.message
-        );
+        error as AxiosError;
+        alert("Unable to upload the function files...!");
         console.log(error);
       }
     } catch (error) {
       console.log(error);
-      alert("Error in creating fn,", error.response.data.message);
+      alert("Error in creating fn,");
     } finally {
       dispatch(toggleLoading());
       dispatch(toggleRefetch());
