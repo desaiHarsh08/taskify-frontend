@@ -7,6 +7,8 @@ import Button from "../ui/Button";
 import { useDispatch } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 import { useAuth } from "@/hooks/useAuth";
+import { fetchAllUsers } from "@/services/auth-apis";
+import User from "@/lib/user";
 
 const priorities: PriorityType[] = ["NORMAL", "MEDIUM", "HIGH"];
 
@@ -26,6 +28,7 @@ export default function EditTaskForm({
   const { user } = useAuth();
 
   const [taskTemplates, settaskTemplates] = useState<taskTemplate[] | []>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -36,7 +39,17 @@ export default function EditTaskForm({
         console.log(error);
       }
     })();
+    getUsers();
   }, []);
+
+  const getUsers = async () => {
+    try {
+      const response = await fetchAllUsers(1);
+      setUsers(response.content);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -109,6 +122,27 @@ export default function EditTaskForm({
                 {priority}
               </option>
             ))}
+          </select>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="assignedToUserId" className="form-label">
+            Assignee
+          </label>
+          <select
+            value={task.assignedToUserId as number}
+            onChange={handleChange}
+            name="assignedToUserId"
+            className="form-select"
+            aria-label="Default select example"
+          >
+            {users.map(
+              (usr) =>
+                !usr.disabled && (
+                  <option key={usr.id} value={usr.id as number}>
+                    {usr.name}
+                  </option>
+                )
+            )}
           </select>
         </div>
         <div className="mb-3">

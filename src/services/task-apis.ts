@@ -22,6 +22,11 @@ export const fetchAllTasks = async (page: number): Promise<PageResponse<TaskSumm
     return response.data;
 }
 
+export const fetchTasksByAssignedUserId = async (page: number, assignedUserId: number): Promise<PageResponse<TaskSummary>> => {
+    const response = await API.get(`/api/task-instances/by-assigned-user?page=${page}&pageSize=10&assignedUserId=${assignedUserId}`);
+    return response.data;
+}
+
 export const fetchStats = async (): Promise<TaskStats> => {
     const response = await API.get(`/api/analytics/overall-stats`);
     return response.data;

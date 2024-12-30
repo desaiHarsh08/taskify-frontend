@@ -50,14 +50,12 @@ export const fetchUsersByDepartmentAndRole = async ({ department, role }: { depa
 
 export const fetchAllUsers = async (page: number) => {
     const response = await API.get(`/api/users?page=${page}`);
-    console.log(response.data);
 
     return response.data as PageResponse<User>
 }
 
 export const fetchUsersByDepartment = async (department: DepartmentType) => {
     const response = await API.get(`/api/users/department/${department}`);
-    console.log(response.data);
 
     return response.data as User[];
 }

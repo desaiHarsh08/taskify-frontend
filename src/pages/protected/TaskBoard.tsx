@@ -1,7 +1,7 @@
 import { selectRefetch } from "@/app/slices/refetchSlice";
 import MonthlyTaskStats from "@/components/taskboard/MonthlyTaskStats";
 import OverallTaskStats from "@/components/taskboard/OverallTaskStats";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import TaskList from "@/components/all-tasks/TaskList";
 import {
@@ -10,6 +10,7 @@ import {
   fetchOverdueTasks,
   fetchPendingTasks,
   fetchTaskByPriority,
+  fetchTasksByAssignedUserId,
   getSearchTask,
 } from "@/services/task-apis";
 
@@ -17,6 +18,8 @@ import Button from "@/components/ui/Button";
 import Pagination from "@/components/global/Pagination";
 
 import TaskSummary from "@/lib/task-summary";
+import { AuthContext } from "@/providers/AuthProvider";
+import { useAuth } from "@/hooks/useAuth";
 
 const months = [
   "January",
@@ -34,6 +37,8 @@ const months = [
 ];
 
 export default function TaskBoard() {
+  const { user } = useAuth();
+
   const refetchFlag = useSelector(selectRefetch);
 
   const [pageData, setPageData] = useState({
@@ -43,12 +48,13 @@ export default function TaskBoard() {
     totalRecords: 0,
   });
   const [searchText, setSearchText] = useState("");
-//   const [createdDate, setCreatedDate] = useState(
-//     `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date().getDate().toString().padStart(2, "0")}`
-//   );
+  //   const [createdDate, setCreatedDate] = useState(
+  //     `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date().getDate().toString().padStart(2, "0")}`
+  //   );
   const [allTasks, setAllTasks] = useState<TaskSummary[]>([]);
   const [tabs, setTabs] = useState([
     { tabLabel: "All Tasks", isSelected: true },
+    { tabLabel: "My Tasks", isSelected: false },
     { tabLabel: "Overdue Tasks", isSelected: false },
     { tabLabel: "HIGH", isSelected: false },
     { tabLabel: "MEDIUM", isSelected: false },
@@ -61,6 +67,8 @@ export default function TaskBoard() {
     const selectedTab = tabs.find((tab) => tab.isSelected);
     if (selectedTab?.tabLabel === "All Tasks") {
       getAllTasks(pageData.pageNumber);
+    } else if (selectedTab?.tabLabel === "My Tasks") {
+      getTasksByAssignedUser(user?.id as number, pageData.pageNumber);
     } else if (selectedTab?.tabLabel === "Overdue Tasks") {
       getOverdueTasks(pageData.pageNumber);
     } else if (
@@ -122,6 +130,26 @@ export default function TaskBoard() {
   const getTasksByPriority = async (priority: string, page: number) => {
     try {
       const response = await fetchTaskByPriority(page, priority);
+      console.log(response);
+      //   handleOrderoByEdited(response.content);
+      setAllTasks(response.content);
+      setPageData({
+        pageNumber: page,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getTasksByAssignedUser = async (
+    assignedUserId: number,
+    page: number
+  ) => {
+    try {
+      const response = await fetchTasksByAssignedUserId(page, assignedUserId);
       console.log(response);
       //   handleOrderoByEdited(response.content);
       setAllTasks(response.content);

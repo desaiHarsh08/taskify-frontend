@@ -1,4 +1,9 @@
-import { ColumnInstance, FieldInstance, FunctionInstance } from "@/lib/task";
+import _ from "lodash";
+import TaskInstance, {
+  ColumnInstance,
+  FieldInstance,
+  FunctionInstance,
+} from "@/lib/task";
 import {
   ColumnTemplate,
   ColumnVariantTemplate,
@@ -9,12 +14,25 @@ import {
 import Button from "../ui/Button";
 import FieldCard from "./FieldCard";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
+import {
+  createFunction,
+  fetchFunctionsByTaskInstanceId,
+  uploadFiles as uploadFnFiles,
+} from "@/services/function-apis";
+import { toggleLoading } from "@/app/slices/loadingSlice";
+import { toggleRefetch } from "@/app/slices/refetchSlice";
+import User from "@/lib/user";
+import { fetchTaskById } from "@/services/task-apis";
+import { uploadFiles } from "@/services/column-apis";
 // import { File } from "buffer";
 
 type InputFunctionDetailsProps = {
   newFunction: FunctionInstance;
+  setTask: React.Dispatch<React.SetStateAction<TaskInstance>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  assignedUser: User | null;
   selectedFunctionTemplate: FunctionTemplate | null;
   setNewFunction: React.Dispatch<React.SetStateAction<FunctionInstance | null>>;
   handleModalNavigate: (
@@ -27,10 +45,26 @@ type InputFunctionDetailsProps = {
   >;
   handleFunctionDefaultSet: (fnTemplate: FunctionTemplate) => void;
   loading?: boolean;
+  setOpenModal: React.Dispatch<
+    React.SetStateAction<{
+      selectFunction: boolean;
+      assignTask: boolean;
+      inputFunctionDetails: boolean;
+      taskType: boolean;
+      taskPriority: boolean;
+      customer: boolean;
+      taskInfo: boolean;
+      selectDepartment: boolean;
+    }>
+  >;
+  task: TaskInstance;
 };
 
 export default function InputFunctionDetails({
   selectedFunctionTemplate,
+  setOpenModal,
+  assignedUser,
+  task,
   newFunction,
   setNewFunction,
   handleModalNavigate,
@@ -38,9 +72,12 @@ export default function InputFunctionDetails({
   handleFunctionDefaultSet,
   onAddAndCloseFunction,
   loading,
+  setLoading,
+  setTask,
 }: InputFunctionDetailsProps) {
+  const dispatch = useDispatch();
+
   const taskTemplates = useSelector(selectTaskTemplates);
-  console.log("in InputFunctionDetails, taskTemplates:", taskTemplates);
 
   const [selectedFieldTemplate, setSelectedFieldTemplate] =
     useState<FieldTemplate | null>(null);
@@ -165,7 +202,7 @@ export default function InputFunctionDetails({
     value: unknown,
     _givenColumnVariantTemplates: ColumnVariantTemplate[] | undefined
   ) => {
-    const tmpNewFn = { ...newFunction };
+    const tmpNewFn = _.cloneDeep(newFunction);
 
     tmpNewFn.fieldInstances = tmpNewFn.fieldInstances.map((field) => {
       if (field.fieldTemplateId === fieldTemplate.id) {
@@ -178,11 +215,11 @@ export default function InputFunctionDetails({
             if (columnTemplate.columnMetadataTemplate.type === "BOOLEAN") {
               newCol.booleanValue = value as boolean;
             } else if (columnTemplate.columnMetadataTemplate.type === "FILE") {
-              newCol.multipartFiles = Array.from(value as FileList);
-              console.log(
-                "triggered, newCol.multipartFiles:",
-                newCol.multipartFiles
-              );
+              newCol.multipartFiles = [
+                ...(newCol.multipartFiles || []),
+                ...(value as File[]),
+              ];
+              console.log("Updated multipartFiles:", newCol.multipartFiles);
             } else if (
               ["NUMBER", "AMOUNT"].includes(
                 columnTemplate.columnMetadataTemplate.type
@@ -209,7 +246,10 @@ export default function InputFunctionDetails({
       return field;
     });
 
-    setNewFunction(tmpNewFn);
+    console.log("changed fn:", tmpNewFn);
+
+    setNewFunction((prev) => tmpNewFn);
+    console.log("newFunction:", newFunction);
   };
 
   const handleBoolean = (
@@ -591,12 +631,159 @@ export default function InputFunctionDetails({
       const tmpFn = { ...newFunction };
 
       // Convert FileList to an array and assign it to multipartFiles
-      tmpFn.multipartFiles = Array.from(files);
+      tmpFn.multipartFiles?.push(...Array.from(files));
 
       console.log("Files selected:", tmpFn.multipartFiles);
 
       setNewFunction(tmpFn);
     }
+  };
+
+  const handleAdd = async () => {
+    const tmpFn = _.cloneDeep(newFunction);
+    console.log("in input-fn-details, tmpFn:", tmpFn);
+    await handleAddFunction(tmpFn);
+  };
+
+  const handleAddFunction = async (tmpFn: FunctionInstance) => {
+    console.log("in add-fn, tmpFn:", tmpFn);
+    console.log("in handleAddFunction, newFunction:", newFunction);
+    setLoading(true);
+    // const tmpNewFn = _.cloneDeep(newFunction);
+    const tmpNewFn = tmpFn;
+    console.log(tmpNewFn);
+    const tmpDueDate = new Date(tmpNewFn.dueDate);
+    const formattedDueDate = `${tmpDueDate.getFullYear()}-${(tmpDueDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDueDate.getDate().toString().padStart(2, "0")}`;
+    tmpNewFn.dueDate = `${formattedDueDate}T00:00:00`;
+    for (let i = 0; i < tmpNewFn.fieldInstances.length; i++) {
+      for (
+        let j = 0;
+        j < tmpNewFn.fieldInstances[i].columnInstances.length;
+        j++
+      ) {
+        let tmpDate = null;
+        let formattedDate = null;
+        if (tmpNewFn.fieldInstances[i].columnInstances[j].dateValue) {
+          tmpDate = new Date(
+            tmpNewFn.fieldInstances[i].columnInstances[j].dateValue as string
+          );
+          formattedDate = `${tmpDate.getFullYear()}-${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDate.getDate().toString().padStart(2, "0")}`;
+          formattedDate = `${formattedDate}T00:00:00`;
+        }
+        tmpNewFn.fieldInstances[i].columnInstances[j] = {
+          ...tmpNewFn.fieldInstances[i].columnInstances[j],
+          dateValue:
+            tmpNewFn.fieldInstances[i].columnInstances[j].dateValue == null
+              ? null
+              : formattedDate,
+
+          multipartFiles:
+            tmpNewFn.fieldInstances[i].columnInstances[j].multipartFiles,
+        };
+      }
+    }
+
+    console.log("after formatting, tmNewFn:", tmpNewFn);
+
+    dispatch(toggleLoading());
+    try {
+      const { multipartFiles, ...tfn } = tmpNewFn;
+      console.log("Creating tfn:", tfn);
+      const response = await createFunction(
+        tfn as FunctionInstance,
+        assignedUser?.id as number
+      );
+      console.log(response);
+      //   Upload the files
+      for (let i = 0; i < tmpNewFn?.fieldInstances?.length; i++) {
+        for (
+          let j = 0;
+          j < tmpNewFn.fieldInstances[i].columnInstances.length;
+          j++
+        ) {
+          const col = tmpNewFn.fieldInstances[i].columnInstances[j];
+          console.log("col:", col);
+          if (col.multipartFiles) {
+            console.log("in if block, 217");
+            const fieldInstances = response.fieldInstances.filter(
+              (ele) =>
+                ele.fieldTemplateId ==
+                tmpNewFn.fieldInstances[i].fieldTemplateId
+            );
+            for (let k = 0; k < fieldInstances.length; k++) {
+              console.log("in if fieldInstance loop, 224");
+              const clm = fieldInstances[k].columnInstances.find(
+                (ele) => ele.columnTemplateId == col.columnTemplateId
+              );
+              console.log("clm:", clm);
+              if (clm) {
+                console.log("uploading column, files: -", col.multipartFiles);
+                // if (col.multipartFiles.length == 0) {
+                //   alert("no files");
+                //   return;
+                // }
+                try {
+                  const resCol = await uploadFiles(clm, col.multipartFiles);
+                  console.log(
+                    "uploaded file for column:",
+                    clm,
+                    ", resCol:",
+                    resCol
+                  );
+                } catch (error) {
+                  console.log(error);
+                  alert(`unable to upload the files for: ${col}`);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      try {
+        const resFile = await uploadFnFiles(
+          response,
+          tmpNewFn.multipartFiles as File[]
+        );
+        console.log(resFile);
+      } catch (error) {
+        alert(
+          "Unable to upload the function files...!",
+          error.response.data.message
+        );
+        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Error in creating fn,", error.response.data.message);
+    } finally {
+      dispatch(toggleLoading());
+      dispatch(toggleRefetch());
+      setOpenModal({
+        selectFunction: false,
+        assignTask: false,
+        inputFunctionDetails: false,
+        taskType: false,
+        taskPriority: false,
+        customer: false,
+        taskInfo: false,
+        selectDepartment: false,
+      });
+    }
+
+    try {
+      const response = await fetchTaskById(Number(task.id));
+      setTask(response);
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      const resFn = await fetchFunctionsByTaskInstanceId(task.id as number);
+      setTask((prev) => ({ ...prev, functionInstances: resFn }));
+    } catch (error) {}
+
+    setLoading(false);
   };
 
   return (
@@ -765,12 +952,7 @@ export default function InputFunctionDetails({
         >
           Back
         </Button>
-        <Button
-          disabled={loading}
-          onClick={() => {
-            onAddFunction();
-          }}
-        >
+        <Button disabled={loading} onClick={handleAdd}>
           {loading ? "Adding..." : "Add"}
         </Button>
         <Button

@@ -5,6 +5,7 @@ import { doCloseTask } from "@/services/task-apis";
 import React from "react";
 import { useDispatch } from "react-redux";
 import Button from "../ui/Button";
+import { toggleRefetch } from "@/app/slices/refetchSlice";
 
 type CloseTaskProps = {
   task: Task;
@@ -28,6 +29,7 @@ export default function CloseTask({ task, setTask }: CloseTaskProps) {
         user?.id as number
       );
       setTask(response);
+      dispatch(toggleRefetch());
     } catch (error) {
       console.log(error);
     } finally {

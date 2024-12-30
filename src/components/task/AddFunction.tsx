@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import SelectFunction from "./SelectFunction";
-import TaskTemplate, { FunctionTemplate } from "@/lib/task-template";
+import TaskTemplate, {
+  ColumnTemplate,
+  ColumnVariantTemplate,
+  FieldTemplate,
+  FunctionTemplate,
+} from "@/lib/task-template";
 import AssignTask from "../taskboard/AssignTask";
 import User from "@/lib/user";
 import Task, {
@@ -24,11 +30,12 @@ import { toggleLoading } from "@/app/slices/loadingSlice";
 
 import { uploadFiles } from "@/services/column-apis";
 import { uploadFiles as uploadFnFiles } from "@/services/function-apis";
-import { toggleRefetch } from "@/app/slices/refetchSlice";
+import { selectRefetch, toggleRefetch } from "@/app/slices/refetchSlice";
 import DepartmentType from "@/lib/department-type";
 import SelectDepartment from "../taskboard/SelectDepartment";
 import { closeField } from "@/services/field-apis";
 import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
+import { AxiosError } from "axios";
 
 type AddFunctionProps = {
   task: Task;
@@ -39,7 +46,11 @@ type AddFunctionProps = {
 export default function AddFunction({ task, setTask }: AddFunctionProps) {
   const { user } = useAuth();
 
+  const refetchFlag = useSelector(selectRefetch);
+
   const dispatch = useDispatch();
+
+  const [fields, setFields] = useState<FieldInstance[]>([]);
   const [loading, setLoading] = useState(false);
   const taskTemplates = useSelector(selectTaskTemplates);
 
@@ -62,6 +73,10 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
   });
 
   useEffect(() => {
+    console.log("Updated state in parent:", newFunction);
+  }, [newFunction, refetchFlag]);
+
+  useEffect(() => {
     // (async () => {
     //   const response = await fetchTaskTemplateById(Number(task.taskTemplateId));
 
@@ -82,7 +97,9 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
   }, [task.id, user?.id, taskTemplates]);
 
   const handleFunctionDefaultSet = (fnTemplate: FunctionTemplate) => {
+    console.log("Fired, handleFunctionDefaultSet()");
     const tmpNewFn: FunctionInstance = {
+      ...newFunction,
       functionTemplateId: fnTemplate.id,
       taskInstanceId: task.id,
       createdByUserId: user?.id,
@@ -163,11 +180,12 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
   };
 
   const handleAddFunction = async () => {
+    console.log("in add-fn, newFunction:", newFunction);
     if (!newFunction) {
       return;
     }
     setLoading(true);
-    let tmpNewFn = { ...newFunction };
+    let tmpNewFn = _.cloneDeep(newFunction);
     const tmpDueDate = new Date(tmpNewFn.dueDate);
     const formattedDueDate = `${tmpDueDate.getFullYear()}-${(tmpDueDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDueDate.getDate().toString().padStart(2, "0")}`;
     tmpNewFn.dueDate = `${formattedDueDate}T00:00:00`;
@@ -214,7 +232,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
         ) {
           const col = tmpNewFn.fieldInstances[i].columnInstances[j];
           console.log("col:", col);
-          if (col.multipartFiles && col.multipartFiles?.length > 0) {
+          if (col.multipartFiles) {
             console.log("in if block, 217");
             const fieldInstances = response.fieldInstances.filter(
               (ele) =>
@@ -228,8 +246,12 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
               );
               console.log("clm:", clm);
               if (clm) {
+                console.log("uploading column, files: -", col.multipartFiles);
+                // if (col.multipartFiles.length == 0) {
+                //   alert("no files");
+                //   return;
+                // }
                 try {
-                  console.log("uploading column, files: -");
                   const resCol = await uploadFiles(clm, col.multipartFiles);
                   console.log(
                     "uploaded file for column:",
@@ -239,6 +261,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
                   );
                 } catch (error) {
                   console.log(error);
+                  alert(`unable to upload the files for: ${col}`);
                 }
               }
             }
@@ -253,11 +276,16 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
         );
         console.log(resFile);
       } catch (error) {
-        // alert('Unable to upload the function files...!');
+        const tmpErr = error as AxiosError;
+        alert(
+          "Unable to upload the function files...!",
+          tmpErr?.response?.data.message
+        );
         console.log(error);
       }
     } catch (error) {
       console.log(error);
+      alert("Error in creating fn,", error.response.data.message);
     } finally {
       dispatch(toggleLoading());
       dispatch(toggleRefetch());
@@ -412,15 +440,15 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
   return (
     newFunction && (
       <div>
-        <Button
-          type="button"
-          onClick={() => handleModalNavigate("selectDepartment")}
-          disabled={
-            task.functionInstances?.some((fn) => !fn.closedAt) as boolean
-          }
-        >
-          Add
-        </Button>
+        {
+          <Button
+            type="button"
+            onClick={() => handleModalNavigate("selectDepartment")}
+            disabled={!!task.closedAt}
+          >
+            Add
+          </Button>
+        }
         <Modal
           open={openModal.selectDepartment}
           onHide={() => handleModalHide("selectDepartment")}
@@ -541,6 +569,11 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
             onAddFunction={handleAddFunction}
             onAddAndCloseFunction={handleAddAndCloseFunction}
             loading={loading}
+            setLoading={setLoading}
+            setOpenModal={setOpenModal}
+            assignedUser={assignedUser}
+            setTask={setTask}
+            task={task}
           />
         </Modal>
       </div>

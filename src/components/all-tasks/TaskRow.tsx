@@ -55,7 +55,7 @@ export default function TaskRow({
     setTaskTemplate(newTaskTemplate as TaskTemplate);
     getCustomer(task.customerId);
     getFunctionInstance(task.functionId);
-  }, [task.taskTemplateId]);
+  }, [task.taskTemplateId, task]);
 
   const getCustomer = async (customerId: number) => {
     try {

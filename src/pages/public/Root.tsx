@@ -23,9 +23,15 @@ const Root = () => {
     }
 
     try {
-      await doLogin(credentials);
+      const response = await doLogin(credentials);
       //   login(accessToken, user);
       console.log("going to home");
+      if (response.user.disabled) {
+        alert(
+          "Your account is suspended... Please contact the administrator of this app."
+        );
+        return;
+      }
       navigate("/home", { replace: true });
     } catch (error) {
       console.log(error);
