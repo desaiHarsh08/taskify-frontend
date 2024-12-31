@@ -435,7 +435,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           <Button
             type="button"
             onClick={() => handleModalNavigate("selectDepartment")}
-            disabled={!!task.closedAt}
+            disabled={!!task.closedAt || task.functionInstances?.some(fn => !fn.closedAt)}
           >
             Add
           </Button>
@@ -497,19 +497,19 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
             onNavigateModal={handleModalNavigate}
             setAssignedUser={setAssignedUser}
             onContinue={async () => {
-              if (assignedUser?.id !== user?.id) {
+              if (assignedUser?.id != user?.id) {
                 setTask((prev) => ({
                   ...prev,
                   assignedToUserId: assignedUser?.id,
                 }));
-                try {
-                  console.log("Assigning the task by creating new fn");
-                  //   const response = await updateTask(task, user?.id as number);
-                  handleAddFunction();
-                  //   console.log(response);
-                } catch (error) {
-                  console.log(error);
-                }
+                // try {
+                //   console.log("Assigning the task by creating new fn");
+                //   //   const response = await updateTask(task, user?.id as number);
+                // //   handleAddFunction();
+                //   //   console.log(response);
+                // } catch (error) {
+                //   console.log(error);
+                // }
 
                 dispatch(toggleLoading());
                 try {

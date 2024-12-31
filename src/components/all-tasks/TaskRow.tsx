@@ -80,32 +80,32 @@ export default function TaskRow({
 
   useEffect(() => {
     (async () => {
-      if (task) {
-        try {
-          console.log(task);
-          const response = await fetchFunctionsByTaskInstanceId(
-            task.id as number
-          );
-          console.log("task's fn:", response);
-          for (let i = 0; i < response?.length; i++) {
-            console.log("in loop");
-            console.log("last edited date:", response[i].closedAt);
-            if (response[i].closedAt != null) {
-              setLastEdited(response[i].closedAt as Date);
-              setDepartment(
-                taskTemplate?.functionTemplates.find(
-                  (ft) => ft.id == response[i].functionTemplateId
-                )?.department as string
-              );
-              break;
-            }
+      //   if (task) {
+      try {
+        console.log(task);
+        const response = await fetchFunctionsByTaskInstanceId(
+          task.id as number
+        );
+        console.log("task's fn:", response);
+        for (let i = 0; i < response?.length; i++) {
+          console.log("in loop");
+          console.log("last edited date:", response[i].closedAt);
+          if (response[i].closedAt != null) {
+            setLastEdited(response[i].closedAt as Date);
+            setDepartment(
+              taskTemplate?.functionTemplates.find(
+                (ft) => ft.id == response[i].functionTemplateId
+              )?.department as string
+            );
+            break;
           }
-        } catch (error) {
-          console.log(error);
         }
+      } catch (error) {
+        console.log(error);
       }
+      //   }
     })();
-  }, [task]);
+  }, [task, customer, task.taskTemplateId]);
 
   return (
     <tr

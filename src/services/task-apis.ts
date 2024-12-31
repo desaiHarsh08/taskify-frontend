@@ -42,8 +42,8 @@ export const fetchTasksByAbbreviationOrDate = async (page: number, abbreviation:
     return response.data;
 }
 
-export const getSearchTask = async (searchText: string): Promise<TaskSummary | null | ''> => {
-    const response = await API.get(`/api/task-instances/search?searchTxt=${searchText}`);
+export const getSearchTask = async (searchText: string, page: number): Promise<PageResponse<TaskSummary>> => {
+    const response = await API.get(`/api/task-instances/search?searchTxt=${searchText}&page=${page}&pageSize=10`);
     return response.data;
 }
 

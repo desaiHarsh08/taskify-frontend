@@ -250,9 +250,15 @@ export default function TaskBoard() {
   const handleSearchTask = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await getSearchTask(searchText);
+      const response = await getSearchTask(searchText, pageData.pageNumber);
       console.log("search task response:", response);
-      setAllTasks([response as TaskSummary]);
+      setAllTasks(response.content);
+      setPageData({
+        pageNumber: response.pageNumber,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords,
+      });
     } catch (error) {
       console.log(error);
       setAllTasks([]);
