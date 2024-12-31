@@ -61,9 +61,15 @@ export default function AllTasks() {
 
     dispatch(toggleLoading());
     try {
-      const response = await getSearchTask(searchText);
+      const response = await getSearchTask(searchText, pageData.pageNumber);
       console.log(response);
-      setAllTasks([response as TaskSummary]);
+      setAllTasks(response.content);
+      setPageData({
+        pageNumber: response.pageNumber,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords,
+      });
     } catch (error) {
       console.log(error);
       //   if (error.response.data.statusCode === 404) {
