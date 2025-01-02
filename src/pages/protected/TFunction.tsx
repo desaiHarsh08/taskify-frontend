@@ -41,6 +41,14 @@ export default function TFunction() {
   const [, setLoading] = useState(false);
   const refetchFlag = useSelector(selectRefetch);
 
+  const [tmpFilesObj, setTmpFilesObj] = useState<
+    {
+      fieldIndex: number;
+      columnIndex: number;
+      files: File[];
+    }[]
+  >([]);
+
   const [openAddSubFunction, setOpenAddSubFunction] = useState(false);
   const [fn, setFn] = useState<FunctionInstance | null>(null);
   const [fnBkp, setFnBkp] = useState<FunctionInstance | null>(null);
@@ -372,10 +380,10 @@ export default function TFunction() {
           >
             {openAddSubFunction && (
               <InputFunctionDetails
+                setTmpFilesObj={setTmpFilesObj}
+                tmpFilesObj={tmpFilesObj}
                 assignedUser={user}
                 setLoading={setLoading}
-                
-
                 selectedFunctionTemplate={fnTemplate}
                 setSelectedFunctionTemplate={setFnTemplate}
                 newFunction={fn as FunctionInstance}

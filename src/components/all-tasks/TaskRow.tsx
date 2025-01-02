@@ -43,7 +43,7 @@ export default function TaskRow({
 
   const [department, setDepartment] = useState("");
 
-  const [lastEdited, setLastEdited] = useState<Date | null>(null);
+  const [, setLastEdited] = useState<Date | null>(null);
 
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [fnInstance, setFnInstance] = useState<FunctionInstance | null>(null);
