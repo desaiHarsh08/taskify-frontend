@@ -47,6 +47,13 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
 
   const [loading, setLoading] = useState(false);
   const taskTemplates = useSelector(selectTaskTemplates);
+  const [tmpFilesObj, setTmpFilesObj] = useState<
+    {
+      fieldIndex: number;
+      columnIndex: number;
+      files: File[];
+    }[]
+  >([]);
 
   const [selectDepartment, setselectDepartment] =
     useState<DepartmentType>("QUOTATION");
@@ -435,7 +442,10 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           <Button
             type="button"
             onClick={() => handleModalNavigate("selectDepartment")}
-            disabled={!!task.closedAt || task.functionInstances?.some(fn => !fn.closedAt)}
+            disabled={
+              !!task.closedAt ||
+              task.functionInstances?.some((fn) => !fn.closedAt)
+            }
           >
             Add
           </Button>
@@ -554,6 +564,8 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
                 React.SetStateAction<FunctionInstance | null>
               >
             }
+            tmpFilesObj={tmpFilesObj}
+            setTmpFilesObj={setTmpFilesObj}
             handleFunctionDefaultSet={handleFunctionDefaultSet}
             setSelectedFunctionTemplate={setSelectedFunctionTemplate}
             handleModalNavigate={handleModalNavigate}

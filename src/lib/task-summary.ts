@@ -9,4 +9,5 @@ export default interface TaskSummary {
     functionId: number;
     priorityType: PriorityType;
     closedAt?: Date | string | null;
+    updatedAt?: Date | string | null;
 }

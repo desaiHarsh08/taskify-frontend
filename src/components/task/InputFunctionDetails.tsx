@@ -29,6 +29,20 @@ import { uploadFiles } from "@/services/column-apis";
 // import { File } from "buffer";
 
 type InputFunctionDetailsProps = {
+  tmpFilesObj: {
+    fieldIndex: number;
+    columnIndex: number;
+    files: File[];
+  }[];
+  setTmpFilesObj: React.Dispatch<
+    React.SetStateAction<
+      {
+        fieldIndex: number;
+        columnIndex: number;
+        files: File[];
+      }[]
+    >
+  >;
   newFunction: FunctionInstance;
   setTask?: React.Dispatch<React.SetStateAction<TaskInstance>>;
   setLoading?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -63,6 +77,8 @@ type InputFunctionDetailsProps = {
 export default function InputFunctionDetails({
   selectedFunctionTemplate,
   setOpenModal,
+  tmpFilesObj,
+  setTmpFilesObj,
   assignedUser,
   task,
   newFunction,
@@ -203,47 +219,84 @@ export default function InputFunctionDetails({
   ) => {
     const tmpNewFn = _.cloneDeep(newFunction);
 
-    tmpNewFn.fieldInstances = tmpNewFn.fieldInstances.map((field) => {
-      if (field.fieldTemplateId === fieldTemplate.id) {
-        const newField = { ...field };
+    tmpNewFn.fieldInstances = tmpNewFn.fieldInstances.map(
+      (field, fieldIndex) => {
+        if (field.fieldTemplateId === fieldTemplate.id) {
+          const newField = { ...field };
 
-        newField.columnInstances = newField.columnInstances.map((col) => {
-          if (col.columnTemplateId === columnTemplate.id) {
-            const newCol = { ...col };
+          newField.columnInstances = newField.columnInstances.map(
+            (col, colIndex) => {
+              if (col.columnTemplateId === columnTemplate.id) {
+                const newCol = { ...col };
 
-            if (columnTemplate.columnMetadataTemplate.type === "BOOLEAN") {
-              newCol.booleanValue = value as boolean;
-            } else if (columnTemplate.columnMetadataTemplate.type === "FILE") {
-              newCol.multipartFiles = [
-                ...(newCol.multipartFiles || []),
-                ...(value as File[]),
-              ];
-              console.log("Updated multipartFiles:", newCol.multipartFiles);
-            } else if (
-              ["NUMBER", "AMOUNT"].includes(
-                columnTemplate.columnMetadataTemplate.type
-              )
-            ) {
-              newCol.numberValue = value as number;
-            } else if (columnTemplate.columnMetadataTemplate.type === "DATE") {
-              newCol.dateValue = value as string;
-            } else if (
-              columnTemplate.columnMetadataTemplate.type === "DROPDOWN"
-            ) {
-              newCol.dropdownTemplateId = value as number;
-            } else {
-              newCol.textValue = value as string;
+                if (columnTemplate.columnMetadataTemplate.type === "BOOLEAN") {
+                  newCol.booleanValue = value as boolean;
+                } else if (
+                  columnTemplate.columnMetadataTemplate.type === "FILE"
+                ) {
+                  newCol.multipartFiles = [
+                    ...(newCol.multipartFiles || []),
+                    ...(value as File[]),
+                  ];
+
+                  const newTmpFilesObj = [...tmpFilesObj];
+                  if (
+                    tmpFilesObj.some(
+                      (ele) =>
+                        ele.fieldIndex == fieldIndex &&
+                        ele.columnIndex == colIndex
+                    )
+                  ) {
+                    const index = tmpFilesObj.findIndex(
+                      (ele) =>
+                        ele.fieldIndex == fieldIndex &&
+                        ele.columnIndex == colIndex
+                    );
+                    newTmpFilesObj[index] = {
+                      fieldIndex,
+                      columnIndex: colIndex,
+                      files: value as File[],
+                    };
+                  } else {
+                    newTmpFilesObj.push({
+                      fieldIndex,
+                      columnIndex: colIndex,
+                      files: value as File[],
+                    });
+                  }
+
+                  setTmpFilesObj(newTmpFilesObj);
+
+                  console.log("Updated multipartFiles:", newCol.multipartFiles);
+                } else if (
+                  ["NUMBER", "AMOUNT"].includes(
+                    columnTemplate.columnMetadataTemplate.type
+                  )
+                ) {
+                  newCol.numberValue = value as number;
+                } else if (
+                  columnTemplate.columnMetadataTemplate.type === "DATE"
+                ) {
+                  newCol.dateValue = value as string;
+                } else if (
+                  columnTemplate.columnMetadataTemplate.type === "DROPDOWN"
+                ) {
+                  newCol.dropdownTemplateId = value as number;
+                } else {
+                  newCol.textValue = value as string;
+                }
+
+                return newCol;
+              }
+              return col;
             }
+          );
 
-            return newCol;
-          }
-          return col;
-        });
-
-        return newField;
+          return newField;
+        }
+        return field;
       }
-      return field;
-    });
+    );
 
     console.log("changed fn:", tmpNewFn);
 
@@ -645,6 +698,8 @@ export default function InputFunctionDetails({
   };
 
   const handleAddFunction = async (tmpFn: FunctionInstance) => {
+    const filesObjs = [...tmpFilesObj];
+
     console.log("in add-fn, tmpFn:", tmpFn);
     console.log("in handleAddFunction, newFunction:", newFunction);
     if (setLoading) {
@@ -696,20 +751,22 @@ export default function InputFunctionDetails({
       );
       console.log(response);
       //   Upload the files
-      for (let i = 0; i < tmpNewFn?.fieldInstances?.length; i++) {
+      for (let i = 0; i < tmpFn?.fieldInstances?.length; i++) {
         for (
           let j = 0;
-          j < tmpNewFn.fieldInstances[i].columnInstances.length;
+          j < tmpFn.fieldInstances[i].columnInstances.length;
           j++
         ) {
-          const col = tmpNewFn.fieldInstances[i].columnInstances[j];
+          const col = tmpFn.fieldInstances[i].columnInstances[j];
           console.log("col:", col);
-          if (col.multipartFiles) {
+          const files = filesObjs.find(
+            (ele) => ele.fieldIndex == i && ele.columnIndex == j
+          )?.files;
+          if (files) {
             console.log("in if block, 217");
             const fieldInstances = response.fieldInstances.filter(
               (ele) =>
-                ele.fieldTemplateId ==
-                tmpNewFn.fieldInstances[i].fieldTemplateId
+                ele.fieldTemplateId == tmpFn.fieldInstances[i].fieldTemplateId
             );
             for (let k = 0; k < fieldInstances.length; k++) {
               console.log("in if fieldInstance loop, 224");
@@ -718,13 +775,13 @@ export default function InputFunctionDetails({
               );
               console.log("clm:", clm);
               if (clm) {
-                console.log("uploading column, files: -", col.multipartFiles);
+                console.log("uploading column, files: -", files);
                 // if (col.multipartFiles.length == 0) {
                 //   alert("no files");
                 //   return;
                 // }
                 try {
-                  const resCol = await uploadFiles(clm, col.multipartFiles);
+                  const resCol = await uploadFiles(clm, files);
                   console.log(
                     "uploaded file for column:",
                     clm,

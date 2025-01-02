@@ -148,7 +148,7 @@ export default function TaskRow({
       </td>
 
       <td className="border-end text-center" style={{ width: "13%" }}>
-        {getFormattedDate(lastEdited as Date)}
+        {getFormattedDate(task.updatedAt as Date)}
       </td>
 
       {/* </Link> */}
