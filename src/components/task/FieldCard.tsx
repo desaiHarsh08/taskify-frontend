@@ -1,4 +1,4 @@
-import { ColumnInstance, FunctionInstance } from "@/lib/task";
+import { FunctionInstance } from "@/lib/task";
 import {
   ColumnTemplate,
   ColumnVariantTemplate,
@@ -6,7 +6,6 @@ import {
 } from "@/lib/task-template";
 import ColField from "./ColField";
 import RTE from "../global/RTE";
-import { useEffect } from "react";
 
 type FieldCardProps = {
   setNewFunction: React.Dispatch<React.SetStateAction<FunctionInstance | null>>;
@@ -69,61 +68,61 @@ export default function FieldCard({
   //     }
   //   };
 
-  const getSortedColumnTemplates = () => {
-    console.log(fieldTemplate.columnSequences);
-    console.log(fieldTemplate.columnTemplates);
+//   const getSortedColumnTemplates = () => {
+//     console.log(fieldTemplate.columnSequences);
+//     console.log(fieldTemplate.columnTemplates);
 
-    if (
-      fieldTemplate.columnSequences &&
-      fieldTemplate.columnSequences?.length > 0
-    ) {
-      console.log(
-        fieldTemplate.columnTemplates.filter(
-          (ele) =>
-            fieldTemplate.columnSequences?.find(
-              (seq) => seq.columnTemplateId === ele.id
-            ) === undefined
-        )
-      );
-      // Sort the columnTemplates according to the sequence
-      const sortedColumnTemplates = [];
-      for (let i = 0; i <= fieldTemplate.columnSequences.length; i++) {
-        const colSeq = fieldTemplate.columnSequences.find(
-          (seq) => seq.sequence == i + 1
-        );
-        if (colSeq) {
-          const colTemp = fieldTemplate.columnTemplates.find(
-            (colTemp) => colTemp.id == colSeq.columnTemplateId
-          );
-          sortedColumnTemplates.push(colTemp);
-        }
-      }
+//     if (
+//       fieldTemplate.columnSequences &&
+//       fieldTemplate.columnSequences?.length > 0
+//     ) {
+//       console.log(
+//         fieldTemplate.columnTemplates.filter(
+//           (ele) =>
+//             fieldTemplate.columnSequences?.find(
+//               (seq) => seq.columnTemplateId === ele.id
+//             ) === undefined
+//         )
+//       );
+//       // Sort the columnTemplates according to the sequence
+//       const sortedColumnTemplates = [];
+//       for (let i = 0; i <= fieldTemplate.columnSequences.length; i++) {
+//         const colSeq = fieldTemplate.columnSequences.find(
+//           (seq) => seq.sequence == i + 1
+//         );
+//         if (colSeq) {
+//           const colTemp = fieldTemplate.columnTemplates.find(
+//             (colTemp) => colTemp.id == colSeq.columnTemplateId
+//           );
+//           sortedColumnTemplates.push(colTemp);
+//         }
+//       }
 
-      // Update the newFunction fieldInstances to match sorted templates
-    //   const tmpNewFn = { ...newFunction };
-    //   const fieldIndex = fieldTemplateIndex; // Index of the current field template
+//       // Update the newFunction fieldInstances to match sorted templates
+//     //   const tmpNewFn = { ...newFunction };
+//     //   const fieldIndex = fieldTemplateIndex; // Index of the current field template
 
-    //   const updatedColumnInstances = sortedColumnTemplates.map(
-    //     (colTemplate) =>
-    //       colTemplate &&
-    //       tmpNewFn.fieldInstances[fieldIndex].columnInstances.find(
-    //         (colInstance) => colInstance.columnTemplateId == colTemplate.id
-    //       )
-    //   );
+//     //   const updatedColumnInstances = sortedColumnTemplates.map(
+//     //     (colTemplate) =>
+//     //       colTemplate &&
+//     //       tmpNewFn.fieldInstances[fieldIndex].columnInstances.find(
+//     //         (colInstance) => colInstance.columnTemplateId == colTemplate.id
+//     //       )
+//     //   );
 
-    //   // Replace columnInstances in newFunction for the sorted order
-    //   tmpNewFn.fieldInstances[fieldIndex].columnInstances =
-    //     updatedColumnInstances.filter(Boolean) as ColumnInstance[];
+//     //   // Replace columnInstances in newFunction for the sorted order
+//     //   tmpNewFn.fieldInstances[fieldIndex].columnInstances =
+//     //     updatedColumnInstances.filter(Boolean) as ColumnInstance[];
 
-    //   setNewFunction(tmpNewFn); // Ensure state updates with sorted instances
-    //   console.log("Updated Function:", tmpNewFn);
+//     //   setNewFunction(tmpNewFn); // Ensure state updates with sorted instances
+//     //   console.log("Updated Function:", tmpNewFn);
 
-      console.log("sortedColumnTemplates:", sortedColumnTemplates);
-      return sortedColumnTemplates;
-    }
+//       console.log("sortedColumnTemplates:", sortedColumnTemplates);
+//       return sortedColumnTemplates;
+//     }
 
-    return fieldTemplate.columnTemplates;
-  };
+//     return fieldTemplate.columnTemplates;
+//   };
 
   return (
     <div className="card">
