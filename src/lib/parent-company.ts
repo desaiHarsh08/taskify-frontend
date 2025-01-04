@@ -4,7 +4,6 @@ export interface ParentCompany {
     id?: number;
     name: string;
     email?: string;
-    address: string;
     state: string;
     city: string;
     pincode: string;

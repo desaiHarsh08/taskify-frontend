@@ -20,7 +20,7 @@ export interface ColumnVariantInstance {
     booleanValue: boolean | null;
     createdAt?: Date | string | string;
     updatedAt?: Date | null | string;
-    
+
 }
 
 export interface RowTableInstance {

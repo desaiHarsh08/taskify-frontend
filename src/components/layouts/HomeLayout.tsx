@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/global/Navbar";
 import NavigationLinks from "@/components/global/NavigationLinks";
 
@@ -16,11 +16,19 @@ import { setTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 // import MyToast from "../ui/MyToast";
 
 export default function HomeLayout() {
+  const navigate = useNavigate();
+
   const { taskId, functionId } = useParams();
   const loadingVisibility = useSelector(selectLoading);
   // const [messages, setMessages] = useState<string[]>([]);
   const dispatch = useDispatch();
   const { user } = useAuth();
+
+  useEffect(() => {
+    if (user?.disabled) {
+      navigate("/", { replace: true });
+    }
+  }, []);
 
   useEffect(() => {
     fetchTaskTemplates(1)

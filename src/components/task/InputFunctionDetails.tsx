@@ -90,6 +90,7 @@ export default function InputFunctionDetails({
   setLoading,
   setTask,
 }: InputFunctionDetailsProps) {
+  console.log("selectedFunctionTemplate:", selectedFunctionTemplate);
   const dispatch = useDispatch();
 
   const taskTemplates = useSelector(selectTaskTemplates);
@@ -959,20 +960,24 @@ export default function InputFunctionDetails({
                 handleBoolean={handleBoolean}
               />
             )}
+
             {!selectedFunctionTemplate?.choice &&
               selectedFunctionTemplate?.fieldTemplates.map(
-                (fieldTemplate, fieldTemplateIndex) => (
-                  <FieldCard
-                    handleCheckBox={handleCheckBox}
-                    setNewFunction={setNewFunction}
-                    key={`fieldTemplate-${fieldTemplateIndex}`}
-                    fieldTemplate={fieldTemplate}
-                    fieldTemplateIndex={fieldTemplateIndex}
-                    newFunction={newFunction}
-                    onFieldChange={handleFieldChange}
-                    handleBoolean={handleBoolean}
-                  />
-                )
+                (fieldTemplate, fieldTemplateIndex) => {
+                    
+                  return (
+                    <FieldCard
+                      handleCheckBox={handleCheckBox}
+                      setNewFunction={setNewFunction}
+                      key={`fieldTemplate-${fieldTemplateIndex}`}
+                      fieldTemplate={fieldTemplate}
+                      fieldTemplateIndex={fieldTemplateIndex}
+                      newFunction={newFunction}
+                      onFieldChange={handleFieldChange}
+                      handleBoolean={handleBoolean}
+                    />
+                  );
+                }
               )}
           </div>
         </div>

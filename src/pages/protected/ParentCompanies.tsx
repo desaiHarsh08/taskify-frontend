@@ -32,7 +32,6 @@ export default function ParentCompanies() {
   });
   const [newParentCompany, setNewParentCompany] = useState<ParentCompany>({
     name: "",
-    address: "",
     email: "",
     state: "",
     city: "",
@@ -89,7 +88,7 @@ export default function ParentCompanies() {
     e.preventDefault();
     dispatch(toggleLoading());
     try {
-        console.log(newParentCompany)
+      console.log(newParentCompany);
       const response = await createParentCompany(newParentCompany);
       console.log(response);
       dispatch(toggleRefetch());
@@ -97,6 +96,7 @@ export default function ParentCompanies() {
       console.log(error);
     } finally {
       dispatch(toggleLoading());
+      setOpenAddModal(false);
     }
   };
 

@@ -4,7 +4,10 @@ import React, { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import SelectFunction from "./SelectFunction";
-import TaskTemplate, { FunctionTemplate } from "@/lib/task-template";
+import TaskTemplate, {
+  FieldTemplate,
+  FunctionTemplate,
+} from "@/lib/task-template";
 import AssignTask from "../taskboard/AssignTask";
 import User from "@/lib/user";
 import Task, {
@@ -97,6 +100,43 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     // })();
   }, [task.id, user?.id, taskTemplates]);
 
+  const getSortedColumnTemplates = (fieldTemplate: FieldTemplate) => {
+    console.log(fieldTemplate.columnSequences);
+    console.log(fieldTemplate.columnTemplates);
+
+    if (
+      fieldTemplate.columnSequences &&
+      fieldTemplate.columnSequences?.length > 0
+    ) {
+      console.log(
+        fieldTemplate.columnTemplates.filter(
+          (ele) =>
+            fieldTemplate.columnSequences?.find(
+              (seq) => seq.columnTemplateId === ele.id
+            ) === undefined
+        )
+      );
+      // Sort the columnTemplates according to the sequence
+      const sortedColumnTemplates = [];
+      for (let i = 0; i <= fieldTemplate.columnSequences.length; i++) {
+        const colSeq = fieldTemplate.columnSequences.find(
+          (seq) => seq.sequence == i + 1
+        );
+        if (colSeq) {
+          const colTemp = fieldTemplate.columnTemplates.find(
+            (colTemp) => colTemp.id == colSeq.columnTemplateId
+          );
+          sortedColumnTemplates.push(colTemp);
+        }
+      }
+
+      console.log("sortedColumnTemplates:", sortedColumnTemplates);
+      return sortedColumnTemplates;
+    }
+
+    return fieldTemplate.columnTemplates;
+  };
+
   const handleFunctionDefaultSet = (fnTemplate: FunctionTemplate) => {
     console.log("Fired, handleFunctionDefaultSet()");
     const tmpNewFn: FunctionInstance = {
@@ -124,8 +164,13 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
         createdByUserId: user?.id,
         columnInstances: [],
       };
-      for (let j = 0; j < fieldTemplate.columnTemplates.length; j++) {
-        const columnTemplate = fieldTemplate.columnTemplates[j];
+      const sortedColumnTemplates = getSortedColumnTemplates(fieldTemplate);
+
+      for (let j = 0; j < sortedColumnTemplates.length; j++) {
+        const columnTemplate = sortedColumnTemplates[j];
+        if (!columnTemplate) {
+          continue;
+        }
         const newColInstance: ColumnInstance = {
           columnTemplateId: columnTemplate.id,
           numberValue: 0,

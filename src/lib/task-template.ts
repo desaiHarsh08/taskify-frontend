@@ -50,12 +50,20 @@ export interface ColumnTemplate {
     updatedAt: Date;
 }
 
+export interface ColumnSequence {
+    readonly id?: number | null | undefined;
+    columnTemplateId: number | null | undefined;
+    fieldTemplateId: number | null | undefined;
+    sequence: number | null;
+}
+
 export interface FieldTemplate {
     id?: number | null | undefined;
     title: string;
     description: string;
     functionTemplateId?: number | null | undefined;
     columnTemplates: ColumnTemplate[];
+    columnSequences?: ColumnSequence[];
     createdAt: Date;
     updatedAt: Date;
 }
