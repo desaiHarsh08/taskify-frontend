@@ -40,6 +40,7 @@ export default function TaskBoard() {
 
   const refetchFlag = useSelector(selectRefetch);
 
+  const [loading, setLoading] = useState(false);
   const [pageData, setPageData] = useState({
     pageNumber: 1,
     pageSize: 0,
@@ -86,6 +87,8 @@ export default function TaskBoard() {
   }, [refetchFlag, tabs, pageData.pageNumber]);
 
   const getAllTasks = async (pageNumber: number) => {
+    setLoading(true);
+    setAllTasks([]);
     try {
       const response = await fetchAllTasks(pageNumber);
       console.log(response);
@@ -99,6 +102,8 @@ export default function TaskBoard() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,6 +134,8 @@ export default function TaskBoard() {
   };
 
   const getTasksByPriority = async (priority: string, page: number) => {
+    setLoading(true);
+    setAllTasks([]);
     try {
       const response = await fetchTaskByPriority(page, priority);
       console.log(response);
@@ -142,6 +149,8 @@ export default function TaskBoard() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -150,6 +159,8 @@ export default function TaskBoard() {
     page: number
   ) => {
     try {
+      setAllTasks([]);
+      setLoading(true);
       const response = await fetchTasksByAssignedUserId(page, assignedUserId);
       console.log(response);
       //   handleOrderoByEdited(response.content);
@@ -162,11 +173,15 @@ export default function TaskBoard() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const getPendingTasks = async (page: number) => {
     try {
+      setAllTasks([]);
+      setLoading(true);
       const response = await fetchPendingTasks(page);
       console.log(response);
       handleOrderoByEdited(response.content);
@@ -179,11 +194,15 @@ export default function TaskBoard() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const getOverdueTasks = async (page: number) => {
     try {
+      setAllTasks([]);
+      setLoading(true);
       const response = await fetchOverdueTasks(page);
       console.log("overdue task from db:", response);
       //   handleOrderoByEdited(response.content);
@@ -196,11 +215,15 @@ export default function TaskBoard() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const getClosedTasks = async (page: number) => {
     try {
+      setAllTasks([]);
+      setLoading(true);
       const response = await fetchClosedTasks(page);
       console.log(response);
       //   handleOrderoByEdited(response.content);
@@ -213,6 +236,8 @@ export default function TaskBoard() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -255,6 +280,8 @@ export default function TaskBoard() {
     }
     console.log("in search,", searchText);
     try {
+      setAllTasks([]);
+      setLoading(true);
       const response = await getSearchTask(searchText, pageData.pageNumber);
       console.log("search task response:", response);
       setAllTasks(response.content);
@@ -267,6 +294,8 @@ export default function TaskBoard() {
     } catch (error) {
       console.log(error);
       setAllTasks([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -330,6 +359,7 @@ export default function TaskBoard() {
             </form>
             <div className="w-100">
               <TaskList
+                loading={loading}
                 tasks={allTasks}
                 onSelectTask={() => {}}
                 selectedTasks={[]}

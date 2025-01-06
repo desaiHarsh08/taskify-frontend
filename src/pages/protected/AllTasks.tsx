@@ -12,6 +12,7 @@ export default function AllTasks() {
   const dispatch = useDispatch();
 
   const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(false);
   const [selectedTasks] = useState<TaskSummary[]>([]);
   const [pageData, setPageData] = useState({
     pageNumber: 1,
@@ -28,6 +29,7 @@ export default function AllTasks() {
   const getTasks = async (page: number) => {
     try {
       dispatch(toggleLoading());
+      setLoading(true);
       const response = await fetchAllTasks(page);
       setPageData({
         pageNumber: page,
@@ -40,6 +42,7 @@ export default function AllTasks() {
       console.log(error);
     } finally {
       dispatch(toggleLoading());
+      setLoading(false);
     }
   };
 
@@ -61,6 +64,7 @@ export default function AllTasks() {
 
     dispatch(toggleLoading());
     try {
+      setLoading(true);
       const response = await getSearchTask(searchText, pageData.pageNumber);
       console.log(response);
       setAllTasks(response.content);
@@ -77,6 +81,7 @@ export default function AllTasks() {
       //   }
     } finally {
       dispatch(toggleLoading());
+      setLoading(false);
     }
   };
 
@@ -118,6 +123,7 @@ export default function AllTasks() {
       <div className="w-100 overflow-auto">
         {allTasks.length > 0 && (
           <TaskList
+            loading={loading}
             pageData={pageData}
             tasks={allTasks}
             selectedTasks={selectedTasks}

@@ -3,6 +3,7 @@ import TaskSummary from "@/lib/task-summary";
 
 type TaskListProps = {
   tasks: TaskSummary[];
+  loading: boolean;
   selectedTasks: TaskSummary[];
   onSelectTask: (task: TaskSummary) => void;
   pageData: {
@@ -28,6 +29,7 @@ export default function TaskList({
   tasks,
   selectedTasks,
   onSelectTask,
+  loading,
   pageData,
 }: TaskListProps) {
   const tableColumns = columns.map((column, index) => {
@@ -73,7 +75,10 @@ export default function TaskList({
           </tbody>
         </table>
       </div>
-      {tasks.length == 0 && <p className="text-center my-5">No task found!</p>}
+      {loading && <p className="text-center my-5">Please wait...!</p>}
+      {tasks.length == 0 && !loading && (
+        <p className="text-center my-5">No task found!</p>
+      )}
       <div className="overflow-y-scroll" style={{ maxHeight: "500px" }}></div>
     </div>
   );
