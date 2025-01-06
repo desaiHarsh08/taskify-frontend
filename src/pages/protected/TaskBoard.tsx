@@ -64,7 +64,9 @@ export default function TaskBoard() {
 
   useEffect(() => {
     const selectedTab = tabs.find((tab) => tab.isSelected);
-    if (selectedTab?.tabLabel === "All Tasks") {
+    if (searchText.trim() !== "") {
+      handleSearchTask();
+    } else if (selectedTab?.tabLabel === "All Tasks") {
       getAllTasks(pageData.pageNumber);
     } else if (selectedTab?.tabLabel === "My Tasks") {
       getTasksByAssignedUser(user?.id as number, pageData.pageNumber);
@@ -247,8 +249,11 @@ export default function TaskBoard() {
     }
   };
 
-  const handleSearchTask = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSearchTask = async (e?: React.FormEvent<HTMLFormElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
+    console.log("in search,", searchText);
     try {
       const response = await getSearchTask(searchText, pageData.pageNumber);
       console.log("search task response:", response);
