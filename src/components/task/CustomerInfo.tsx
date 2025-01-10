@@ -22,12 +22,12 @@ export default function CustomerInfo({ task }: CustomerInfoProps) {
     (async () => {
       try {
         const response = await fetchCustomerById(task.customerId);
-        if (response.birthDate == null) {
-          response.birthDate = dateFormat(null);
-        }
-        if (response.anniversaryDate == null) {
-          response.anniversaryDate = dateFormat(null);
-        }
+        // if (response.birthDate == null) {
+        //   response.birthDate = dateFormat(null);
+        // }
+        // if (response.anniversaryDate == null) {
+        //   response.anniversaryDate = dateFormat(null);
+        // }
 
         setCustomer(response);
       } catch (error) {
@@ -76,6 +76,10 @@ export default function CustomerInfo({ task }: CustomerInfoProps) {
         <li className="d-flex gap-2">
           <p style={{ width: "149px" }}>Pincode:</p>
           <p>{customer?.pincode}</p>
+        </li>
+        <li className="d-flex gap-2">
+          <p style={{ width: "149px" }}>GST:</p>
+          <p>{customer?.gst}</p>
         </li>
       </ul>
       <Button variant={"success"} onClick={() => setOpenModal(true)}>

@@ -40,7 +40,11 @@ export default function EditCustomerForm({
   };
 
   const dateFormat = (date: string | Date | null) => {
+    console.log(date);
     let tmpDate = new Date();
+    if (!date) {
+      return null;
+    }
     if (date) {
       tmpDate = new Date(date);
     }
@@ -53,13 +57,17 @@ export default function EditCustomerForm({
     e.preventDefault();
     const customerEdt = { ...tmpCustomer };
     // Format birthDate and anniversaryDate as 'yyyy-MM-ddTHH:mm:ss'
-    customerEdt.birthDate = customerEdt.birthDate
-      ? new Date(customerEdt.birthDate).toISOString().split(".")[0]
-      : undefined;
+    if (customerEdt.birthDate && customerEdt.birthDate != "") {
+      customerEdt.birthDate = customerEdt.birthDate
+        ? new Date(customerEdt.birthDate).toISOString().split(".")[0]
+        : undefined;
+    }
 
-    customerEdt.anniversaryDate = customerEdt.anniversaryDate
-      ? new Date(customerEdt.anniversaryDate).toISOString().split(".")[0]
-      : undefined;
+    if (customerEdt.anniversaryDate && customerEdt.anniversaryDate != "") {
+      customerEdt.anniversaryDate = customerEdt.anniversaryDate
+        ? new Date(customerEdt.anniversaryDate).toISOString().split(".")[0]
+        : undefined;
+    }
 
     dispatch(toggleLoading());
     try {
@@ -181,7 +189,7 @@ export default function EditCustomerForm({
             type="date"
             className="form-control"
             name="birthDate"
-            value={dateFormat(tmpCustomer.birthDate as string)}
+            value={dateFormat(tmpCustomer.birthDate as string) || ""}
             onChange={handleCustomerChange}
           />
         </div>
@@ -193,7 +201,7 @@ export default function EditCustomerForm({
             type="date"
             className="form-control"
             name="anniversaryDate"
-            value={dateFormat(tmpCustomer.anniversaryDate as string)}
+            value={dateFormat(tmpCustomer.anniversaryDate as string) || ""}
             onChange={handleCustomerChange}
           />
         </div>
