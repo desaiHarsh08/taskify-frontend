@@ -37,15 +37,15 @@ export default function CustomerInfo({ task }: CustomerInfoProps) {
     })();
   }, [task.customerId, refectFlag]);
 
-  const dateFormat = (date: string | Date | null) => {
-    let tmpDate = new Date();
-    if (date) {
-      tmpDate = new Date(date);
-    }
-    const formattedDate = `${tmpDate.getFullYear()}-${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDate.getDate().toString().padStart(2, "0")}`;
+//   const dateFormat = (date: string | Date | null) => {
+//     let tmpDate = new Date();
+//     if (date) {
+//       tmpDate = new Date(date);
+//     }
+//     const formattedDate = `${tmpDate.getFullYear()}-${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDate.getDate().toString().padStart(2, "0")}`;
 
-    return formattedDate;
-  };
+//     return formattedDate;
+//   };
 
   return (
     <div>
