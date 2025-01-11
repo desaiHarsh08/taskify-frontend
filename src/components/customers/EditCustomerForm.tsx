@@ -218,6 +218,18 @@ export default function EditCustomerForm({
           ></textarea>
         </div>
         <div className="mb-3">
+          <label htmlFor="gst" className="form-label">
+            GST
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            name="gst"
+            value={tmpCustomer.gst}
+            onChange={handleCustomerChange}
+          />
+        </div>
+        <div className="mb-3">
           <select
             value={
               tmpCustomer.parentCompanyId ? tmpCustomer.parentCompanyId : "NONE"
@@ -246,7 +258,7 @@ export default function EditCustomerForm({
         </div>
       </div>
       <div className="my-3 mt-4 d-flex justify-content-end">
-        <Button variant={"success"}>Edit</Button>
+        <Button variant={"success"}>Save</Button>
       </div>
     </form>
   );
