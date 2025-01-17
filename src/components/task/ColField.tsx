@@ -294,6 +294,7 @@ export default function ColField({
 
   return (
     <div className="mx-4">
+        in col
       <p>{columnTemplate?.name}</p>
       {columnTemplate?.columnMetadataTemplate.type === "FILE" && (
         <input

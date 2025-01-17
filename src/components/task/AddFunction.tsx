@@ -372,6 +372,33 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     const tmpDueDate = new Date(tmpNewFn.dueDate);
     const formattedDueDate = `${tmpDueDate.getFullYear()}-${(tmpDueDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDueDate.getDate().toString().padStart(2, "0")}`;
     tmpNewFn.dueDate = formattedDueDate + "T00:00:00";
+    for (let i = 0; i < tmpNewFn.fieldInstances.length; i++) {
+        for (
+          let j = 0;
+          j < tmpNewFn.fieldInstances[i].columnInstances.length;
+          j++
+        ) {
+          let tmpDate = null;
+          let formattedDate = null;
+          if (tmpNewFn.fieldInstances[i].columnInstances[j].dateValue) {
+            tmpDate = new Date(
+              tmpNewFn.fieldInstances[i].columnInstances[j].dateValue as string
+            );
+            formattedDate = `${tmpDate.getFullYear()}-${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDate.getDate().toString().padStart(2, "0")}`;
+            formattedDate = `${formattedDate}T00:00:00`;
+          }
+          tmpNewFn.fieldInstances[i].columnInstances[j] = {
+            ...tmpNewFn.fieldInstances[i].columnInstances[j],
+            dateValue:
+              tmpNewFn.fieldInstances[i].columnInstances[j].dateValue == null
+                ? null
+                : formattedDate,
+  
+            multipartFiles:
+              tmpNewFn.fieldInstances[i].columnInstances[j].multipartFiles,
+          };
+        }
+      }
 
     dispatch(toggleLoading());
     try {
@@ -387,27 +414,67 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           j < tmpNewFn.fieldInstances[i].columnInstances.length;
           j++
         ) {
-          const col = tmpNewFn.fieldInstances[i].columnInstances[j];
-          if (col.multipartFiles && col.multipartFiles?.length > 0) {
-            const fields = response.fieldInstances.filter(
+        //   const col = tmpNewFn.fieldInstances[i].columnInstances[j];
+        //   if (col.multipartFiles && col.multipartFiles?.length > 0) {
+        //     const fields = response.fieldInstances.filter(
+        //       (ele) =>
+        //         ele.fieldTemplateId ===
+        //         tmpNewFn.fieldInstances[i].fieldTemplateId
+        //     );
+        //     for (let k = 0; k < fields.length; k++) {
+        //       const clm = fields[k].columnInstances.find(
+        //         (ele) => ele.columnTemplateId === col.columnTemplateId
+        //       );
+        //       if (clm) {
+        //         try {
+        //           const resCol = await uploadFiles(clm, col.multipartFiles);
+        //           console.log(resCol);
+        //         } catch (error) {
+        //           console.log(error);
+        //         }
+        //       }
+        //     }
+        //   }
+
+        const col = tmpNewFn.fieldInstances[i].columnInstances[j];
+          console.log("col:", col);
+          const files = tmpFilesObj.find(
+            (ele) => ele.fieldIndex == i && ele.columnIndex == j
+          )?.files;
+          if (files) {
+            console.log("in if block, 217");
+            const fieldInstances = response.fieldInstances.filter(
               (ele) =>
-                ele.fieldTemplateId ===
-                tmpNewFn.fieldInstances[i].fieldTemplateId
+                ele.fieldTemplateId == tmpNewFn.fieldInstances[i].fieldTemplateId
             );
-            for (let k = 0; k < fields.length; k++) {
-              const clm = fields[k].columnInstances.find(
-                (ele) => ele.columnTemplateId === col.columnTemplateId
+            for (let k = 0; k < fieldInstances.length; k++) {
+              console.log("in if fieldInstance loop, 224");
+              const clm = fieldInstances[k].columnInstances.find(
+                (ele) => ele.columnTemplateId == col.columnTemplateId
               );
+              console.log("clm:", clm);
               if (clm) {
+                console.log("uploading column, files: -", files);
+                // if (col.multipartFiles.length == 0) {
+                //   alert("no files");
+                //   return;
+                // }
                 try {
-                  const resCol = await uploadFiles(clm, col.multipartFiles);
-                  console.log(resCol);
+                  const resCol = await uploadFiles(clm, files);
+                  console.log(
+                    "uploaded file for column:",
+                    clm,
+                    ", resCol:",
+                    resCol
+                  );
                 } catch (error) {
                   console.log(error);
+                  alert(`unable to upload the files for: ${col}`);
                 }
               }
             }
           }
+
         }
       }
 

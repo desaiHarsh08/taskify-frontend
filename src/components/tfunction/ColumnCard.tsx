@@ -308,9 +308,9 @@ export default function ColumnCard({
                   }
                 />
               </div>
-
+as
               {column.booleanValue &&
-                fieldTemplateIndex &&
+                fieldTemplateIndex && columnTemplate.nextFollowUpColumnTemplates ?
                 columnTemplate.nextFollowUpColumnTemplates?.map(
                   (nextFollowUpColTemplate, nextFollowUpColTemplateIndex) => (
                     <ColField
@@ -321,7 +321,8 @@ export default function ColumnCard({
                       setNewFunction={setFn}
                     />
                   )
-                )}
+                ) : null}
+                
             </>
           )}
         </div>
