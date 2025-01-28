@@ -16,7 +16,7 @@ import SearchTask from "./pages/protected/SearchTask";
 import Report from "./pages/protected/Report";
 import ActivityLogs from "./pages/protected/ActivityLogs";
 import { AuthProvider } from "./providers/AuthProvider";
-import Home from "./pages/protected/Home";
+// import Home from "./pages/protected/Home";
 
 const router = createBrowserRouter([
   {

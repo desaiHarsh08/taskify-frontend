@@ -27,7 +27,7 @@ export interface Permission {
 export interface ViewTask {
     readonly id?: number;
     taskType: DepartmentType;
-    userId: number;
+    userId?: number;
     permissions: Permission[]
 }
 

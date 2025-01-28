@@ -1,30 +1,29 @@
-import { Customer } from "@/lib/customer";
 import { TaskStats } from "@/lib/task-stats";
 import { fetchStats } from "@/services/task-apis";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FiType } from "react-icons/fi";
 import { IoIosPeople } from "react-icons/io";
 import { RiAlarmWarningFill } from "react-icons/ri";
 import { SiTask } from "react-icons/si";
-import PieChartComponent from "./PieChartComponent";
+// import PieChartComponent from "./PieChartComponent";
 
 export default function TaskStatsComponent() {
   const [stats, setStats] = useState<TaskStats | null>(null);
-  const [showToast, setShowToast] = useState(false);
-  const [message, setMessage] = useState("");
-  const [customerDetails, setCustomerDetails] = useState<Customer>({
-    name: "",
-    email: "",
-    personOfContact: "",
-    phone: "",
-    state: "",
-    address: "",
-    residenceAddress: "",
-    city: "",
-    pincode: "",
-    parentCompanyId: null,
-    gst: "",
-  });
+  //   const [showToast, setShowToast] = useState(false);
+  //   const [message, setMessage] = useState("");
+  //   const [customerDetails, setCustomerDetails] = useState<Customer>({
+  //     name: "",
+  //     email: "",
+  //     personOfContact: "",
+  //     phone: "",
+  //     state: "",
+  //     address: "",
+  //     residenceAddress: "",
+  //     city: "",
+  //     pincode: "",
+  //     parentCompanyId: null,
+  //     gst: "",
+  //   });
 
   useEffect(() => {
     getTaskStats();
@@ -92,7 +91,7 @@ export default function TaskStatsComponent() {
           <span className="fs-4">{stats?.customers}</span>
         </div>
       </div>
-      <div className={`card stat-card`} style={{border: "none"}}>
+      <div className={`card stat-card`} style={{ border: "none" }}>
         {/* <PieChartComponent />
         <p className="text-center">Task Bifurgation</p> */}
       </div>

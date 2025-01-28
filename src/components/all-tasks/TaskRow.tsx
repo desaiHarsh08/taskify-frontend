@@ -15,8 +15,8 @@ import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 import TaskSummary from "@/lib/task-summary";
 import { Customer } from "@/lib/customer";
 import { fetchCustomerById } from "@/services/customer-apis";
-import { useAuth } from "@/hooks/useAuth";
-import { Department } from "@/lib/user";
+
+
 
 type TaskRowProps = {
   task: TaskSummary;
@@ -37,7 +37,7 @@ export default function TaskRow({
   //   selectedTasks,
   pageData,
 }: TaskRowProps) {
-  const { user } = useAuth();
+
 
   const navigate = useNavigate();
 

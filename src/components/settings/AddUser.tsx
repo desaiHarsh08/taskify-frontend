@@ -30,7 +30,13 @@ export default function AddUser() {
     email: "",
     phone: "",
     disabled: false,
+    admin: false,
     departments: [{ name: "QUOTATION", roles: [{ type: "ADMIN" }] }],
+    viewTasks: [{
+        taskType: "ACCOUNTS",
+
+        permissions: []
+    }],
   });
 
   const handleUserChange = (

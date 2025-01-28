@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import {
   BarChart,
   Bar,
@@ -14,7 +14,7 @@ import {
   Cell,
   ResponsiveContainer,
   ComposedChart,
-  Area,
+//   Area,
 } from "recharts";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import TaskStatsComponent from "@/components/home/TaskStatsComponent";
@@ -108,7 +108,7 @@ export default function Home() {
                     fill="#8884d8"
                     label
                   >
-                    {taskTypes.map((entry, index) => (
+                    {taskTypes.map((_entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}

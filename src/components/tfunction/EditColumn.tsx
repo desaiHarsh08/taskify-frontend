@@ -10,7 +10,7 @@ import { toggleRefetch } from "@/app/slices/refetchSlice";
 import Button from "../ui/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
-import { Department } from "@/lib/user";
+
 import DepartmentType from "@/lib/department-type";
 
 type EditColumnProps = {

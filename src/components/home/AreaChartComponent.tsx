@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, Tooltip } from "react-bootstrap";
 import {
   Area,
@@ -10,50 +9,50 @@ import {
 } from "recharts";
 
 const data = [
-    {
-      name: "Jan",
-      high: 4000,
-      medium: 2400,
-      normal: 2400,
-    },
-    {
-      name: "Feb",
-      high: 3000,
-      medium: 1398,
-      normal: 2210,
-    },
-    {
-      name: "Mar",
-      high: 2000,
-      medium: 9800,
-      normal: 2290,
-    },
-    {
-      name: "Apr",
-      high: 2780,
-      medium: 3908,
-      normal: 2000,
-    },
-    {
-      name: "May",
-      high: 1890,
-      medium: 4800,
-      normal: 2181,
-    },
-    {
-      name: "Jun",
-      high: 2390,
-      medium: 3800,
-      normal: 2500,
-    },
-    {
-      name: "July",
-      high: 3490,
-      medium: 4300,
-      normal: 2100,
-    },
-  ];
-  
+  {
+    name: "Jan",
+    high: 4000,
+    medium: 2400,
+    normal: 2400,
+  },
+  {
+    name: "Feb",
+    high: 3000,
+    medium: 1398,
+    normal: 2210,
+  },
+  {
+    name: "Mar",
+    high: 2000,
+    medium: 9800,
+    normal: 2290,
+  },
+  {
+    name: "Apr",
+    high: 2780,
+    medium: 3908,
+    normal: 2000,
+  },
+  {
+    name: "May",
+    high: 1890,
+    medium: 4800,
+    normal: 2181,
+  },
+  {
+    name: "Jun",
+    high: 2390,
+    medium: 3800,
+    normal: 2500,
+  },
+  {
+    name: "July",
+    high: 3490,
+    medium: 4300,
+    normal: 2100,
+  },
+];
+
 export default function AreaChartComponent() {
   return (
     <Card style={{ height: "200px" }} className="border-0">

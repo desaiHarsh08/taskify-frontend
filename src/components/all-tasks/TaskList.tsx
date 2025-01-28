@@ -1,12 +1,12 @@
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 import TaskRow from "./TaskRow";
 import TaskSummary from "@/lib/task-summary";
-import { useEffect, useState } from "react";
-import { fetchFunctionsByTaskInstanceId } from "@/services/function-apis";
-import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
-import { useSelector } from "react-redux";
-import TaskTemplate from "@/lib/task-template";
-import { Department } from "@/lib/user";
+// import { useEffect, useState } from "react";
+// import { fetchFunctionsByTaskInstanceId } from "@/services/function-apis";
+// import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
+// import { useSelector } from "react-redux";
+// import TaskTemplate from "@/lib/task-template";
+// import { Department } from "@/lib/user";
 
 type TaskListProps = {
   tasks: TaskSummary[];
@@ -39,7 +39,6 @@ export default function TaskList({
   loading,
   pageData,
 }: TaskListProps) {
-  const { user } = useAuth();
 
   const tableColumns = columns.map((column, index) => {
     let columnWidth = { width: "13%", backgroundColor: "aliceblue" };
