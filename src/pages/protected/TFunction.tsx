@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { toggleLoading } from "@/app/slices/loadingSlice";
 import { selectRefetch, toggleRefetch } from "@/app/slices/refetchSlice";
+import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 import InputFunctionDetails from "@/components/task/InputFunctionDetails";
 
 import FieldRow from "@/components/tfunction/FieldRow";
@@ -8,6 +9,7 @@ import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import MyToast from "@/components/ui/MyToast";
 import { useAuth } from "@/hooks/useAuth";
+import DepartmentType from "@/lib/department-type";
 import { FieldInstance, FunctionInstance } from "@/lib/task";
 import { FunctionTemplate } from "@/lib/task-template";
 import { closeField, createField } from "@/services/field-apis";
@@ -22,7 +24,7 @@ import { fetchFunctionTemplateById } from "@/services/function-template-apis";
 import { getFormattedDate } from "@/utils/helpers";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const columns = [
   "Sr. No.",
@@ -35,6 +37,7 @@ const columns = [
 ];
 
 export default function TFunction() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const dispatch = useDispatch();
   const { functionId } = useParams();
@@ -48,6 +51,10 @@ export default function TFunction() {
       files: File[];
     }[]
   >([]);
+
+  const taskTemplates = useSelector(selectTaskTemplates);
+
+  const [disableSaveBtn, setDisableSaveBtn] = useState(false);
 
   const [openAddSubFunction, setOpenAddSubFunction] = useState(false);
   const [fn, setFn] = useState<FunctionInstance | null>(null);
@@ -73,6 +80,37 @@ export default function TFunction() {
       const responseProto = await fetchFunctionTemplateById(
         response.functionTemplateId as number
       );
+
+      console.log(taskTemplates);
+      console.log(user)
+      let department: DepartmentType;
+      for (let i = 0; i < taskTemplates.length; i++) {
+        for (let j = 0; j < taskTemplates[i].functionTemplates.length; j++) {
+          if (
+            taskTemplates[i].functionTemplates[j]?.id ===
+            response.functionTemplateId
+          ) {
+            department = taskTemplates[i].functionTemplates[j].department;
+            break;
+          }
+        }
+      }
+
+      // If user is not an admin, check view tasks for the department
+      const isViewTasksAllowed = user?.viewTasks.some(
+        (ele) => ele.taskType === department
+      );
+
+      if (user && !user.admin  && !user?.viewTasks.some(
+        (ele) => ele.taskType === department && ele.permissions.some(p => p.type === "VIEW_ADD_EDIT")
+      )) {
+        setDisableSaveBtn(true);
+      }
+
+      // Navigate the user if conditions are not met
+      if (user && !user.admin && !isViewTasksAllowed) {
+        navigate(-1);
+      }
 
       setFn(response);
       setFnBkp(response);
@@ -241,7 +279,7 @@ export default function TFunction() {
           <Button
             outline
             variant={"secondary"}
-            disabled={fn?.fieldInstances.some((field) => !field.closedAt)}
+            disabled={fn?.fieldInstances.some((field) => !field.closedAt) || disableSaveBtn}
             onClick={() => setOpenDoneFn(true)}
           >
             Done
@@ -342,7 +380,7 @@ export default function TFunction() {
               </select>
             </div>
             <div className="mb-3">
-              <Button variant="warning" onClick={updateFn}>
+              <Button variant="warning" onClick={updateFn} disabled={disableSaveBtn}>
                 Save
               </Button>
             </div>
@@ -362,7 +400,7 @@ export default function TFunction() {
               type="button"
               variant="info"
               onClick={handleCloseAllAndFunc}
-              disabled={!!fn?.closedAt}
+              disabled={!!fn?.closedAt || disableSaveBtn}
             >
               Mark All & Close Function
             </Button>
@@ -477,7 +515,7 @@ export default function TFunction() {
               }}
             />
           </div>
-          <Button variant="danger" type="button" onClick={updateFn}>
+          <Button variant="danger" type="button" onClick={updateFn} disabled={disableSaveBtn}>
             Save
           </Button>
         </div>

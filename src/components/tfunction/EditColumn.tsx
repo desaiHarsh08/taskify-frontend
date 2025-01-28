@@ -2,12 +2,16 @@
 import { ColumnInstance, FieldInstance, FunctionInstance } from "@/lib/task";
 import { ColumnTemplate, FieldTemplate } from "@/lib/task-template";
 import ColumnCard from "./ColumnCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateColumn, uploadFiles } from "@/services/column-apis";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
 import Button from "../ui/Button";
+import { useAuth } from "@/hooks/useAuth";
+import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
+import { Department } from "@/lib/user";
+import DepartmentType from "@/lib/department-type";
 
 type EditColumnProps = {
   field: FieldInstance;
@@ -24,10 +28,42 @@ export default function EditColumn({
   setFn,
   fieldTemplate,
 }: EditColumnProps) {
-  console.log("field:", field);
   const dispatch = useDispatch();
 
+  const { user } = useAuth();
+
+  const taskTemplates = useSelector(selectTaskTemplates);
+
   const [tmpField, setTmpField] = useState(field);
+
+  const [disableSaveBtn, setDisableSaveBtn] = useState(false);
+
+  useEffect(() => {
+    console.log(taskTemplates);
+    let department: DepartmentType;
+    for (let i = 0; i < taskTemplates.length; i++) {
+      for (let j = 0; j < taskTemplates[i].functionTemplates.length; j++) {
+        if (
+          taskTemplates[i].functionTemplates[j]?.id === fn.functionTemplateId
+        ) {
+          department = taskTemplates[i].functionTemplates[j].department;
+          break;
+        }
+      }
+    }
+
+    // If user is not an admin, check view tasks for the department
+    const isViewTasksAllowed = user?.viewTasks.some(
+      (ele) => ele.taskType === department && ele.permissions.some(p => p.type === "VIEW_ADD_EDIT")
+    );
+
+    // Disable the save button if conditions are not met
+    if (user && !user.admin && !isViewTasksAllowed) {
+      setDisableSaveBtn(true);
+    } else {
+      setDisableSaveBtn(false); // Enable save button if conditions are met
+    }
+  }, [taskTemplates]);
 
   const handleChangeColumn = (
     columnTemplate: ColumnTemplate,
@@ -105,7 +141,9 @@ export default function EditColumn({
                 for (let k = 0; k < nextFollowUpColumnTemplates?.length; k++) {
                   const obj = {
                     booleanValue: false,
-                    columnTemplateId: nextFollowUpColumnTemplates[k].nextFollowUpColumnTemplateId,
+                    columnTemplateId:
+                      nextFollowUpColumnTemplates[k]
+                        .nextFollowUpColumnTemplateId,
                     dateValue: new Date().toString(),
                     numberValue: 0,
                     textValue: "",
@@ -145,7 +183,9 @@ export default function EditColumn({
                       tmpFn.fieldInstances[i].columnInstances.filter(
                         (ele) =>
                           !nextFollowUpColumnTemplates.find(
-                            (nxtColTmp) => nxtColTmp.nextFollowUpColumnTemplateId == ele.columnTemplateId
+                            (nxtColTmp) =>
+                              nxtColTmp.nextFollowUpColumnTemplateId ==
+                              ele.columnTemplateId
                           )
                       );
                   }
@@ -219,7 +259,7 @@ export default function EditColumn({
         <Button
           variant={"success"}
           onClick={handleUpdateColumns}
-          disabled={!!field.closedAt}
+          disabled={!!field.closedAt || disableSaveBtn}
         >
           Save
         </Button>

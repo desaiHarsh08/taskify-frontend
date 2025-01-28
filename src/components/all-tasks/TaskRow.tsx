@@ -15,6 +15,8 @@ import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 import TaskSummary from "@/lib/task-summary";
 import { Customer } from "@/lib/customer";
 import { fetchCustomerById } from "@/services/customer-apis";
+import { useAuth } from "@/hooks/useAuth";
+import { Department } from "@/lib/user";
 
 type TaskRowProps = {
   task: TaskSummary;
@@ -35,8 +37,10 @@ export default function TaskRow({
   //   selectedTasks,
   pageData,
 }: TaskRowProps) {
-  console.log("task:", task);
+  const { user } = useAuth();
+
   const navigate = useNavigate();
+
   const taskTemplates = useSelector(selectTaskTemplates);
 
   const [taskTemplate, setTaskTemplate] = useState<TaskTemplate | null>(null);
@@ -107,7 +111,7 @@ export default function TaskRow({
     })();
   }, [task, customer, task.taskTemplateId]);
 
-  return (
+  let content = (
     <tr
       className={`${styles["task-row-card"]} border-bottom `}
       onClick={() => navigate(`/home/tasks/${task.abbreviation}`)}
@@ -154,4 +158,6 @@ export default function TaskRow({
       {/* </Link> */}
     </tr>
   );
+
+  return content;
 }

@@ -71,7 +71,7 @@ export default function HomeLayout() {
             className="w-100"
           />
           <p className="border-top border-secondary w-100 text-center p-2 m-0">
-            v1.3
+            v3.3.0
           </p>
         </aside>
         <section id="shared-area" className="px-0 overflow-hidden">

@@ -11,9 +11,11 @@ import { TbSubtask } from "react-icons/tb";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { TbReportAnalytics } from "react-icons/tb";
+import { FaHome } from "react-icons/fa";
 
 const links = [
-  { path: "/home", label: "Dashboard", icon: <MdDeveloperBoard /> },
+  { path: "/home", label: "Home", icon: <FaHome /> },
+//   { path: "taskboard", label: "Taskboard", icon: <MdDeveloperBoard /> },
   { path: "add-task", label: "Add Task", icon: <TbSubtask /> },
   { path: "add-customer", label: "Add Customer", icon: <FaPeopleGroup /> },
   { path: "search-task", label: "Search Task", icon: <CiSearch /> },

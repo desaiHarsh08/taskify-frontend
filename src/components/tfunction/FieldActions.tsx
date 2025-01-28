@@ -344,7 +344,7 @@ export default function FieldActions({
           </div>
         }
       >
-        <DoneField onContinue={handleDoneField} />
+        <DoneField onContinue={handleDoneField} fn={fn} />
       </Modal>
     </div>
   );
