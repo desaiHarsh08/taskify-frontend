@@ -82,7 +82,7 @@ export default function TFunction() {
       );
 
       console.log(taskTemplates);
-      console.log(user)
+      console.log(user);
       let department: DepartmentType;
       for (let i = 0; i < taskTemplates.length; i++) {
         for (let j = 0; j < taskTemplates[i].functionTemplates.length; j++) {
@@ -101,14 +101,24 @@ export default function TFunction() {
         (ele) => ele.taskType === department
       );
 
-      if (user && !user.admin  && !user?.viewTasks.some(
-        (ele) => ele.taskType === department && ele.permissions.some(p => p.type === "VIEW_ADD_EDIT")
-      )) {
+      if (
+        user &&
+        !user.admin &&
+        !user?.viewTasks.some(
+          (ele) =>
+            ele.taskType === department &&
+            ele.permissions.some((p) => p.type === "VIEW_ADD_EDIT")
+        )
+      ) {
         setDisableSaveBtn(true);
       }
 
       // Navigate the user if conditions are not met
       if (user && !user.admin && !isViewTasksAllowed) {
+        navigate(-1);
+      }
+
+      if (response.closedAt) {
         navigate(-1);
       }
 
@@ -279,7 +289,7 @@ export default function TFunction() {
           <Button
             outline
             variant={"secondary"}
-            disabled={fn?.fieldInstances.some((field) => !field.closedAt) || disableSaveBtn}
+            disabled={fn?.fieldInstances.some((field) => !field.closedAt)}
             onClick={() => setOpenDoneFn(true)}
           >
             Done
@@ -380,7 +390,11 @@ export default function TFunction() {
               </select>
             </div>
             <div className="mb-3">
-              <Button variant="warning" onClick={updateFn} disabled={disableSaveBtn}>
+              <Button
+                variant="warning"
+                onClick={updateFn}
+                disabled={disableSaveBtn}
+              >
                 Save
               </Button>
             </div>
@@ -400,7 +414,7 @@ export default function TFunction() {
               type="button"
               variant="info"
               onClick={handleCloseAllAndFunc}
-              disabled={!!fn?.closedAt || disableSaveBtn}
+              disabled={!!fn?.closedAt}
             >
               Mark All & Close Function
             </Button>
@@ -515,7 +529,12 @@ export default function TFunction() {
               }}
             />
           </div>
-          <Button variant="danger" type="button" onClick={updateFn} disabled={disableSaveBtn}>
+          <Button
+            variant="danger"
+            type="button"
+            onClick={updateFn}
+            disabled={disableSaveBtn}
+          >
             Save
           </Button>
         </div>

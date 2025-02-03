@@ -46,6 +46,7 @@ export default function FunctionsList({ task }: FunctionsListProps) {
         {task.functionInstances?.map((fn, fnIndex) => (
           <FunctionCard
             key={`fn-${fnIndex}`}
+            task={task}
             srno={(task.functionInstances?.length as number) - fnIndex}
             fn={fn}
             fnIndex={fnIndex}

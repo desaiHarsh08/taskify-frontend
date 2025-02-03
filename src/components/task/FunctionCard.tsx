@@ -1,3 +1,4 @@
+import Task from "@/lib/task";
 import { FunctionInstance } from "@/lib/task";
 import { FunctionTemplate } from "@/lib/task-template";
 import { fetchFunctionTemplateById } from "@/services/function-template-apis";
@@ -9,9 +10,15 @@ type FunctionCardProps = {
   fn: FunctionInstance;
   fnIndex: number;
   srno: number;
+  task: Task;
 };
 
-export default function FunctionCard({ fn, fnIndex, srno }: FunctionCardProps) {
+export default function FunctionCard({
+  fn,
+  fnIndex,
+
+  srno,
+}: FunctionCardProps) {
   const [functionTemplate, setfunctionTemplate] =
     useState<FunctionTemplate | null>(null);
 
