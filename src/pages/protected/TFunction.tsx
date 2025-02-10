@@ -24,7 +24,7 @@ import { fetchFunctionTemplateById } from "@/services/function-template-apis";
 import { getFormattedDate } from "@/utils/helpers";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const columns = [
   "Sr. No.",
@@ -37,7 +37,6 @@ const columns = [
 ];
 
 export default function TFunction() {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const dispatch = useDispatch();
   const { functionId } = useParams();
