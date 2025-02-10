@@ -81,7 +81,7 @@ export default function TFunction() {
 
       console.log(taskTemplates);
       console.log(user);
-      let department: DepartmentType;
+      let department: DepartmentType = {} as DepartmentType;
       for (let i = 0; i < taskTemplates.length; i++) {
         for (let j = 0; j < taskTemplates[i].functionTemplates.length; j++) {
           if (
@@ -93,6 +93,7 @@ export default function TFunction() {
           }
         }
       }
+      console.log(department);
 
       setFn(response);
       setFnBkp(response);
