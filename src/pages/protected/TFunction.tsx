@@ -54,7 +54,6 @@ export default function TFunction() {
 
   const taskTemplates = useSelector(selectTaskTemplates);
 
-  const [disableSaveBtn, setDisableSaveBtn] = useState(false);
 
   const [openAddSubFunction, setOpenAddSubFunction] = useState(false);
   const [fn, setFn] = useState<FunctionInstance | null>(null);
@@ -94,32 +93,6 @@ export default function TFunction() {
             break;
           }
         }
-      }
-
-      // If user is not an admin, check view tasks for the department
-      const isViewTasksAllowed = user?.viewTasks.some(
-        (ele) => ele.taskType === department
-      );
-
-      if (
-        user &&
-        !user.admin &&
-        !user?.viewTasks.some(
-          (ele) =>
-            ele.taskType === department &&
-            ele.permissions.some((p) => p.type === "VIEW_ADD_EDIT")
-        )
-      ) {
-        setDisableSaveBtn(true);
-      }
-
-      // Navigate the user if conditions are not met
-      if (user && !user.admin && !isViewTasksAllowed) {
-        navigate(-1);
-      }
-
-      if (response.closedAt) {
-        navigate(-1);
       }
 
       setFn(response);
@@ -393,7 +366,6 @@ export default function TFunction() {
               <Button
                 variant="warning"
                 onClick={updateFn}
-                disabled={disableSaveBtn}
               >
                 Save
               </Button>
@@ -533,7 +505,6 @@ export default function TFunction() {
             variant="danger"
             type="button"
             onClick={updateFn}
-            disabled={disableSaveBtn}
           >
             Save
           </Button>
