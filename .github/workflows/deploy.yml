@@ -53,7 +53,7 @@ jobs:
 
             echo "🔹 Building and starting services..."
             # Build the Docker image
-            docker build -t taskify-frontend .
+            sudo docker build -t taskify-frontend .
 
             # Run the container in detached mode (-d)
-            docker run -d --name taskify-frontend -p 3006:80 taskify-frontend
+            sudo docker run -d --name taskify-frontend -p 3006:80 taskify-frontend
