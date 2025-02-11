@@ -1,0 +1,59 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🚀 Deploy to AWS EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "🔹 Ensuring Docker is running..."
+            sudo systemctl start docker && sudo systemctl enable docker
+
+            echo "🔹 Navigating to project directory..."
+            cd /home/ubuntu/workspace/taskify-project || exit 1
+
+            if [ ! -d "/home/ubuntu/workspace/taskify-project/taskify-frontend" ]; then
+                echo "🔹 Cloning the Git repository..."
+                sudo git clone https://github.com/desaiHarsh08/taskify-frontend.git
+                echo "Inside repo"
+                cd taskify-frontend
+            else
+                echo "🔹 Repository already exists. Pulling latest changes..."
+                cd /home/ubuntu/workspace/taskify-project/taskify-frontend && sudo git pull origin main
+            fi
+
+            echo "🔹 Stop taskify-frontend container..."
+            sudo docker stop taskify-frontend || true
+            sudo docker rm taskify-frontend || true
+
+            echo "🔹 Resetting Git repository..."
+            sudo git fetch --all
+            sudo git reset --hard origin/main
+            sudo git pull origin main
+ 
+            echo "🔹 Creating frontend environment file..."
+            sudo cat <<EOF > /home/ubuntu/workspace/taskify-project/taskify-frontend/.env
+            VITE_APP_BACKEND_URL=${{ secrets.VITE_APP_BACKEND_URL }}
+            EOF
+
+            echo "🔹 Building and starting services..."
+            # Build the Docker image
+            docker build -t taskify-frontend .
+
+            # Run the container in detached mode (-d)
+            docker run -d --name taskify-frontend -p 3006:80 taskify-frontend
