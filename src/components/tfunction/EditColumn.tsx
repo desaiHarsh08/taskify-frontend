@@ -8,10 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
 import Button from "../ui/Button";
-import { useAuth } from "@/hooks/useAuth";
 import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
 
-import DepartmentType from "@/lib/department-type";
+// import DepartmentType from "@/lib/department-type";
 
 type EditColumnProps = {
   field: FieldInstance;
@@ -30,39 +29,25 @@ export default function EditColumn({
 }: EditColumnProps) {
   const dispatch = useDispatch();
 
-  const { user } = useAuth();
-
   const taskTemplates = useSelector(selectTaskTemplates);
 
   const [tmpField, setTmpField] = useState(field);
 
-  const [disableSaveBtn, setDisableSaveBtn] = useState(false);
-
   useEffect(() => {
     console.log(taskTemplates);
-    let department: DepartmentType;
-    for (let i = 0; i < taskTemplates.length; i++) {
-      for (let j = 0; j < taskTemplates[i].functionTemplates.length; j++) {
-        if (
-          taskTemplates[i].functionTemplates[j]?.id === fn.functionTemplateId
-        ) {
-          department = taskTemplates[i].functionTemplates[j].department;
-          break;
-        }
-      }
-    }
+    // let department: DepartmentType;
+    // for (let i = 0; i < taskTemplates.length; i++) {
+    //   for (let j = 0; j < taskTemplates[i].functionTemplates.length; j++) {
+    //     if (
+    //       taskTemplates[i].functionTemplates[j]?.id === fn.functionTemplateId
+    //     ) {
+    //       department = taskTemplates[i].functionTemplates[j].department;
+    //       break;
+    //     }
+    //   }
+    // }
+    // console.log(department)
 
-    // If user is not an admin, check view tasks for the department
-    const isViewTasksAllowed = user?.viewTasks.some(
-      (ele) => ele.taskType === department && ele.permissions.some(p => p.type === "VIEW_ADD_EDIT")
-    );
-
-    // Disable the save button if conditions are not met
-    if (user && !user.admin && !isViewTasksAllowed) {
-      setDisableSaveBtn(true);
-    } else {
-      setDisableSaveBtn(false); // Enable save button if conditions are met
-    }
   }, [taskTemplates]);
 
   const handleChangeColumn = (
@@ -259,7 +244,7 @@ export default function EditColumn({
         <Button
           variant={"success"}
           onClick={handleUpdateColumns}
-          disabled={!!field.closedAt || disableSaveBtn}
+          disabled={!!field.closedAt}
         >
           Save
         </Button>
