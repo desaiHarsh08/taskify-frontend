@@ -554,10 +554,10 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           <Button
             type="button"
             onClick={() => handleModalNavigate("selectDepartment")}
-            disabled={
-              !!task.closedAt ||
-              task.functionInstances?.some((fn) => !fn.closedAt)
-            }
+            // disabled={
+            //   !!task.closedAt ||
+            //   task.functionInstances?.some((fn) => !fn.closedAt)
+            // }
           >
             Add
           </Button>

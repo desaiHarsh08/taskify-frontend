@@ -78,6 +78,7 @@ export default function ExistingCustomers({
       .then((data) => {
         console.log(data);
         setCustomers(data.content);
+        setCustomerDetails(data.content[0]);
         setPageData({
           pageNumber: data.pageNumber,
           pageSize: data.pageSize,
