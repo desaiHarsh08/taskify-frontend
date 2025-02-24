@@ -2,7 +2,7 @@ import { GoWorkflow } from "react-icons/go";
 
 import { IoIosPeople } from "react-icons/io";
 
-import { MdWorkHistory } from "react-icons/md";
+import { MdDeveloperBoard, MdWorkHistory } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { SlLogout } from "react-icons/sl";
 import { IoLogoWebComponent } from "react-icons/io5";
@@ -12,10 +12,12 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { TbReportAnalytics } from "react-icons/tb";
 import { FaHome } from "react-icons/fa";
+import { useAuth } from "@/hooks/useAuth";
 
 const links = [
   { path: "/home", label: "Home", icon: <FaHome /> },
-//   { path: "taskboard", label: "Taskboard", icon: <MdDeveloperBoard /> },
+  { path: "taskboard", label: "Taskboard", icon: <MdDeveloperBoard /> },
+
   { path: "add-task", label: "Add Task", icon: <TbSubtask /> },
   { path: "add-customer", label: "Add Customer", icon: <FaPeopleGroup /> },
   { path: "search-task", label: "Search Task", icon: <CiSearch /> },
@@ -36,6 +38,8 @@ const accordianLinks = [
 ];
 
 export default function NavigationLinks() {
+  const { user } = useAuth();
+
   const { pathname } = useLocation();
 
   const accordianItems = (
@@ -63,17 +67,22 @@ export default function NavigationLinks() {
           data-bs-parent="#accordionExample"
         >
           <div className="accordion-body d-flex flex-column bg-dark">
-            {accordianLinks.map((alink) => (
-              <Link
-                key={alink.path}
-                to={alink.path}
-                className="d-flex gap-2 my-1 text-white"
-                style={{ textDecoration: "none" }}
-              >
-                <p>{alink.icon}</p>
-                <p>{alink.label}</p>
-              </Link>
-            ))}
+            {accordianLinks.map((alink) => {
+              if (!user?.admin && alink.label === "Taskboard") {
+                return null;
+              }
+              return (
+                <Link
+                  key={alink.path}
+                  to={alink.path}
+                  className="d-flex gap-2 my-1 text-white"
+                  style={{ textDecoration: "none" }}
+                >
+                  <p>{alink.icon}</p>
+                  <p>{alink.label}</p>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

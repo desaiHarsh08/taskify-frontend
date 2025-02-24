@@ -22,6 +22,26 @@ export const fetchAllTasks = async (page: number): Promise<PageResponse<TaskSumm
     return response.data;
 }
 
+export const fetchDismantleDueTasks = async (page: number): Promise<PageResponse<TaskSummary>> => {
+    const response = await API.get(`/api/task-instances/dismantle-due?page=${page}&pageSize=10`);
+    return response.data;
+}
+
+export const fetchEstimateDueTasks = async (page: number): Promise<PageResponse<TaskSummary>> => {
+    const response = await API.get(`/api/task-instances/estimate-due?page=${page}&pageSize=10`);
+    return response.data;
+}
+
+export const fetchPendingApprovalDueTasks = async (page: number): Promise<PageResponse<TaskSummary>> => {
+    const response = await API.get(`/api/task-instances/pending-approval?page=${page}&pageSize=10`);
+    return response.data;
+}
+
+export const fetchApprovalStatusTasks = async (page: number, status: boolean): Promise<PageResponse<TaskSummary>> => {
+    const response = await API.get(`/api/task-instances/approval-status?page=${page}&pageSize=10&status=${status}`);
+    return response.data;
+}
+
 export const fetchTasksByAssignedUserId = async (page: number, assignedUserId: number): Promise<PageResponse<TaskSummary>> => {
     const response = await API.get(`/api/task-instances/by-assigned-user?page=${page}&pageSize=10&assignedUserId=${assignedUserId}`);
     return response.data;

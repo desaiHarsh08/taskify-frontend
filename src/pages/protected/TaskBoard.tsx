@@ -98,7 +98,7 @@ export default function TaskBoard() {
         pageNumber: pageNumber,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
     } catch (error) {
       console.log(error);
@@ -145,7 +145,7 @@ export default function TaskBoard() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
     } catch (error) {
       console.log(error);
@@ -169,7 +169,7 @@ export default function TaskBoard() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
     } catch (error) {
       console.log(error);
@@ -190,7 +190,7 @@ export default function TaskBoard() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
     } catch (error) {
       console.log(error);
@@ -211,7 +211,7 @@ export default function TaskBoard() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
     } catch (error) {
       console.log(error);
@@ -232,7 +232,7 @@ export default function TaskBoard() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
     } catch (error) {
       console.log(error);
@@ -289,7 +289,7 @@ export default function TaskBoard() {
         pageNumber: response.pageNumber,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
     } catch (error) {
       console.log(error);
