@@ -35,7 +35,7 @@ export default function AllTasks() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
       setAllTasks(response.content);
     } catch (error) {
@@ -72,7 +72,7 @@ export default function AllTasks() {
         pageNumber: response.pageNumber,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
     } catch (error) {
       console.log(error);

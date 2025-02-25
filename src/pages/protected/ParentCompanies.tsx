@@ -65,7 +65,7 @@ export default function ParentCompanies() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
       setParentCompanies(response.content);
     } catch (error) {

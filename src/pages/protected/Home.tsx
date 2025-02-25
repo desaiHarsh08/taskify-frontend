@@ -19,25 +19,25 @@
 // import { Container, Row, Col, Card } from "react-bootstrap";
 // import TaskStatsComponent from "@/components/home/TaskStatsComponent";
 
-import { selectRefetch } from "@/app/slices/refetchSlice";
-import TaskList from "@/components/all-tasks/TaskList";
-import Pagination from "@/components/global/Pagination";
+// import { selectRefetch } from "@/app/slices/refetchSlice";
+// import TaskList from "@/components/all-tasks/TaskList";
+// import Pagination from "@/components/global/Pagination";
 import { useAuth } from "@/hooks/useAuth";
-import TaskInstance from "@/lib/task";
-import TaskSummary from "@/lib/task-summary";
-import { fetchCustomerById } from "@/services/customer-apis";
-import { fetchFunctionById } from "@/services/function-apis";
-import { fetchFunctionTemplateById } from "@/services/function-template-apis";
-import {
-  fetchApprovalStatusTasks,
-  fetchDismantleDueTasks,
-  fetchEstimateDueTasks,
-  fetchPendingApprovalDueTasks,
-} from "@/services/task-apis";
-import { fetchTaskTemplateById } from "@/services/task-template-apis";
-import { useEffect, useState } from "react";
-import { Badge, Button } from "react-bootstrap";
-import { useSelector } from "react-redux";
+// import TaskInstance from "@/lib/task";
+// import TaskSummary from "@/lib/task-summary";
+// import { fetchCustomerById } from "@/services/customer-apis";
+// import { fetchFunctionById } from "@/services/function-apis";
+// import { fetchFunctionTemplateById } from "@/services/function-template-apis";
+// import {
+//   fetchApprovalStatusTasks,
+//   fetchDismantleDueTasks,
+//   fetchEstimateDueTasks,
+//   fetchPendingApprovalDueTasks,
+// } from "@/services/task-apis";
+// import { fetchTaskTemplateById } from "@/services/task-template-apis";
+// import { useEffect, useState } from "react";
+// import { Badge, Button } from "react-bootstrap";
+// import { useSelector } from "react-redux";
 
 // export default function Home() {
 //   const monthlyTasks = [

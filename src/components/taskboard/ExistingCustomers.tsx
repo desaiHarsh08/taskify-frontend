@@ -83,7 +83,7 @@ export default function ExistingCustomers({
           pageNumber: data.pageNumber,
           pageSize: data.pageSize,
           totalPages: data.totalPages,
-          totalRecords: data.totatRecords,
+          totalRecords: data.totalRecords,
         });
       })
       .catch((error) => console.log(error));
@@ -112,7 +112,7 @@ export default function ExistingCustomers({
         pageNumber: response.pageNumber,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
       setCustomers(response.content);
       console.log(response);

@@ -53,7 +53,7 @@ export default function Customers() {
         pageNumber: response.pageNumber,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords,
+        totalRecords: response.totalRecords,
       });
       setCustomers(response.content);
       console.log(response);
