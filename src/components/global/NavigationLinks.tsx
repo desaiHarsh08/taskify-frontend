@@ -68,21 +68,20 @@ export default function NavigationLinks() {
         >
           <div className="accordion-body d-flex flex-column bg-dark">
             {accordianLinks.map((alink) => {
-              if (!user?.admin && alink.label === "Taskboard") {
-                return null;
+                  return (
+                    <Link
+                      key={alink.path}
+                      to={alink.path}
+                      className="d-flex gap-2 my-1 text-white"
+                      style={{ textDecoration: "none" }}
+                    >
+                      <p>{alink.icon}</p>
+                      <p>{alink.label}</p>
+                    </Link>
+                  );
+                
               }
-              return (
-                <Link
-                  key={alink.path}
-                  to={alink.path}
-                  className="d-flex gap-2 my-1 text-white"
-                  style={{ textDecoration: "none" }}
-                >
-                  <p>{alink.icon}</p>
-                  <p>{alink.label}</p>
-                </Link>
-              );
-            })}
+            )}
           </div>
         </div>
       </div>
@@ -95,6 +94,9 @@ export default function NavigationLinks() {
       style={{ width: "85%" }}
     >
       {links.map((link, index) => {
+        if (user?.admin === false && index === 1) {
+            return null;
+        }
         return (
           <>
             <li
