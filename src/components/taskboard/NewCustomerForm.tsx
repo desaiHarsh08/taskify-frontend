@@ -42,6 +42,7 @@ export default function NewCustomerForm({
         console.log(error);
       }
     })();
+    setCustomerDetails((prev) => ({ ...prev, id: null }));
   }, []);
 
   return (
@@ -201,7 +202,11 @@ export default function NewCustomerForm({
                     e.target.value == "NONE" ? null : Number(e.target.value),
                 }))
               }
-              value={customerDetails.parentCompanyId ? customerDetails.parentCompanyId as number : "NONE"}
+              value={
+                customerDetails.parentCompanyId
+                  ? (customerDetails.parentCompanyId as number)
+                  : "NONE"
+              }
               className="form-select"
               aria-label="Default select example"
             >
