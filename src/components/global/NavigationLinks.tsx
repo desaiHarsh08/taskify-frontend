@@ -94,9 +94,6 @@ export default function NavigationLinks() {
       style={{ width: "85%" }}
     >
       {links.map((link, index) => {
-        if (user?.admin === false && index === 1) {
-            return null;
-        }
         return (
           <>
             <li

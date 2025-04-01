@@ -3,6 +3,7 @@ import MonthlyTaskStats from "@/components/taskboard/MonthlyTaskStats";
 import OverallTaskStats from "@/components/taskboard/OverallTaskStats";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import * as XLSX from "xlsx";
 import TaskList from "@/components/all-tasks/TaskList";
 import {
   fetchAllTasks,
@@ -19,6 +20,12 @@ import Pagination from "@/components/global/Pagination";
 
 import TaskSummary from "@/lib/task-summary";
 import { useAuth } from "@/hooks/useAuth";
+import { fetchCustomerById } from "@/services/customer-apis";
+import { fetchFunctionById } from "@/services/function-apis";
+import { fetchTaskTemplateById } from "@/services/task-template-apis";
+import { fetchFunctionTemplateById } from "@/services/function-template-apis";
+import { FunctionInstance } from "@/lib/task";
+import { FunctionTemplate } from "@/lib/task-template";
 
 const months = [
   "January",
@@ -299,6 +306,73 @@ export default function TaskBoard() {
     }
   };
 
+  const handleDownload = async () => {
+    const formattedData = [];
+
+    // let { content, pageNumber, pageSize, totalPages } = await fetchAllTasks(1);
+
+    let totalPages = 1;
+    for (let p = 1; p <= totalPages; ++p) {
+      const { content, pageSize, totalPages: tp } = await fetchAllTasks(p);
+      console.log("p = ", p);
+      totalPages = tp;
+      const tasks = content;
+      for (let i = 0; i < tasks.length; i++) {
+        const customer = await fetchCustomerById(tasks[i].customerId);
+        const taskTemplate = await fetchTaskTemplateById(
+          tasks[i].taskTemplateId as number
+        );
+
+        let functionInstance: FunctionInstance | null = null;
+        let functionTemplate: FunctionTemplate | null = null;
+        try {
+          functionInstance = await fetchFunctionById(tasks[i].functionId);
+
+          functionTemplate = await fetchFunctionTemplateById(
+            functionInstance.functionTemplateId as number
+          );
+        } catch (error) {}
+
+        const { abbreviation, jobNumber, priorityType, closedAt, updatedAt } =
+          tasks[i];
+
+        formattedData.push({
+          id: i + 1 + (p - 1) * pageSize,
+          flow: taskTemplate.title,
+          abbreviation,
+          priorityType,
+          customer: customer.name,
+          function: functionTemplate?.title,
+          jobNumber,
+          updatedAt,
+          closedAt,
+        });
+      }
+      console.log("done p = ", p);
+    }
+
+    // Convert tasks to worksheet format
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
+
+    // Create an Excel file and trigger download
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+    const url = URL.createObjectURL(data);
+    const link = document.createElement("a");
+    link.href = url;
+
+    link.download = `all-tasks.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="container-fluid p-3 h-100 w-100 overflow-auto">
       <div id="taskboard-area" className="gap-5 h-100">
@@ -316,6 +390,7 @@ export default function TaskBoard() {
           </div>
           <div className="my-5">
             <h3>All Tasks</h3>
+            <Button onClick={handleDownload}>Download All Tasks</Button>
             <div className="w-100 overflow-auto">
               <ul
                 className="p-0 d-flex gap-3 border-bottom mt-3"

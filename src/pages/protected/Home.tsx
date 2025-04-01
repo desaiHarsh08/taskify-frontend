@@ -210,7 +210,8 @@ export default function Home() {
   const { user } = useAuth();
 
   return (
-    <>{user?.admin ? <MIS /> : <TaskBoard />}</>
+    // <>{user?.admin ? <MIS /> : <TaskBoard />}</>
+    <MIS />
     // <div className="container-fluid p-3 h-100 w-100 overflow-auto">
     //   <div className="w-100 d-flex justify-content-between">
     //     <ul
