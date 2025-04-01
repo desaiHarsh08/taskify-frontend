@@ -22,7 +22,7 @@
 // import { selectRefetch } from "@/app/slices/refetchSlice";
 // import TaskList from "@/components/all-tasks/TaskList";
 // import Pagination from "@/components/global/Pagination";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 // import TaskInstance from "@/lib/task";
 // import TaskSummary from "@/lib/task-summary";
 // import { fetchCustomerById } from "@/services/customer-apis";
@@ -204,10 +204,10 @@ import { useAuth } from "@/hooks/useAuth";
 // }
 
 import MIS from "./MIS";
-import TaskBoard from "./TaskBoard";
+// import TaskBoard from "./TaskBoard";
 
 export default function Home() {
-  const { user } = useAuth();
+//   const { user } = useAuth();
 
   return (
     // <>{user?.admin ? <MIS /> : <TaskBoard />}</>

@@ -12,7 +12,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { TbReportAnalytics } from "react-icons/tb";
 import { FaHome } from "react-icons/fa";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 
 const links = [
   { path: "/home", label: "Home", icon: <FaHome /> },
@@ -38,7 +38,7 @@ const accordianLinks = [
 ];
 
 export default function NavigationLinks() {
-  const { user } = useAuth();
+//   const { user } = useAuth();
 
   const { pathname } = useLocation();
 
