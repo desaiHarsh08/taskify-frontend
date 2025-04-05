@@ -37,7 +37,10 @@ export default function CreateNewTask({
   const { user } = useAuth();
 
   const taskTemplates = useSelector(selectTaskTemplates);
-
+  const [customerTabs, setCustomersTabs] = useState([
+    { label: "NEW", isSelected: false },
+    { label: "EXISTING", isSelected: true },
+  ]);
   const [newTask, setNewTask] = useState<Task>({
     taskTemplateId: null,
     priorityType: "NORMAL",
@@ -124,8 +127,14 @@ export default function CreateNewTask({
       return; // Limit length to 6 characters
     }
 
-    const customerResponse = await createCustomer(customerDetails);
-    console.log(customerResponse);
+    let customerResponse: Customer = customerDetails;
+
+    const tmpCustomerTab = customerTabs.find((tab) => tab.isSelected);
+
+    if (tmpCustomerTab?.label.toUpperCase() === "NEW") {
+      customerResponse = await createCustomer(customerDetails);
+      console.log(customerResponse);
+    }
 
     tmpTask.customerId = customerResponse.id as number;
     tmpTask.assignedToUserId = assignedUser?.id as number;
@@ -194,6 +203,8 @@ export default function CreateNewTask({
           onNavigateModal={handleModalNavigate}
           customerDetails={customerDetails}
           setCustomerDetails={setCustomerDetails}
+          customerTabs={customerTabs}
+          setCustomersTabs={setCustomersTabs}
         />
       </Modal>
       <Modal

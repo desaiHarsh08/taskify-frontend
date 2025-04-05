@@ -16,23 +16,32 @@ type InputCustomerProps = {
       taskInfo: boolean;
       assignTask: boolean;
     }
-  ) => void; // Define the keys in the type
+  ) => void; // Define the keys in the type;
+  customerTabs: {
+    label: string;
+    isSelected: boolean;
+  }[];
+  setCustomersTabs: React.Dispatch<
+    React.SetStateAction<
+      {
+        label: string;
+        isSelected: boolean;
+      }[]
+    >
+  >;
 };
 
 export default function InputCustomer({
   onNavigateModal,
   customerDetails,
   setCustomerDetails,
+  customerTabs,
+  setCustomersTabs,
 }: InputCustomerProps) {
-  const [tabs, setTabs] = useState([
-    { label: "NEW", isSelected: false },
-    { label: "EXISTING", isSelected: true },
-  ]);
-
   const [newCustomer, setNewCustomer] = useState<Customer>(customerDetails);
 
   const handleTabClick = (index: number) => {
-    const newtTabs = tabs.map((tab, idx) => {
+    const newtTabs = customerTabs.map((tab, idx) => {
       if (index === idx) {
         tab.isSelected = true;
       } else {
@@ -42,7 +51,7 @@ export default function InputCustomer({
       return tab;
     });
 
-    setTabs(newtTabs);
+    setCustomersTabs(newtTabs);
   };
 
   const handleChange = (
@@ -69,7 +78,7 @@ export default function InputCustomer({
         className="p-0 d-flex gap-2 border-bottom pb-3"
         style={{ listStyle: "none" }}
       >
-        {tabs.map((tab, index) => (
+        {customerTabs.map((tab, index) => (
           <li key={tab.label}>
             <Button
               type="button"
@@ -85,7 +94,7 @@ export default function InputCustomer({
         ))}
       </ul>
       <div id="customer-area" className="overflow-auto">
-        {tabs.map((tab) => {
+        {customerTabs.map((tab) => {
           if (tab.label === "NEW" && tab.isSelected) {
             return (
               <NewCustomerForm

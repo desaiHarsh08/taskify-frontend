@@ -390,7 +390,7 @@ export default function TaskBoard() {
           </div>
           <div className="my-5">
             <h3>All Tasks</h3>
-            <Button onClick={handleDownload}>Download All Tasks</Button>
+            {/* <Button onClick={handleDownload}>Download All Tasks</Button> */}
             <div className="w-100 overflow-auto">
               <ul
                 className="p-0 d-flex gap-3 border-bottom mt-3"
