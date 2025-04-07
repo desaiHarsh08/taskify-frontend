@@ -132,7 +132,9 @@ export default function CreateNewTask({
     const tmpCustomerTab = customerTabs.find((tab) => tab.isSelected);
 
     if (tmpCustomerTab?.label.toUpperCase() === "NEW") {
-      customerResponse = await createCustomer(customerDetails);
+      // Make sure to set id to null for new customers before sending to server
+      const newCustomerData = { ...customerDetails, id: null };
+      customerResponse = await createCustomer(newCustomerData);
       console.log(customerResponse);
     }
 
