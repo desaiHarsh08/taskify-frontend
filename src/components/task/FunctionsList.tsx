@@ -49,7 +49,6 @@ export default function FunctionsList({ task }: FunctionsListProps) {
             task={task}
             srno={(task.functionInstances?.length as number) - fnIndex}
             fn={fn}
-            fnIndex={fnIndex}
           />
         ))}
       </div>

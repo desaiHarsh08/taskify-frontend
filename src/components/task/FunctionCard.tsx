@@ -8,15 +8,12 @@ import { Link } from "react-router-dom";
 
 type FunctionCardProps = {
   fn: FunctionInstance;
-  fnIndex: number;
   srno: number;
   task: Task;
 };
 
 export default function FunctionCard({
   fn,
-  fnIndex,
-
   srno,
 }: FunctionCardProps) {
   const [functionTemplate, setfunctionTemplate] =
@@ -49,7 +46,7 @@ export default function FunctionCard({
       style={{
         fontSize: "12px",
         textDecoration: "none",
-        backgroundColor: fnIndex === 0 && !fn.closedAt ? "#bcfddf" : "",
+        backgroundColor: !fn.closedAt ? "#bcfddf" : "",
       }}
     >
       <p className="border-end py-2 px-1" style={{ width: "7%" }}>
