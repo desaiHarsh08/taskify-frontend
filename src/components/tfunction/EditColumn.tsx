@@ -9,6 +9,7 @@ import { toggleLoading } from "@/app/slices/loadingSlice";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
 import Button from "../ui/Button";
 import { selectTaskTemplates } from "@/app/slices/taskTemplatesSlice";
+import { useAuth } from "@/hooks/useAuth";
 
 // import DepartmentType from "@/lib/department-type";
 
@@ -27,6 +28,8 @@ export default function EditColumn({
   setFn,
   fieldTemplate,
 }: EditColumnProps) {
+  const { user } = useAuth();
+
   const dispatch = useDispatch();
 
   const taskTemplates = useSelector(selectTaskTemplates);
@@ -47,7 +50,6 @@ export default function EditColumn({
     //   }
     // }
     // console.log(department)
-
   }, [taskTemplates]);
 
   const handleChangeColumn = (
@@ -244,7 +246,7 @@ export default function EditColumn({
         <Button
           variant={"success"}
           onClick={handleUpdateColumns}
-          disabled={!!field.closedAt}
+          disabled={!!field.closedAt && !user?.admin}
         >
           Save
         </Button>
