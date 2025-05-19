@@ -10,12 +10,15 @@ import {
   fetchDismantleDueTasks,
   fetchEstimateDueTasks,
   fetchPendingApprovalDueTasks,
+  fetchTasksByFilters,
+  FilterBy,
 } from "@/services/task-apis";
 import { fetchTaskTemplateById } from "@/services/task-template-apis";
 import { useEffect, useState } from "react";
-import { Badge, Button } from "react-bootstrap";
+import { Badge, Button, Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import * as XLSX from "xlsx";
+import { format } from "date-fns";
 
 export default function MIS() {
   const refetchFlag = useSelector(selectRefetch);
@@ -28,31 +31,39 @@ export default function MIS() {
   });
 
   const [tasks, setTasks] = useState<TaskSummary[]>([]);
-  const [tabs, setTabs] = useState([
-    { tabLabel: "Dismantle Due", isSelected: true },
-    { tabLabel: "Estimate Due", isSelected: false },
-    { tabLabel: "Pending Approval", isSelected: false },
-    { tabLabel: "Approval Received", isSelected: false },
-    { tabLabel: "Approval Reject", isSelected: false },
-  ]);
+
+  const [selectedFilter, setSelectedFilter] =
+    useState<FilterBy>("Dismantle Due");
+
+  const filterOptions: FilterBy[] = [
+    "Dismantle Due",
+    "Estimate Due",
+    "Pending Approval",
+    "Approval Received",
+    "Approval Reject",
+    "Awaiting Approval",
+    "Work in Progress",
+    "Ready",
+    "Pending Bills",
+    "Lathe",
+  ];
 
   useEffect(() => {
-    const selectedTab = tabs.find((tab) => tab.isSelected);
-    if (selectedTab?.tabLabel === "Dismantle Due") {
-      getDismantleDueTasks();
-    } else if (selectedTab?.tabLabel === "Estimate Due") {
-      getEstimateDueTasks();
-    } else if (selectedTab?.tabLabel === "Pending Approval") {
-      getPendingApprovalTasks();
-    } else if (selectedTab?.tabLabel === "Approval Received") {
-      getApprovalStatusTasks(true);
-    } else if (selectedTab?.tabLabel === "Approval Reject") {
-      getApprovalStatusTasks(false);
-    }
-  }, [refetchFlag, tabs, pageData.pageNumber]);
+    fetchFilteredTasks(selectedFilter, false);
+  }, [refetchFlag, selectedFilter, pageData.pageNumber]);
 
-  const getDismantleDueTasks = async () => {
-    const response = await fetchDismantleDueTasks(pageData.pageNumber);
+  const fetchFilteredTasks = async (filterBy: FilterBy, status: boolean) => {
+    if (filterBy === "Approval Received") {
+      status = true;
+    } else if (filterBy === "Approval Reject") {
+      status = false;
+    }
+
+    const response = await fetchTasksByFilters(
+      pageData.pageNumber,
+      filterBy,
+      status
+    );
     setTasks(response.content);
     let totalRecords = response.totalRecords;
     console.log(response, totalRecords);
@@ -65,84 +76,131 @@ export default function MIS() {
     });
   };
 
-  const getEstimateDueTasks = async () => {
-    const response = await fetchEstimateDueTasks(pageData.pageNumber);
-    setTasks(response.content);
-    setPageData({
-      pageNumber: response.pageNumber,
-      pageSize: response.pageSize,
-      totalPages: response.totalPages,
-      totalRecords: response.totalRecords,
-    });
-  };
-  const getPendingApprovalTasks = async () => {
-    const response = await fetchPendingApprovalDueTasks(pageData.pageNumber);
-    setTasks(response.content);
-    setPageData({
-      pageNumber: response.pageNumber,
-      pageSize: response.pageSize,
-      totalPages: response.totalPages,
-      totalRecords: response.totalRecords,
-    });
-  };
-
-  const getApprovalStatusTasks = async (status: boolean) => {
-    const response = await fetchApprovalStatusTasks(
-      pageData.pageNumber,
-      status
-    );
-    setTasks(response.content);
-    setPageData({
-      pageNumber: response.pageNumber,
-      pageSize: response.pageSize,
-      totalPages: response.totalPages,
-      totalRecords: response.totalRecords,
-    });
-  };
-
-  const handleTabChange = (index: number) => {
-    const newTabs = tabs.map((tab, idx) => {
-      if (idx === index) {
-        return { ...tab, isSelected: true };
-      } else {
-        return { ...tab, isSelected: false };
-      }
-    });
-
-    setTabs(newTabs);
+  // Helper to fetch all filtered tasks across all pages
+  const fetchAllFilteredTasks = async (filterBy: FilterBy, status: boolean) => {
+    let allTasks: TaskSummary[] = [];
+    let page = 1;
+    let totalPages = 1;
+    do {
+      const response = await fetchTasksByFilters(page, filterBy, status);
+      allTasks = allTasks.concat(response.content);
+      totalPages = response.totalPages;
+      page++;
+    } while (page <= totalPages);
+    return allTasks;
   };
 
   const handleDownload = async () => {
-    if (tasks.length === 0) {
+    let status = false;
+    if (selectedFilter === "Approval Received") status = true;
+    else if (selectedFilter === "Approval Reject") status = false;
+
+    const allTasks = await fetchAllFilteredTasks(selectedFilter, status);
+
+    if (allTasks.length === 0) {
       alert("No data available to download.");
       return;
     }
 
+    // Customer key mapping for user-friendly column names (without birthDate, anniversaryDate, id, and parentCompanyId)
+    const customerKeyMap: Record<string, string> = {
+      name: "Customer Name",
+      email: "Customer Email",
+      personOfContact: "Person Of Contact",
+      phone: "Customer Phone",
+      state: "Customer State",
+      address: "Customer Address",
+      residenceAddress: "Customer Residence Address",
+      city: "Customer City",
+      pincode: "Customer Pincode",
+      gst: "Customer GST",
+    };
+
+    // Mapping for user-friendly pump details keys
+    const pumpKeyMap: Record<string, string> = {
+      pumpMake: "Pump Make",
+      pumpType: "Pump Type",
+      stage: "Stage",
+      serialNumber: "Serial Number",
+      motorMake: "Motor Make",
+      hp: "HP",
+      volts: "Volts",
+      phase: "Phase",
+    };
+
+    // Collect all unique pumpDetails keys
+    const allPumpKeys = Array.from(
+      new Set(
+        allTasks.flatMap((task) =>
+          task.pumpDetails ? Object.keys(task.pumpDetails) : []
+        )
+      )
+    );
+
     const formattedData = [];
 
-    for (let i = 0; i < tasks.length; i++) {
-      const customer = await fetchCustomerById(tasks[i].customerId);
-      const functionInstance = await fetchFunctionById(tasks[i].functionId);
+    for (let i = 0; i < allTasks.length; i++) {
+      const customer = await fetchCustomerById(allTasks[i].customerId);
+      const functionInstance = await fetchFunctionById(allTasks[i].functionId);
       const taskTemplate = await fetchTaskTemplateById(
-        tasks[i].taskTemplateId as number
+        allTasks[i].taskTemplateId as number
       );
       const functionTemplate = await fetchFunctionTemplateById(
         functionInstance.functionTemplateId as number
       );
 
-      const { abbreviation, jobNumber, priorityType, closedAt, updatedAt } =
-        tasks[i];
+      const {
+        abbreviation,
+        jobNumber,
+        priorityType,
+        closedAt,
+        updatedAt,
+        receiptNoteCreatedAt,
+      } = allTasks[i];
+
+      // Spread customer keys as separate columns with user-friendly names
+      const customerObj = customer as Record<string, any>;
+      const customerColumns: Record<string, any> = {};
+      Object.keys(customerKeyMap).forEach((key) => {
+        customerColumns[customerKeyMap[key]] = customerObj[key] || "";
+      });
+
+      // Spread pump details keys as separate columns with user-friendly names
+      const pumpDetails = (allTasks[i].pumpDetails || {}) as Record<
+        string,
+        any
+      >;
+      const pumpDetailsColumns: Record<string, any> = {};
+      allPumpKeys.forEach((key) => {
+        const mappedKey = pumpKeyMap[key] || key;
+        pumpDetailsColumns[mappedKey] = pumpDetails[key] || "";
+      });
+
+      // Format date fields for export
+      const formatDate = (date: string | Date | undefined) =>
+        date ? format(new Date(date), "dd MMM yyyy, HH:mm") : "";
+      const formattedUpdatedAt = formatDate(
+        (updatedAt ?? undefined) as string | Date | undefined
+      );
+      const formattedClosedAt = formatDate(
+        (closedAt ?? undefined) as string | Date | undefined
+      );
+      const formattedReceiptNoteCreatedAt = formatDate(
+        (receiptNoteCreatedAt ?? undefined) as string | Date | undefined
+      );
 
       formattedData.push({
         id: i + 1,
-        flow: taskTemplate.title,
-        abbreviation,
-        priorityType,
-        customer: customer.name,
-        function: functionTemplate.title,
-        jobNumber,
-        updatedAt,
-        closedAt,
+        "Task Flow": taskTemplate.title,
+        Code: abbreviation,
+        Priority: priorityType,
+        ...customerColumns,
+        Function: functionTemplate.title,
+        "Job Number": jobNumber,
+        "Updated At": formattedUpdatedAt,
+        "Closed At": formattedClosedAt,
+        "Receipt Note Created At": formattedReceiptNoteCreatedAt,
+        ...pumpDetailsColumns,
       });
     }
 
@@ -161,8 +219,7 @@ export default function MIS() {
     const url = URL.createObjectURL(data);
     const link = document.createElement("a");
     link.href = url;
-    const selectedTab = tabs.find((tab) => tab.isSelected);
-    link.download = `${selectedTab?.tabLabel}-tasks.xlsx`;
+    link.download = `${selectedFilter}-tasks.xlsx`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -170,27 +227,29 @@ export default function MIS() {
 
   return (
     <div className="container-fluid p-3 h-100 w-100 overflow-auto">
-      <div className="w-100 d-flex justify-content-between">
-        <ul
-          className="p-0 d-flex gap-3 align-items-center border-bottom mt-3"
-          style={{ listStyle: "none" }}
-        >
-          {tabs.map((tab, index) => (
-            <li
-              key={tab.tabLabel}
-              onClick={() => handleTabChange(index)}
-              style={{
-                cursor: "pointer",
-                fontSize: "15px",
-                minWidth: "110px",
-              }}
-              className={`${tab.isSelected ? "border-bottom text-primary border-primary" : ""} pb-2 text-center`}
+      <div className="w-100 d-flex justify-content-between align-items-center mb-3">
+        <div className="d-flex align-items-center gap-3">
+          <div className="d-flex align-items-center gap-2">
+            <span
+              className="me-2 text-secondary"
+              style={{ fontWeight: 500, fontSize: "15px" }}
             >
-              {tab.tabLabel}{" "}
-              {tab.isSelected && <Badge>{pageData.totalRecords}</Badge>}
-            </li>
-          ))}
-        </ul>
+              Filter By:
+            </span>
+            <Form.Select
+              value={selectedFilter}
+              onChange={(e) => setSelectedFilter(e.target.value as FilterBy)}
+              style={{ width: "200px" }}
+            >
+              {filterOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </Form.Select>
+            <Badge bg="primary">{pageData.totalRecords}</Badge>
+          </div>
+        </div>
         <div>
           <Button variant="success" onClick={handleDownload}>
             Download

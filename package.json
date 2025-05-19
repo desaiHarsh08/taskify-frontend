@@ -28,6 +28,7 @@
         "@tinymce/tinymce-react": "^5.1.1",
         "axios": "^1.7.4",
         "bootstrap": "^5.3.3",
+        "date-fns": "^4.1.0",
         "jodit-react": "^4.1.2",
         "lodash": "^4.17.21",
         "lucide-react": "^0.418.0",

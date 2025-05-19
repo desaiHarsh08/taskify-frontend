@@ -28,8 +28,21 @@ const columns = [
   "Job Number",
   "Latest Department Name",
   "Latest Function Name",
+  "Pump Details",
   "Priority",
   "Last Edited",
+];
+
+const columnStyles = [
+  { width: "5%" }, // Sr. No.
+  { width: "10%" }, // Task Id
+  { width: "15%" }, // Customer
+  { width: "10%" }, // Job Number
+  { width: "12%" }, // Latest Department Name
+  { width: "12%" }, // Latest Function Name
+  { width: "18%" }, // Pump Details
+  { width: "8%" }, // Priority
+  { width: "10%" }, // Last Edited
 ];
 
 export default function TaskList({
@@ -39,19 +52,14 @@ export default function TaskList({
   loading,
   pageData,
 }: TaskListProps) {
-
-  const tableColumns = columns.map((column, index) => {
-    let columnWidth = { width: "13%", backgroundColor: "aliceblue" };
-    if (index == 0) {
-      columnWidth = { ...columnWidth, width: "9%" };
-    }
-
-    return (
-      <th className="text-center fw-medium border-end py-2" style={columnWidth}>
-        {column}
-      </th>
-    );
-  });
+  const tableColumns = columns.map((column, index) => (
+    <th
+      className="text-center fw-medium border-end py-2"
+      style={columnStyles[index]}
+    >
+      {column}
+    </th>
+  ));
 
   return (
     <div
@@ -66,7 +74,10 @@ export default function TaskList({
           paddingRight: "14px",
         }}
       >
-        <table className="table ">
+        <table
+          className="table"
+          style={{ tableLayout: "fixed", width: "100%" }}
+        >
           <thead>{tableColumns}</thead>
           <tbody>
             {tasks.length > 0 &&
@@ -79,6 +90,7 @@ export default function TaskList({
                     selectedTasks={selectedTasks}
                     onSelectTask={onSelectTask}
                     pageData={pageData}
+                    columnStyles={columnStyles}
                   />
                 );
               })}

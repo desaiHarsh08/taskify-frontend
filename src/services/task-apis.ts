@@ -27,6 +27,24 @@ export const fetchDismantleDueTasks = async (page: number): Promise<PageResponse
     return response.data;
 }
 
+export type FilterBy = "Dismantle Due"
+    | "Estimate Due"
+    | "Pending Approval"
+    | "Approval Received"
+    | "Approval Reject"
+    | "Awaiting Approval"
+    | "Work in Progress"
+    | "Ready"
+    | "Pending Bills"
+    | "Lathe";
+
+    
+
+export const fetchTasksByFilters = async (page: number, filterBy: FilterBy, status: boolean): Promise<PageResponse<TaskSummary>> => {
+    const response = await API.get(`/api/task-instances/custom-filter?page=${page}&pageSize=10&status=${status}&filterBy=${filterBy}`);
+    return response.data;
+}
+
 export const fetchEstimateDueTasks = async (page: number): Promise<PageResponse<TaskSummary>> => {
     const response = await API.get(`/api/task-instances/estimate-due?page=${page}&pageSize=10`);
     return response.data;
