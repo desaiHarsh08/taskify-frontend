@@ -225,6 +225,7 @@ export default function MIS() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setLoadingDownload(false);
   };
 
   return (
