@@ -23,6 +23,7 @@ import { format } from "date-fns";
 export default function MIS() {
   const refetchFlag = useSelector(selectRefetch);
   const [loading] = useState(false);
+  const [loadingDownload, setLoadingDownload] = useState(false);
   const [pageData, setPageData] = useState({
     pageNumber: 1,
     pageSize: 0,
@@ -91,6 +92,7 @@ export default function MIS() {
   };
 
   const handleDownload = async () => {
+    setLoadingDownload(true);
     let status = false;
     if (selectedFilter === "Approval Received") status = true;
     else if (selectedFilter === "Approval Reject") status = false;
@@ -219,7 +221,7 @@ export default function MIS() {
     const url = URL.createObjectURL(data);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${selectedFilter}-tasks.xlsx`;
+    link.download = `${selectedFilter}-tasks-${new Date().toLocaleDateString('en-IN', { year: 'numeric', month: '2-digit', day: '2-digit' })}.xlsx`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -251,8 +253,8 @@ export default function MIS() {
           </div>
         </div>
         <div>
-          <Button variant="success" onClick={handleDownload}>
-            Download
+          <Button variant="success" onClick={handleDownload} disabled={loadingDownload}>
+            {loadingDownload ? "Downloading..." : "Download"}
           </Button>
         </div>
       </div>
