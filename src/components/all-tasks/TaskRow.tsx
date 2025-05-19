@@ -1,5 +1,4 @@
 import { FunctionInstance } from "@/lib/task";
-import { getFormattedDate } from "@/utils/helpers";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 
@@ -139,7 +138,7 @@ export default function TaskRow({
       <td
         className="border-end text-center text-truncate"
         style={{ ...columnStyles[2], maxWidth: "120px" }}
-        title={customer && customer.name}
+        title={customer && customer.name ? customer.name : undefined}
       >
         {customer && customer.name}
       </td>
