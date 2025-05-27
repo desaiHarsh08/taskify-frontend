@@ -6,10 +6,10 @@ import { fetchCustomerById } from "@/services/customer-apis";
 import { fetchFunctionById } from "@/services/function-apis";
 import { fetchFunctionTemplateById } from "@/services/function-template-apis";
 import {
-//   fetchApprovalStatusTasks,
-//   fetchDismantleDueTasks,
-//   fetchEstimateDueTasks,
-//   fetchPendingApprovalDueTasks,
+  //   fetchApprovalStatusTasks,
+  //   fetchDismantleDueTasks,
+  //   fetchEstimateDueTasks,
+  //   fetchPendingApprovalDueTasks,
   fetchTasksByFilters,
   FilterBy,
 } from "@/services/task-apis";
@@ -143,6 +143,9 @@ export default function MIS() {
 
     for (let i = 0; i < allTasks.length; i++) {
       const customer = await fetchCustomerById(allTasks[i].customerId);
+      
+      if (!allTasks[i].functionId) continue;
+      
       const functionInstance = await fetchFunctionById(allTasks[i].functionId);
       const taskTemplate = await fetchTaskTemplateById(
         allTasks[i].taskTemplateId as number
@@ -221,7 +224,7 @@ export default function MIS() {
     const url = URL.createObjectURL(data);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${selectedFilter}-tasks-${new Date().toLocaleDateString('en-IN', { year: 'numeric', month: '2-digit', day: '2-digit' })}.xlsx`;
+    link.download = `${selectedFilter}-tasks-${new Date().toLocaleDateString("en-IN", { year: "numeric", month: "2-digit", day: "2-digit" })}.xlsx`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -254,7 +257,11 @@ export default function MIS() {
           </div>
         </div>
         <div>
-          <Button variant="success" onClick={handleDownload} disabled={loadingDownload}>
+          <Button
+            variant="success"
+            onClick={handleDownload}
+            disabled={loadingDownload}
+          >
             {loadingDownload ? "Downloading..." : "Download"}
           </Button>
         </div>
