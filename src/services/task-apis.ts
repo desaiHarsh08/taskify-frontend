@@ -137,3 +137,9 @@ export const fetchTaskByAbbreviation = async (taskAbbreviation: string): Promise
     console.log(response);
     return response.data;
 }
+
+export const fetchTaskSummaryById = async (id: number): Promise<TaskSummary | null> => {
+    const response = await API.get(`/api/task-instances/task-summary/${id}`);
+    console.log(response);
+    return response.data;
+}

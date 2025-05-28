@@ -21,6 +21,7 @@ import {
   uploadFiles,
 } from "@/services/function-apis";
 import { fetchFunctionTemplateById } from "@/services/function-template-apis";
+import { fetchTaskSummaryById } from "@/services/task-apis";
 import { getFormattedDate } from "@/utils/helpers";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,7 +53,6 @@ export default function TFunction() {
   >([]);
 
   const taskTemplates = useSelector(selectTaskTemplates);
-
 
   const [openAddSubFunction, setOpenAddSubFunction] = useState(false);
   const [fn, setFn] = useState<FunctionInstance | null>(null);
@@ -96,8 +96,15 @@ export default function TFunction() {
       console.log(department);
 
       setFn(response);
+
       setFnBkp(response);
       setFnTemplate(responseProto);
+
+      fetchTaskSummaryById(response?.taskInstanceId as number)
+        .then((data) => {
+          document.title = `${data?.jobNumber ? data?.jobNumber + " |" : ""} ${responseProto.title} | ${data?.abbreviation}`;
+        })
+        .catch((err) => console.log(err));
     } catch (error) {
       console.log(error);
     }
@@ -363,10 +370,7 @@ export default function TFunction() {
               </select>
             </div>
             <div className="mb-3">
-              <Button
-                variant="warning"
-                onClick={updateFn}
-              >
+              <Button variant="warning" onClick={updateFn}>
                 Save
               </Button>
             </div>
@@ -501,11 +505,7 @@ export default function TFunction() {
               }}
             />
           </div>
-          <Button
-            variant="danger"
-            type="button"
-            onClick={updateFn}
-          >
+          <Button variant="danger" type="button" onClick={updateFn}>
             Save
           </Button>
         </div>

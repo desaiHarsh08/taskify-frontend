@@ -6,7 +6,10 @@ import TaskDetails from "@/components/task/TaskDetails";
 import TaskInstance from "@/lib/task";
 import TaskLib from "@/lib/task";
 import { fetchFunctionsByTaskInstanceId } from "@/services/function-apis";
-import { fetchTaskByAbbreviation } from "@/services/task-apis";
+import {
+  fetchTaskByAbbreviation,
+  fetchTaskSummaryById,
+} from "@/services/task-apis";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -35,6 +38,15 @@ export default function Task() {
       const response = await fetchTaskByAbbreviation(taskId as string);
       console.log("task: ", response);
       setTask(response);
+
+      document.title = `${task?.abbreviation} | Taskify`;
+
+      fetchTaskSummaryById(response?.id as number)
+        .then((data) => {
+            document.title = `${data?.jobNumber ? data?.jobNumber + " |" : ""} ${response?.abbreviation}`;
+        })
+        .catch((err) => console.log(err));
+
       try {
         const resFn = await fetchFunctionsByTaskInstanceId(Number(response.id));
         console.log("resFn:", resFn);

@@ -12,6 +12,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { TbReportAnalytics } from "react-icons/tb";
 import { FaHome } from "react-icons/fa";
+import { useEffect } from "react";
 // import { useAuth } from "@/hooks/useAuth";
 
 const links = [
@@ -38,9 +39,20 @@ const accordianLinks = [
 ];
 
 export default function NavigationLinks() {
-//   const { user } = useAuth();
+  //   const { user } = useAuth();
 
   const { pathname } = useLocation();
+
+  useEffect(() => {
+    let activePage = links.find((ele) => pathname.endsWith(ele.path));
+    console.log(activePage);
+
+    if (!activePage) {
+        activePage = accordianLinks.find((ele) => pathname.endsWith(ele.path));
+    }
+
+    document.title = `${activePage ? activePage?.label + " |" : ""} Taskify`;
+  }, [pathname]);
 
   const accordianItems = (
     <div
@@ -68,20 +80,18 @@ export default function NavigationLinks() {
         >
           <div className="accordion-body d-flex flex-column bg-dark">
             {accordianLinks.map((alink) => {
-                  return (
-                    <Link
-                      key={alink.path}
-                      to={alink.path}
-                      className="d-flex gap-2 my-1 text-white"
-                      style={{ textDecoration: "none" }}
-                    >
-                      <p>{alink.icon}</p>
-                      <p>{alink.label}</p>
-                    </Link>
-                  );
-                
-              }
-            )}
+              return (
+                <Link
+                  key={alink.path}
+                  to={alink.path}
+                  className="d-flex gap-2 my-1 text-white"
+                  style={{ textDecoration: "none" }}
+                >
+                  <p>{alink.icon}</p>
+                  <p>{alink.label}</p>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
