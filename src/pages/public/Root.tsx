@@ -1,5 +1,5 @@
 import Button from "@/components/ui/Button";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { Card, Container, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import "@/styles/Root.css";
